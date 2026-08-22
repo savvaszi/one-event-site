@@ -15,6 +15,9 @@ const {
   description = 'One Event Greece & Cyprus — Destination Management Services. We create moments that inspire.',
 } = Astro.props;
 
+const ogImage =
+  'https://one-event.gr/wp-content/uploads/2022/04/santorini.jpg';
+
 const htmlClass =
   typeof window === 'undefined' ? 'no-js' : '';
 ---
@@ -26,6 +29,12 @@ const htmlClass =
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://one-event.gr" />
     <script is:inline>
@@ -56,6 +65,14 @@ const htmlClass =
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => lenis.raf(time * 1000));
         gsap.ticker.lagSmoothing(0);
+
+        const heroTitle = document.querySelector('.hero-title');
+        if (heroTitle) {
+          const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+          tl.from('.hero-eyebrow', { y: 24, autoAlpha: 0, duration: 0.9 }, 0.2)
+            .from(heroTitle, { yPercent: 30, autoAlpha: 0, filter: 'blur(10px)', duration: 1.5 }, 0.35)
+            .from('.hero-scroll', { autoAlpha: 0, y: 16, duration: 0.9 }, 1);
+        }
 
         document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
           const words = el.textContent!.trim().split(/\s+/);
