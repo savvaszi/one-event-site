@@ -1,0 +1,130 @@
+---
+import { offices } from '../data/site.js';
+import { nav } from '../data/site.js';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-cta">
+    <p class="eyebrow" data-reveal>Your next event starts here</p>
+    <a class="cta-link display-lg" href="/get-in-touch/" data-magnetic>
+      Let’s create
+      <span class="cta-arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+
+  <div class="footer-grid wrap">
+    <div>
+      <h2 class="foot-title">One Event</h2>
+      <p class="foot-line">One Event Greece &amp; Cyprus</p>
+      {offices.map((o) => (
+        <p class="foot-line"><strong>{o.country}:</strong> {o.address}</p>
+      ))}
+    </div>
+    <nav aria-label="Footer">
+      <h2 class="foot-title">Sitemap</h2>
+      {nav.map((item) => (
+        <a class="foot-link" href={item.href}>{item.label}</a>
+      ))}
+    </nav>
+    <div>
+      <h2 class="foot-title">Legislation</h2>
+      <p class="foot-line">Customice DMC Travel Ltd</p>
+      <p class="foot-line">Registration No.: HE423210</p>
+      <p class="foot-line">VAT No.: 10423210U</p>
+    </div>
+    <div>
+      <h2 class="foot-title">Follow us</h2>
+      <a class="foot-link" href="https://www.linkedin.com/company/one-event" rel="noopener" target="_blank">LinkedIn ↗</a>
+    </div>
+  </div>
+
+  <div class="footer-base wrap">
+    <p>© {year} One Event Greece &amp; Cyprus — All rights reserved</p>
+    <a href="/privacy-policy/">Privacy Policy</a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--sea);
+    border-top: 1px solid var(--line);
+    padding-top: clamp(4rem, 9vw, 8rem);
+  }
+
+  .footer-cta {
+    padding-bottom: clamp(3.5rem, 7vw, 6.5rem);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    color: var(--marble);
+    transition: color 0.45s var(--ease-out);
+  }
+
+  .cta-link:hover {
+    color: var(--gold-bright);
+  }
+
+  .cta-arrow {
+    font-family: var(--font-body);
+    font-size: 0.55em;
+    transition: transform 0.5s var(--ease-out);
+  }
+
+  .cta-link:hover .cta-arrow {
+    transform: translateX(12px);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: clamp(2rem, 4vw, 4rem);
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+
+  .foot-title {
+    font-size: 1.05rem;
+    margin-bottom: 1.1rem;
+    color: var(--marble);
+  }
+
+  .foot-line {
+    font-size: 0.88rem;
+    color: var(--marble-dim);
+    line-height: 1.8;
+  }
+
+  .foot-link {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--marble-dim);
+    padding-block: 0.28rem;
+    transition: color 0.3s var(--ease-out), padding-left 0.35s var(--ease-out);
+  }
+
+  .foot-link:hover {
+    color: var(--gold-bright);
+    padding-left: 6px;
+  }
+
+  .footer-base {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    border-top: 1px solid var(--line);
+    padding-block: 1.75rem;
+    font-size: 0.78rem;
+    color: var(--marble-faint);
+  }
+
+  .footer-base a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

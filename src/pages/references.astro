@@ -1,0 +1,215 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { references, gallery } from '../data/site.js';
+
+const featured = references.slice(0, 8);
+---
+
+<BaseLayout title="References | One Event" description="Highlighted cases by One Event Greece & Cyprus — conferences, incentives and gala events for the world's finest brands.">
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">References</p>
+      <h1 class="display-lg" data-split>Some of our<br />highlighted <em>cases</em></h1>
+    </div>
+  </section>
+
+  <section class="cases" aria-label="Highlighted cases">
+    <div class="wrap case-list">
+      {featured.map((r) => (
+        <a class="case-row" href={r.video} target="_blank" rel="noopener" data-reveal>
+          <span class="case-title">{r.title}</span>
+          <span class="case-meta">{r.meta}</span>
+          <span class="case-play" aria-hidden="true">▶ Watch</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="moments" aria-label="Moments from our events">
+    <div class="wrap">
+      <p class="eyebrow">Moments</p>
+      <h2 class="display-md" data-split>Frames from the field</h2>
+      <div class="moment-grid">
+        {gallery.map((g) => (
+          <figure class="media-mask moment-card" data-reveal>
+            <img src={g.src} alt={g.alt} loading="lazy" />
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="more">
+    <div class="wrap more-inner">
+      <h2 class="display-md" data-split>24 productions and counting</h2>
+      <p data-reveal>Conferences, incentives, gala dinners and team experiences across Greece &amp; Cyprus.</p>
+    </div>
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        {[...references.slice(8), ...references.slice(8)].map((r) => (
+          <span class="marquee-item">{r.title}<i>·</i></span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .page-hero {
+      padding-block: clamp(10rem, 22vh, 14rem) clamp(3rem, 7vw, 6rem);
+      background:
+        radial-gradient(55% 75% at 85% 0%, rgba(200,162,75,.12), transparent 65%),
+        var(--sea);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page-hero em {
+      font-style: italic;
+      color: var(--gold-bright);
+    }
+
+    .cases {
+      padding-block: clamp(4rem, 9vw, 7rem) clamp(2.5rem, 6vw, 4rem);
+    }
+
+    .case-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: baseline;
+      gap: clamp(1rem, 3vw, 2.5rem);
+      padding-block: clamp(1.1rem, 2.4vw, 1.6rem);
+      border-bottom: 1px solid var(--line);
+      transition: padding-left .45s var(--ease-out), border-color .45s var(--ease-out);
+    }
+
+    .case-row:first-child {
+      border-top: 1px solid var(--line);
+    }
+
+    .case-row:hover {
+      padding-left: 14px;
+      border-color: var(--gold);
+    }
+
+    .case-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.25rem, 2.6vw, 2.1rem);
+      transition: color .35s var(--ease-out);
+    }
+
+    .case-row:hover .case-title {
+      color: var(--gold-bright);
+    }
+
+    .case-meta {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--marble-dim);
+    }
+
+    .case-play {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity .4s var(--ease-out), transform .4s var(--ease-out);
+    }
+
+    .case-row:hover .case-play {
+      opacity: 1;
+      transform: none;
+    }
+
+    .moments {
+      padding-block: clamp(3rem, 7vw, 5rem);
+    }
+
+    .moment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+      gap: clamp(1rem, 2vw, 1.75rem);
+      margin-top: clamp(2rem, 4vw, 3rem);
+    }
+
+    .moment-card {
+      aspect-ratio: 4 / 3;
+    }
+
+    .moment-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .more {
+      padding-block: clamp(4rem, 9vw, 7rem) 0;
+      background:
+        radial-gradient(60% 90% at 50% 0%, rgba(200,162,75,.1), transparent 70%);
+    }
+
+    .more-inner {
+      text-align: center;
+      display: grid;
+      justify-items: center;
+      gap: 1.2rem;
+      padding-bottom: clamp(3rem, 7vw, 5rem);
+    }
+
+    .more p {
+      color: var(--marble-dim);
+      max-width: 48ch;
+    }
+
+    .marquee {
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      padding-block: 1.4rem;
+    }
+
+    .marquee-track {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: marquee 46s linear infinite;
+      will-change: transform;
+    }
+
+    .marquee:hover .marquee-track {
+      animation-play-state: paused;
+    }
+
+    .marquee-item {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.4vw, 2rem);
+      color: var(--marble-faint);
+      padding-inline: 1.3rem;
+    }
+
+    .marquee-item i {
+      color: var(--gold);
+      font-style: normal;
+      padding-left: 2.6rem;
+    }
+
+    @keyframes marquee {
+      to { transform: translateX(-50%); }
+    }
+
+    @media (max-width: 720px) {
+      .case-row {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
+      }
+      .case-play {
+        display: none;
+      }
+    }
+  </style>
+
+  <style is:global>
+    html.reduced-motion .marquee-track {
+      animation: none;
+    }
+  </style>
+</BaseLayout>

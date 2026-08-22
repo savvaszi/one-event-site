@@ -1,0 +1,403 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { destinations, manifesto, references } from '../data/site.js';
+
+const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
+---
+
+<BaseLayout title="One Event | Greece & Cyprus">
+  <section class="hero" aria-label="Intro">
+    <div class="hero-media">
+      <img src={heroImage} alt="Santorini caldera at dusk" fetchpriority="high" />
+      <div class="hero-scrim"></div>
+    </div>
+    <div class="hero-content wrap">
+      <p class="eyebrow hero-eyebrow">Destination Management · Greece &amp; Cyprus</p>
+      <h1 class="display-xl hero-title" data-hero-line>We create moments<br />that <em>inspire</em></h1>
+      <a class="hero-scroll" href="#manifesto" aria-label="Scroll down">Scroll<span class="hero-scroll-bar"></span></a>
+    </div>
+  </section>
+
+  <section class="manifesto" id="manifesto" data-manifesto aria-label="Manifesto">
+    {manifesto.map((line, i) => (
+      <h2 class="display-lg manifesto-item" data-split>{i === 0 ? line : line}</h2>
+    ))}
+  </section>
+
+  <section class="intro" aria-label="The agency in brief">
+    <div class="wrap intro-grid">
+      <figure class="media-mask intro-media" data-reveal>
+        <img src={destinations[0].image} alt="Athens cityscape" loading="lazy" />
+      </figure>
+      <div class="intro-copy">
+        <p class="eyebrow" data-reveal>The Agency</p>
+        <h2 class="display-md" data-split>Our passion for perfection</h2>
+        <p data-reveal>
+          We create unique events and provide Destination Management Services with authentic
+          experience, utilising our extensive knowledge and expertise. We are a global and
+          independent network.
+        </p>
+        <p data-reveal>
+          A profound insight into the local and international corporate event business led us to
+          build an efficient and flexible set-up that meets every expectation — a very personal
+          approach, flexible business models and long-term partnerships with our key customers.
+        </p>
+        <a href="/the-agency/" class="btn" data-magnetic data-reveal>Read more about us <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="numbers" aria-label="One Event in numbers">
+    <div class="wrap numbers-grid">
+      <div class="number-card" data-reveal>
+        <span class="number-value infinity">∞</span>
+        <span class="number-label">Accumulated years of experience — unlimited ideas for your event</span>
+      </div>
+      <div class="number-card" data-reveal>
+        <span class="number-value"><span data-count="120">0</span>+</span>
+        <span class="number-label">Successfully organized events across Greece &amp; Cyprus</span>
+      </div>
+      <div class="number-card" data-reveal>
+        <span class="number-value"><span data-count="850">0</span></span>
+        <span class="number-label">Guests at our largest single production</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="destinations" data-hscroll aria-label="Destinations">
+    <div class="wrap dest-head">
+      <p class="eyebrow">Our playground</p>
+      <h2 class="display-lg" data-split>Six destinations.<br />Infinite stories.</h2>
+    </div>
+    <div class="hscroll-track" data-hscroll-track>
+      {destinations.map((d) => (
+        <a class="dest-card media-mask" href={`/destinations/${d.slug}/`} data-magnetic>
+          <img src={d.image} alt={`${d.name} — One Event destination`} loading="lazy" />
+          <span class="dest-name">{d.name}</span>
+          <span class="dest-tag">{d.tagline}</span>
+          <span class="dest-cta">Explore →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="refs" aria-label="Selected references">
+    <div class="wrap refs-head">
+      <p class="eyebrow">Selected cases</p>
+      <h2 class="display-md" data-split>Trusted by the world’s finest brands</h2>
+    </div>
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        {[...references.slice(0, 12), ...references.slice(0, 12)].map((r) => (
+          <span class="marquee-item">{r.title}<i>·</i></span>
+        ))}
+      </div>
+    </div>
+    <div class="wrap refs-cta" data-reveal>
+      <a class="btn" href="/references/" data-magnetic>All references <span class="arrow">→</span></a>
+    </div>
+  </section>
+
+  <style>
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      align-items: end;
+      overflow: clip;
+    }
+
+    .hero-media,
+    .hero-media img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    :global(html:not(.reduced-motion)) .hero-media img {
+      animation: kenburns 18s var(--ease-out) both;
+    }
+
+    @keyframes kenburns {
+      from { scale: 1.16; }
+      to { scale: 1; }
+    }
+
+    .hero-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,14,18,.55) 0%, rgba(10,14,18,.15) 45%, rgba(10,14,18,.92) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      padding-bottom: clamp(3rem, 8vh, 6rem);
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold-bright);
+    }
+
+    .hero-scroll {
+      margin-top: clamp(2rem, 5vh, 4rem);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.9rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--marble-dim);
+    }
+
+    .hero-scroll-bar {
+      width: 64px;
+      height: 1px;
+      background: var(--marble-faint);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-scroll-bar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      animation: sweep 2.4s var(--ease-out) infinite;
+    }
+
+    @keyframes sweep {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(100%); }
+    }
+
+    .manifesto {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: var(--sea);
+      border-block: 1px solid var(--line);
+      padding-inline: var(--gutter);
+    }
+
+    .manifesto-item {
+      grid-area: 1 / 1;
+      max-width: 20ch;
+      will-change: transform, opacity, filter;
+    }
+
+    .intro {
+      padding-block: clamp(5rem, 12vw, 10rem);
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2.5rem, 6vw, 6rem);
+      align-items: center;
+    }
+
+    .intro-media {
+      aspect-ratio: 4 / 5;
+    }
+
+    .intro-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .intro-copy p + p,
+    .intro-copy .btn {
+      margin-top: 1.4rem;
+    }
+
+    .intro-copy p:not(.eyebrow) {
+      color: var(--marble-dim);
+      max-width: 52ch;
+    }
+
+    .numbers {
+      background: var(--sea);
+      border-block: 1px solid var(--line);
+      padding-block: clamp(4rem, 9vw, 7rem);
+    }
+
+    .numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+
+    .number-card {
+      display: grid;
+      gap: 0.8rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--gold);
+    }
+
+    .number-value {
+      font-family: var(--font-display);
+      font-size: clamp(3.4rem, 7vw, 6rem);
+      line-height: 1;
+      color: var(--gold-bright);
+    }
+
+    .number-label {
+      font-size: 0.85rem;
+      color: var(--marble-dim);
+      max-width: 30ch;
+    }
+
+    .destinations {
+      padding-block: clamp(5rem, 10vw, 9rem);
+      overflow: clip;
+    }
+
+    .dest-head {
+      margin-bottom: clamp(3rem, 6vw, 5rem);
+    }
+
+    .hscroll-track {
+      display: flex;
+      gap: clamp(1.25rem, 2.5vw, 2.5rem);
+      padding-inline: var(--gutter);
+      will-change: transform;
+    }
+
+    .dest-card {
+      position: relative;
+      flex: 0 0 clamp(280px, 32vw, 460px);
+      aspect-ratio: 3 / 4;
+      display: grid;
+      align-content: end;
+      gap: 0.35rem;
+      padding: 1.75rem;
+      isolation: isolate;
+    }
+
+    .dest-card img {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(.85) brightness(.8);
+    }
+
+    .dest-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(180deg, transparent 40%, rgba(10,14,18,.88));
+    }
+
+    .dest-name {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+    }
+
+    .dest-tag {
+      font-size: 0.82rem;
+      color: var(--marble-dim);
+    }
+
+    .dest-cta {
+      margin-top: 0.9rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .45s var(--ease-out), transform .45s var(--ease-out);
+    }
+
+    .dest-card:hover .dest-cta {
+      opacity: 1;
+      transform: none;
+    }
+
+    .refs {
+      padding-block: clamp(4rem, 9vw, 8rem);
+      background: var(--sea);
+      border-top: 1px solid var(--line);
+    }
+
+    .refs-head {
+      margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    }
+
+    .marquee {
+      overflow: hidden;
+      border-block: 1px solid var(--line);
+      padding-block: 1.4rem;
+    }
+
+    .marquee-track {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: marquee 42s linear infinite;
+      will-change: transform;
+    }
+
+    .marquee:hover .marquee-track {
+      animation-play-state: paused;
+    }
+
+    .marquee-item {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+      color: var(--marble-faint);
+      padding-inline: 1.4rem;
+      transition: color .4s var(--ease-out);
+    }
+
+    .marquee-item i {
+      color: var(--gold);
+      font-style: normal;
+      padding-left: 2.8rem;
+    }
+
+    .marquee-item:hover {
+      color: var(--marble);
+    }
+
+    @keyframes marquee {
+      to { transform: translateX(-50%); }
+    }
+
+    .refs-cta {
+      margin-top: clamp(2.5rem, 5vw, 4rem);
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 900px) {
+      .intro-grid {
+        grid-template-columns: 1fr;
+      }
+      .numbers-grid {
+        grid-template-columns: 1fr;
+      }
+      .hscroll-track {
+        flex-direction: column;
+        padding-inline: var(--gutter);
+      }
+      .dest-card {
+        flex-basis: auto;
+      }
+    }
+  </style>
+
+  <style is:global>
+    html.reduced-motion .marquee-track {
+      animation: none;
+    }
+  </style>
+</BaseLayout>

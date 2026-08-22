@@ -1,0 +1,190 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { destinations } from '../../data/site.js';
+
+export function getStaticPaths() {
+  return destinations.map((d, i) => ({
+    params: { slug: d.slug },
+    props: { dest: d, index: i },
+  }));
+}
+
+const { dest, index } = Astro.props;
+const prev = destinations[(index - 1 + destinations.length) % destinations.length];
+const next = destinations[(index + 1) % destinations.length];
+---
+
+<BaseLayout title={`${dest.name} | One Event Destinations`} description={`${dest.name} — ${dest.tagline} Destination management by One Event Greece & Cyprus.`}>
+  <section class="d-hero">
+    <div class="d-hero-media" data-parallax="16">
+      <img src={dest.image} alt={`${dest.name} — One Event destination`} fetchpriority="high" />
+    </div>
+    <div class="d-hero-scrim"></div>
+    <div class="wrap d-hero-content">
+      <a class="back-link" href="/destinations/" data-reveal>← All destinations</a>
+      <h1 class="display-xl d-title">{dest.name}</h1>
+      <p class="d-tagline" data-split>{dest.tagline}</p>
+    </div>
+  </section>
+
+  <section class="highlights">
+    <div class="wrap">
+      <p class="eyebrow">Highlights</p>
+      <div class="hl-grid">
+        {dest.highlights.map(([title, desc]) => (
+          <article class="hl-card" data-reveal>
+            <h2>{title}</h2>
+            <p>{desc}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="d-cta">
+    <div class="wrap d-cta-inner">
+      <h2 class="display-md" data-split>Host your event in {dest.name}</h2>
+      <a class="btn" href="/get-in-touch/" data-magnetic data-reveal>Get in touch <span class="arrow">→</span></a>
+    </div>
+  </section>
+
+  <nav class="d-nav" aria-label="More destinations">
+    <a href={`/destinations/${prev.slug}/`} class="d-nav-link">← {prev.name}</a>
+    <a href={`/destinations/${next.slug}/`} class="d-nav-link">{next.name} →</a>
+  </nav>
+
+  <style>
+    .d-hero {
+      min-height: 92svh;
+      display: grid;
+      align-items: end;
+      overflow: clip;
+    }
+
+    .d-hero-media {
+      position: absolute;
+      inset: -12% 0;
+      z-index: -2;
+    }
+
+    .d-hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .d-hero-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(180deg, rgba(10,14,18,.5), rgba(10,14,18,.2) 40%, rgba(10,14,18,.94));
+    }
+
+    .d-hero-content {
+      padding-bottom: clamp(3rem, 8vh, 6rem);
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--marble-dim);
+      margin-bottom: 1.5rem;
+      transition: color .35s var(--ease-out);
+    }
+
+    .back-link:hover {
+      color: var(--gold-bright);
+    }
+
+    .d-title {
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .d-tagline {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+      color: var(--gold-bright);
+      margin-top: 1rem;
+    }
+
+    .highlights {
+      padding-block: clamp(4.5rem, 10vw, 9rem);
+    }
+
+    .hl-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+      gap: clamp(1.25rem, 2.5vw, 2rem);
+      margin-top: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    .hl-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: clamp(1.5rem, 3vw, 2.25rem);
+      transition: border-color .45s var(--ease-out), transform .45s var(--ease-out), background .45s var(--ease-out);
+    }
+
+    .hl-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-6px);
+      background: var(--sea);
+    }
+
+    .hl-card h2 {
+      font-size: clamp(1.4rem, 2.4vw, 2rem);
+      margin-bottom: 0.6rem;
+    }
+
+    .hl-card p {
+      color: var(--marble-dim);
+      font-size: 0.95rem;
+    }
+
+    .d-cta {
+      background:
+        radial-gradient(60% 90% at 50% 100%, rgba(200,162,75,.14), transparent 70%),
+        var(--sea);
+      border-block: 1px solid var(--line);
+      padding-block: clamp(4rem, 9vw, 7rem);
+    }
+
+    .d-cta-inner {
+      text-align: center;
+      display: grid;
+      justify-items: center;
+      gap: 1.6rem;
+    }
+
+    .d-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: clamp(2.5rem, 6vw, 4rem);
+    }
+
+    .wrap.d-nav,
+    nav.d-nav > a {
+      margin-inline: auto;
+    }
+
+    nav.d-nav {
+      width: min(1440px, calc(100% - var(--gutter) * 2));
+    }
+
+    .d-nav-link {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 2.4vw, 1.9rem);
+      color: var(--marble-dim);
+      transition: color .35s var(--ease-out), letter-spacing .35s var(--ease-out);
+    }
+
+    .d-nav-link:hover {
+      color: var(--gold-bright);
+    }
+  </style>
+</BaseLayout>

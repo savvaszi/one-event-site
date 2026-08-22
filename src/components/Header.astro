@@ -1,0 +1,269 @@
+---
+import { nav } from '../data/site.js';
+---
+
+<header class="site-header" data-header>
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="One Event — Home">
+      ONE&nbsp;EVENT<span class="brand-dot">.</span>
+      <span class="brand-sub">Greece &amp; Cyprus</span>
+    </a>
+    <nav class="desktop-nav" aria-label="Primary">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          class="nav-link"
+          data-magnetic
+          aria-current={Astro.url.pathname === item.href ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu">
+      <span class="menu-label">Menu</span>
+      <span class="menu-icon" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <nav aria-label="Mobile">
+      {nav.map((item, i) => (
+        <a href={item.href} class="mobile-link">
+          <span class="mobile-index">0{i + 1}</span>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <p class="mobile-foot">One Event Greece &amp; Cyprus · DMC Travel Ltd</p>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    transition: background 0.5s var(--ease-out), backdrop-filter 0.5s var(--ease-out);
+  }
+
+  .site-header[data-scrolled] {
+    background: rgba(10, 14, 18, 0.72);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .header-inner {
+    width: min(1440px, calc(100% - var(--gutter) * 2));
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: clamp(1rem, 2.2vw, 1.75rem);
+  }
+
+  .brand {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: baseline;
+    gap: 0.65rem;
+  }
+
+  .brand-dot {
+    color: var(--gold);
+  }
+
+  .brand-sub {
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--marble-dim);
+  }
+
+  .desktop-nav {
+    display: flex;
+    gap: clamp(1.25rem, 2.5vw, 2.5rem);
+  }
+
+  .nav-link {
+    position: relative;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--marble-dim);
+    transition: color 0.35s var(--ease-out);
+    padding-block: 0.4rem;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s var(--ease-out);
+  }
+
+  .nav-link:hover,
+  .nav-link[aria-current='page'] {
+    color: var(--marble);
+  }
+
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: 0;
+    color: var(--marble);
+    cursor: pointer;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .menu-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .menu-icon {
+    display: grid;
+    gap: 6px;
+    width: 26px;
+  }
+
+  .menu-icon i {
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  [aria-expanded='true'] .menu-icon i:first-child {
+    transform: translateY(3.75px) rotate(45deg);
+  }
+
+  [aria-expanded='true'] .menu-icon i:last-child {
+    transform: translateY(-3.75px) rotate(-45deg);
+  }
+
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--sea);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding-inline: var(--gutter);
+  }
+
+  .mobile-link {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 9vw, 4rem);
+    line-height: 1.25;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .mobile-index {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+  }
+
+  .mobile-foot {
+    position: absolute;
+    bottom: 2rem;
+    left: var(--gutter);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--marble-faint);
+  }
+
+  @media (max-width: 900px) {
+    .desktop-nav {
+      display: none;
+    }
+    .menu-toggle {
+      display: inline-flex;
+    }
+  }
+
+  :global(.menu-open) {
+    overflow: hidden;
+  }
+
+  :global(.menu-open) .mobile-menu {
+    display: flex;
+  }
+
+  :global(.menu-open) .mobile-link {
+    animation: rise 0.7s var(--ease-out) forwards;
+  }
+
+  :global(.menu-open) .mobile-link:nth-child(2) {
+    animation-delay: 0.07s;
+  }
+
+  :global(.menu-open) .mobile-link:nth-child(3) {
+    animation-delay: 0.14s;
+  }
+
+  :global(.menu-open) .mobile-link:nth-child(4) {
+    animation-delay: 0.21s;
+  }
+
+  :global(.menu-open) .mobile-link:nth-child(5) {
+    animation-delay: 0.28s;
+  }
+
+  @keyframes rise {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const menu = document.querySelector<HTMLElement>('#mobile-menu')!;
+
+  addEventListener('scroll', () => {
+    if (scrollY > 40) header.setAttribute('data-scrolled', '');
+    else header.removeAttribute('data-scrolled');
+  }, { passive: true });
+
+  toggle.addEventListener('click', () => {
+    const open = document.documentElement.classList.toggle('menu-open');
+    toggle.setAttribute('aria-expanded', String(open));
+    menu.hidden = false;
+  });
+
+  menu.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => {
+      document.documentElement.classList.remove('menu-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }),
+  );
+</script>

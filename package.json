@@ -1,0 +1,18 @@
+{
+  "name": "oxredesign",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "^5.2.8",
+    "@fontsource-variable/fraunces": "^5.2.8",
+    "astro": "^5.12.0",
+    "gsap": "^3.13.0",
+    "lenis": "^1.3.4"
+  }
+}

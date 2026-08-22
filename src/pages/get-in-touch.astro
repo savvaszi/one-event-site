@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { contacts, offices } from '../data/site.js';
+
+const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.jpg';
+---
+
+<BaseLayout title="Get in Touch | One Event" description="Contact One Event Greece & Cyprus — Athens and Nicosia offices.">
+  <section class="c-hero">
+    <div class="wrap c-grid">
+      <div>
+        <p class="eyebrow">Greece &amp; Cyprus Hub</p>
+        <h1 class="display-lg" data-split>Let’s talk about<br />your <em>next event</em></h1>
+
+        {contacts.map((person) => (
+          <article class="contact-card" data-reveal>
+            <h2>{person.name}</h2>
+            <p class="role">{person.role}</p>
+            <a class="contact-line mail" href={`mailto:${person.email}`}>{person.email}</a>
+            {person.phones.map((p) => (
+              <a class="contact-line" href={`tel:${p.replace(/[^+\d]/g, '')}`}>{p}</a>
+            ))}
+          </article>
+        ))}
+      </div>
+      <figure class="media-mask c-photo" data-reveal>
+        <img src={heroImage} alt="One Event — get in touch" loading="lazy" />
+      </figure>
+    </div>
+  </section>
+
+  <section class="offices">
+    <div class="wrap office-grid">
+      {offices.map((o) => (
+        <div class="office-card" data-reveal>
+          <h3>{o.country}</h3>
+          <p>{o.address}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .c-hero {
+      padding-block: clamp(10rem, 22vh, 14rem) clamp(3.5rem, 8vw, 6rem);
+      background:
+        radial-gradient(55% 70% at 90% 5%, rgba(200,162,75,.12), transparent 65%),
+        var(--sea);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .c-hero em {
+      font-style: italic;
+      color: var(--gold-bright);
+    }
+
+    .c-grid {
+      display: grid;
+      grid-template-columns: 1fr minmax(280px, 460px);
+      gap: clamp(2.5rem, 6vw, 6rem);
+      align-items: start;
+    }
+
+    .contact-card {
+      margin-top: clamp(1.75rem, 4vw, 2.75rem);
+      padding-top: 1.4rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .contact-card h2 {
+      font-size: clamp(1.5rem, 2.6vw, 2rem);
+    }
+
+    .role {
+      color: var(--gold-bright);
+      font-size: 0.74rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin: 0.4rem 0 0.9rem;
+    }
+
+    .contact-line {
+      display: block;
+      width: fit-content;
+      font-size: 0.95rem;
+      color: var(--marble-dim);
+      padding-block: 0.25rem;
+      transition: color .35s var(--ease-out), transform .35s var(--ease-out);
+    }
+
+    .contact-line:hover {
+      color: var(--gold-bright);
+      transform: translateX(6px);
+    }
+
+    .mail {
+      text-decoration: underline;
+      text-underline-offset: 5px;
+    }
+
+    .c-photo {
+      aspect-ratio: 4 / 5;
+      border-radius: 14px;
+    }
+
+    .c-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .offices {
+      padding-block: clamp(4rem, 9vw, 7rem);
+    }
+
+    .office-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+      gap: clamp(1.5rem, 3vw, 2.5rem);
+    }
+
+    .office-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: clamp(1.75rem, 4vw, 2.75rem);
+      transition: border-color .45s var(--ease-out), transform .45s var(--ease-out);
+    }
+
+    .office-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-5px);
+    }
+
+    .office-card h3 {
+      font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+      margin-bottom: 0.5rem;
+    }
+
+    .office-card p {
+      color: var(--marble-dim);
+    }
+  </style>
+</BaseLayout>

@@ -1,0 +1,190 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { team } from '../data/site.js';
+---
+
+<BaseLayout title="The Agency | One Event" description="One Event Greece & Cyprus was founded in 2022 by professionals with years of experience in the tourism and event industry.">
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">The Agency</p>
+      <h1 class="display-lg" data-split>One fusion of experts,<br />one standard: <em>perfection</em></h1>
+    </div>
+  </section>
+
+  <section class="story">
+    <div class="wrap story-grid">
+      <div>
+        <h2 class="display-md" data-split>Founded in 2022</h2>
+        <p data-reveal>
+          One Event Cyprus &amp; Greece was founded in 2022 by a group of professionals with years
+          of experience in the tourism and event industry. This fusion of experts is a perfect
+          match for any kind of event worldwide.
+        </p>
+        <p data-reveal>
+          A profound insight into the local and international corporate event business led us to
+          pursue an efficient, flexible set-up that meets our clients’ expectations — built on a
+          very personal approach, flexible business models and long-term partnership.
+        </p>
+        <p data-reveal>
+          We act sustainably and prefer local suppliers. We look for the extraordinary and the
+          unusual — so your guests don’t attend an event, they live one.
+        </p>
+      </div>
+      <aside class="values">
+        <article class="value-card" data-reveal>
+          <h3>Vision</h3>
+          <p>An efficient and flexible set-up that meets every expectation in corporate events.</p>
+        </article>
+        <article class="value-card" data-reveal>
+          <h3>Key values</h3>
+          <p>A personal approach, flexibility in business models, long-term partnerships.</p>
+        </article>
+        <article class="value-card" data-reveal>
+          <h3>Sustainability</h3>
+          <p>We act sustainably and prefer local suppliers wherever we operate.</p>
+        </article>
+      </aside>
+    </div>
+  </section>
+
+  <section class="team" aria-label="Key team">
+    <div class="wrap">
+      <p class="eyebrow">The key team</p>
+      {team.map((member) => (
+        <article class="team-row">
+          <figure class="media-mask team-photo" data-reveal>
+            <img src={member.image} alt={`Portrait of ${member.name}`} loading="lazy" />
+          </figure>
+          <div class="team-copy">
+            <h3 class="team-name display-md" data-split>{member.name}</h3>
+            <p class="team-role">{member.role}</p>
+            <blockquote data-reveal>{member.quote}</blockquote>
+            <p data-reveal>{member.bio}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .page-hero {
+      padding-block: clamp(10rem, 22vh, 14rem) clamp(3rem, 7vw, 6rem);
+      background:
+        radial-gradient(60% 80% at 80% 0%, rgba(200,162,75,.12), transparent 65%),
+        var(--sea);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page-hero em {
+      font-style: italic;
+      color: var(--gold-bright);
+    }
+
+    .story {
+      padding-block: clamp(5rem, 11vw, 9rem);
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: clamp(3rem, 7vw, 7rem);
+      align-items: start;
+    }
+
+    .story-grid p:not(.eyebrow) {
+      color: var(--marble-dim);
+      max-width: 58ch;
+    }
+
+    .story-grid p + p {
+      margin-top: 1.25rem;
+    }
+
+    .values {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .value-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.6rem;
+      transition: border-color .4s var(--ease-out), transform .4s var(--ease-out);
+    }
+
+    .value-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+    }
+
+    .value-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .value-card p {
+      font-size: 0.9rem;
+      color: var(--marble-dim);
+    }
+
+    .team {
+      padding-bottom: clamp(6rem, 12vw, 10rem);
+    }
+
+    .team-row {
+      display: grid;
+      grid-template-columns: minmax(260px, 420px) 1fr;
+      gap: clamp(2.5rem, 6vw, 5.5rem);
+      align-items: center;
+      margin-top: clamp(3rem, 6vw, 5rem);
+    }
+
+    .team-row + .team-row .team-photo {
+      order: 2;
+    }
+
+    .team-photo {
+      aspect-ratio: 4 / 5;
+    }
+
+    .team-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .team-role {
+      color: var(--gold-bright);
+      font-size: 0.78rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin-top: 0.9rem;
+    }
+
+    .team-copy blockquote {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+      line-height: 1.5;
+      color: var(--marble);
+      margin: 1.6rem 0;
+      padding-left: 1.25rem;
+      border-left: 2px solid var(--gold);
+    }
+
+    .team-copy > p:last-child {
+      color: var(--marble-dim);
+      max-width: 62ch;
+    }
+
+    @media (max-width: 900px) {
+      .story-grid,
+      .team-row {
+        grid-template-columns: 1fr;
+      }
+      .team-row + .team-row .team-photo {
+        order: 0;
+      }
+    }
+  </style>
+</BaseLayout>

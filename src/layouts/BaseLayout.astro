@@ -1,0 +1,167 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/archivo';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'One Event Greece & Cyprus — Destination Management Services. We create moments that inspire.',
+} = Astro.props;
+
+const htmlClass =
+  typeof window === 'undefined' ? 'no-js' : '';
+---
+
+<!doctype html>
+<html lang="en" class={htmlClass}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://one-event.gr" />
+    <script is:inline>
+      document.documentElement.classList.remove('no-js');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('reduced-motion');
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import { gsap } from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+      import Lenis from 'lenis';
+
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!reduced) {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const lenis = new Lenis({ duration: 1.15 });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+
+        document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
+          const words = el.textContent!.trim().split(/\s+/);
+          el.innerHTML = words
+            .map((w) => `<span class="w"><span>${w}</span></span>`)
+            .join(' ');
+          gsap.from(el.querySelectorAll('.w > span'), {
+            yPercent: 110,
+            rotate: 3,
+            duration: 1.1,
+            ease: 'power4.out',
+            stagger: 0.035,
+            scrollTrigger: { trigger: el, start: 'top 82%' },
+          });
+        });
+
+        document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+          gsap.to(el, {
+            opacity: 1,
+            y: 0,
+            duration: 1.15,
+            ease: 'power3.out',
+            delay: (i % 4) * 0.08,
+            scrollTrigger: { trigger: el, start: 'top 86%' },
+          });
+        });
+
+        document.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
+          const depth = parseFloat(el.dataset.parallax || '18');
+          gsap.fromTo(
+            el,
+            { yPercent: -depth / 2 },
+            {
+              yPercent: depth / 2,
+              ease: 'none',
+              scrollTrigger: { trigger: el.closest('section, figure') ?? el, scrub: true },
+            },
+          );
+        });
+
+        document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+          const target = parseInt(el.dataset.count!, 10);
+          const obj = { v: 0 };
+          gsap.to(obj, {
+            v: target,
+            duration: 2,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: el, start: 'top 88%' },
+            onUpdate: () => {
+              el.textContent = Math.round(obj.v).toLocaleString('en-US');
+            },
+          });
+        });
+
+        const track = document.querySelector<HTMLElement>('[data-hscroll-track]');
+        const section = document.querySelector<HTMLElement>('[data-hscroll]');
+        if (track && section && innerWidth > 900) {
+          const distance = () => track.scrollWidth - section.clientWidth;
+          gsap.to(track, {
+            x: () => -distance(),
+            ease: 'none',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top top',
+              end: () => `+=${distance()}`,
+              pin: true,
+              scrub: 1,
+              invalidateOnRefresh: true,
+            },
+          });
+        }
+
+        document.querySelectorAll<HTMLAnchorElement>('[data-magnetic]').forEach((el) => {
+          const strength = 22;
+          el.addEventListener('mousemove', (e) => {
+            const r = el.getBoundingClientRect();
+            const x = e.clientX - r.left - r.width / 2;
+            const y = e.clientY - r.top - r.height / 2;
+            gsap.to(el, { x: (x / r.width) * strength, y: (y / r.height) * strength, duration: 0.5, ease: 'power3.out' });
+          });
+          el.addEventListener('mouseleave', () => {
+            gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.4)' });
+          });
+        });
+
+        const manifestoWrap = document.querySelector<HTMLElement>('[data-manifesto]');
+        const items = gsap.utils.toArray<HTMLElement>('.manifesto-item');
+        if (manifestoWrap && items.length > 1) {
+          gsap.set(items.slice(1), { autoAlpha: 0, scale: 1.06, filter: 'blur(8px)' });
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: manifestoWrap,
+              start: 'top top',
+              end: () => `+=${(items.length - 1) * 90}%`,
+              pin: true,
+              scrub: 0.6,
+            },
+          });
+          items.forEach((item, i) => {
+            if (i < items.length - 1) {
+              tl.to(item, { autoAlpha: 0, scale: 0.95, filter: 'blur(8px)', ease: 'power2.inOut' })
+                .to(items[i + 1], { autoAlpha: 1, scale: 1, filter: 'blur(0px)', ease: 'power2.inOut' }, '<0.2');
+            }
+          });
+        }
+      }
+    </script>
+  </body>
+</html>
