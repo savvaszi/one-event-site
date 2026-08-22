@@ -75,9 +75,14 @@ const htmlClass =
         }
 
         document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
-          const words = el.textContent!.trim().split(/\s+/);
-          el.innerHTML = words
-            .map((w) => `<span class="w"><span>${w}</span></span>`)
+          const withBreaks = el.innerHTML.replace(/<br\s*\/?>/gi, '\u0001');
+          const text = withBreaks.replace(/<[^>]+>/g, '');
+          const parts = text.split(/\s+/).filter(Boolean);
+          el.innerHTML = parts
+            .map((w) => {
+              const brk = w.includes('\u0001');
+              return `${brk ? '<br>' : ''}<span class="w"><span>${w.replaceAll('\u0001', '')}</span></span>`;
+            })
             .join(' ');
           gsap.from(el.querySelectorAll('.w > span'), {
             yPercent: 110,
@@ -138,10 +143,11 @@ const htmlClass =
               trigger: section,
               start: 'top top',
               end: () => `+=${distance()}`,
-              pin: true,
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
+                pin: true,
+                scrub: 1,
+                invalidateOnRefresh: true,
+                anticipatePin: 1,
+              },
           });
         }
 
@@ -169,6 +175,7 @@ const htmlClass =
               end: () => `+=${(items.length - 1) * 90}%`,
               pin: true,
               scrub: 0.6,
+              invalidateOnRefresh: true,
             },
           });
           items.forEach((item, i) => {
@@ -178,6 +185,8 @@ const htmlClass =
             }
           });
         }
+
+        addEventListener('load', () => ScrollTrigger.refresh());
       }
     </script>
   </body>
