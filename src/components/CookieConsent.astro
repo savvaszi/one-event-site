@@ -1,0 +1,332 @@
+---
+const categories = [
+  {
+    key: 'necessary',
+    label: 'Necessary',
+    desc: 'Essential for core functionality and security. Always enabled.',
+    locked: true,
+  },
+  {
+    key: 'functional',
+    label: 'Functional',
+    desc: 'Enhanced features such as social media sharing.',
+    locked: false,
+  },
+  {
+    key: 'performance',
+    label: 'Performance & Analytics',
+    desc: 'Helps us understand how visitors use the site.',
+    locked: false,
+  },
+  {
+    key: 'advertisement',
+    label: 'Advertisement',
+    desc: 'Used to deliver relevant ads and campaigns.',
+    locked: false,
+  },
+];
+---
+
+<div class="cc-root" id="cookie-consent" data-open="false" hidden>
+  <aside class="cc-card" role="dialog" aria-modal="false" aria-label="Cookie preferences" aria-describedby="cc-text">
+    <header class="cc-head">
+      <p class="cc-title">Cookies</p>
+      <span class="cc-dot" aria-hidden="true"></span>
+    </header>
+
+    <div class="cc-view" data-view="banner">
+      <p id="cc-text" class="cc-text">
+        We use cookies to give you the most relevant experience by remembering your preferences
+        and repeat visits.
+      </p>
+      <a class="cc-link" href="/privacy-policy/">Do not sell my personal information</a>
+      <div class="cc-actions">
+        <button class="cc-btn ghost" type="button" data-cc="settings">Settings</button>
+        <button class="cc-btn ghost" type="button" data-cc="reject">Reject all</button>
+        <button class="cc-btn solid" type="button" data-cc="accept">Accept</button>
+      </div>
+    </div>
+
+    <div class="cc-view" data-view="settings" hidden>
+      <ul class="cc-cats">
+        {categories.map((c) => (
+          <li>
+            <label class="cc-cat">
+              <span class="cc-copy">
+                <strong>{c.label}</strong>
+                <small>{c.desc}</small>
+              </span>
+              <input
+                type="checkbox"
+                data-cat={c.key}
+                checked={c.locked ? true : undefined}
+                disabled={c.locked ? true : undefined}
+              />
+              <span class="cc-switch" aria-hidden="true"><i></i></span>
+            </label>
+          </li>
+        ))}
+      </ul>
+      <div class="cc-actions">
+        <button class="cc-btn ghost" type="button" data-cc="back">Back</button>
+        <button class="cc-btn solid" type="button" data-cc="save">Save preferences</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+  const KEY = 'oe-cookie-consent';
+  const root = document.getElementById('cookie-consent');
+
+  const store = (): Record<string, unknown> => {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '{}');
+    } catch {
+      return {};
+    }
+  };
+
+  const views = root!.querySelectorAll<HTMLElement>('.cc-view');
+  const setState = (state: 'banner' | 'settings') => {
+    root!.dataset.state = state;
+    views.forEach((v) => (v.hidden = v.dataset.view !== state));
+  };
+  const show = () => {
+    root!.hidden = false;
+    requestAnimationFrame(() => root!.setAttribute('data-open', 'true'));
+  };
+  const hide = () => {
+    root!.setAttribute('data-open', 'false');
+    setTimeout(() => (root!.hidden = true), 500);
+  };
+  const persist = (choices: Record<string, boolean>) => {
+    localStorage.setItem(KEY, JSON.stringify({ ...choices, ts: new Date().toISOString() }));
+    hide();
+  };
+
+  root!.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-cc]');
+    if (!btn) return;
+    const action = btn.dataset.cc;
+    if (action === 'accept')
+      persist({ necessary: true, functional: true, performance: true, advertisement: true });
+    else if (action === 'reject')
+      persist({ necessary: true, functional: false, performance: false, advertisement: false });
+    else if (action === 'settings' || action === 'back') setState(action === 'back' ? 'banner' : 'settings');
+    else if (action === 'save') {
+      const boxes = root!.querySelectorAll<HTMLInputElement>('input[data-cat]');
+      const choices: Record<string, boolean> = {};
+      boxes.forEach((b) => (choices[b.dataset.cat!] = b.checked));
+      choices.necessary = true;
+      persist(choices);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && root!.dataset.open === 'true') hide();
+  });
+
+  document.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('[data-open-cookies]')) {
+      const saved = store();
+      Object.entries(saved).forEach(([k, v]) => {
+        const box = root!.querySelector<HTMLInputElement>(`input[data-cat="${k}"]`);
+        if (box && !box.disabled) box.checked = Boolean(v);
+      });
+      setState('settings');
+      show();
+    }
+  });
+
+  if (!store().ts) show();
+</script>
+
+<style>
+  .cc-root {
+    position: fixed;
+    inset: auto auto 1.25rem 1.25rem;
+    z-index: 160;
+  }
+
+  .cc-card {
+    position: relative;
+    width: min(384px, calc(100vw - 2rem));
+    background: rgba(14, 22, 32, 0.88);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 1.4rem 1.4rem 1.3rem;
+    box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.65);
+    opacity: 0;
+    transform: translateY(26px) scale(0.98);
+    transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  }
+
+  [data-open='true'] .cc-card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cc-head {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .cc-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+  }
+
+  .cc-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  .cc-text {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--marble-dim);
+  }
+
+  .cc-link {
+    display: inline-block;
+    margin-top: 0.6rem;
+    font-size: 0.76rem;
+    color: var(--marble-faint);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .cc-link:hover {
+    color: var(--gold-bright);
+  }
+
+  .cc-actions {
+    display: flex;
+    gap: 0.55rem;
+    margin-top: 1.1rem;
+    flex-wrap: wrap;
+  }
+
+  .cc-btn {
+    flex: 1;
+    padding: 0.62rem 0.9rem;
+    border-radius: 99px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.35s var(--ease-out);
+    white-space: nowrap;
+  }
+
+  .cc-btn.ghost {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--marble-dim);
+  }
+
+  .cc-btn.ghost:hover {
+    border-color: var(--gold);
+    color: var(--gold-bright);
+  }
+
+  .cc-btn.solid {
+    background: var(--gold);
+    border: 1px solid var(--gold);
+    color: var(--ink);
+  }
+
+  .cc-btn.solid:hover {
+    background: var(--gold-bright);
+    border-color: var(--gold-bright);
+  }
+
+  .cc-cats {
+    list-style: none;
+    display: grid;
+    gap: 0.55rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .cc-cat {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.3s var(--ease-out);
+  }
+
+  .cc-cat:hover {
+    border-color: rgba(200, 162, 75, 0.5);
+  }
+
+  .cc-copy {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .cc-copy strong {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .cc-copy small {
+    font-size: 0.68rem;
+    line-height: 1.45;
+    color: var(--marble-faint);
+  }
+
+  .cc-cat input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .cc-switch {
+    width: 34px;
+    height: 19px;
+    border-radius: 99px;
+    background: rgba(242, 238, 231, 0.14);
+    position: relative;
+    transition: background 0.3s var(--ease-out);
+    flex-shrink: 0;
+  }
+
+  .cc-switch i {
+    position: absolute;
+    top: 2.5px;
+    left: 2.5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--marble-dim);
+    transition: transform 0.3s var(--ease-out), background 0.3s var(--ease-out);
+  }
+
+  input:checked ~ .cc-switch {
+    background: rgba(200, 162, 75, 0.35);
+  }
+
+  input:checked ~ .cc-switch i {
+    transform: translateX(15px);
+    background: var(--gold-bright);
+  }
+
+  input:disabled ~ .cc-switch {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+</style>

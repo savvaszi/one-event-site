@@ -37,6 +37,7 @@ const year = new Date().getFullYear();
     <div>
       <h2 class="foot-title">Follow us</h2>
       <a class="foot-link" href="https://www.linkedin.com/company/one-event" rel="noopener" target="_blank">LinkedIn ↗</a>
+      <button class="foot-link cc-open" type="button" data-open-cookies>Cookie settings</button>
     </div>
   </div>
 
@@ -110,6 +111,15 @@ const year = new Date().getFullYear();
   .foot-link:hover {
     color: var(--gold-bright);
     padding-left: 6px;
+  }
+
+  button.cc-open {
+    background: none;
+    border: 0;
+    text-align: left;
+    font-family: inherit;
+    cursor: pointer;
+    width: fit-content;
   }
 
   .footer-base {
