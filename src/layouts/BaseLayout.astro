@@ -135,19 +135,23 @@ const htmlClass =
         const track = document.querySelector<HTMLElement>('[data-hscroll-track]');
         const section = document.querySelector<HTMLElement>('[data-hscroll]');
         if (track && section && innerWidth > 900) {
-          const distance = () => track.scrollWidth - section.clientWidth;
+          const distance = () => Math.max(0, track.scrollWidth - innerWidth);
+          const applyHeight = () => {
+            if (innerWidth > 900) section.style.height = `${innerHeight + distance()}px`;
+            else section.style.height = '';
+          };
+          applyHeight();
+          ScrollTrigger.addEventListener('refreshInit', applyHeight);
           gsap.to(track, {
             x: () => -distance(),
             ease: 'none',
             scrollTrigger: {
               trigger: section,
               start: 'top top',
-              end: () => `+=${distance()}`,
-                pin: true,
-                scrub: 1,
-                invalidateOnRefresh: true,
-                anticipatePin: 1,
-              },
+              end: 'bottom bottom',
+              scrub: 1,
+              invalidateOnRefresh: true,
+            },
           });
         }
 
@@ -166,14 +170,13 @@ const htmlClass =
 
         const manifestoWrap = document.querySelector<HTMLElement>('[data-manifesto]');
         const items = gsap.utils.toArray<HTMLElement>('.manifesto-item');
-        if (manifestoWrap && items.length > 1) {
+        if (manifestoWrap && items.length > 1 && innerWidth > 900) {
           gsap.set(items.slice(1), { autoAlpha: 0, scale: 1.06, filter: 'blur(8px)' });
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: manifestoWrap,
               start: 'top top',
-              end: () => `+=${(items.length - 1) * 90}%`,
-              pin: true,
+              end: 'bottom bottom',
               scrub: 0.6,
               invalidateOnRefresh: true,
             },
