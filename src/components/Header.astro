@@ -4,9 +4,8 @@ import { nav } from '../data/site.js';
 
 <header class="site-header" data-header>
   <div class="header-inner">
-    <a class="brand" href="/" aria-label="One Event — Home">
-      ONE&nbsp;EVENT<span class="brand-dot">.</span>
-      <span class="brand-sub">Greece &amp; Cyprus</span>
+<a class="brand" href="/" aria-label="One Event — Home">
+      <img src="/One_event_logo_white-1.png" alt="One Event" class="brand-logo" />
     </a>
     <nav class="desktop-nav" aria-label="Primary">
       {nav.map((item) => (
@@ -63,25 +62,14 @@ import { nav } from '../data/site.js';
   }
 
   .brand {
-    font-family: var(--font-display);
-    font-size: 1.35rem;
-    letter-spacing: 0.04em;
     display: flex;
-    align-items: baseline;
-    gap: 0.65rem;
+    align-items: center;
   }
 
-  .brand-dot {
-    color: var(--gold);
-  }
-
-  .brand-sub {
-    font-family: var(--font-body);
-    font-size: 0.62rem;
-    font-weight: 500;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--marble-dim);
+  .brand-logo {
+    height: clamp(28px, 4vw, 42px);
+    width: auto;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
   }
 
   .desktop-nav {
