@@ -5,7 +5,7 @@ import { nav } from '../data/site.js';
 <header class="site-header" data-header>
   <div class="header-inner">
 <a class="brand" href="/" aria-label="One Event — Home">
-      <img src="/One_event_logo_white-1.png" alt="One Event" class="brand-logo" />
+      <img src="/One_event_logo_black.png" alt="One Event" class="brand-logo" />
     </a>
     <nav class="desktop-nav" aria-label="Primary">
       {nav.map((item) => (
@@ -47,7 +47,7 @@ import { nav } from '../data/site.js';
   }
 
   .site-header[data-scrolled] {
-    background: rgba(14, 16, 19, 0.72);
+    background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--line);
   }
@@ -69,7 +69,7 @@ import { nav } from '../data/site.js';
   .brand-logo {
     height: clamp(28px, 4vw, 42px);
     width: auto;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+    filter: none;
   }
 
   .desktop-nav {

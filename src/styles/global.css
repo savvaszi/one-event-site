@@ -1,14 +1,14 @@
-﻿:root {
-  --ink: #0e1013;
-  --sea: #161a20;
-  --sea-2: #20252c;
-  --marble: #f4f5f6;
-  --marble-dim: rgba(244, 245, 246, 0.62);
-  --marble-faint: rgba(244, 245, 246, 0.34);
-  --line: rgba(244, 245, 246, 0.14);
-  --accent: #7ebec5;
-  --accent-bright: #a6dbe1;
-  --accent-dim: #56707a;
+:root {
+  --ink: #ffffff;
+  --sea: #f4f8f6;
+  --sea-2: #e9f1ec;
+  --marble: #000000;
+  --marble-dim: rgba(0, 0, 0, 0.62);
+  --marble-faint: rgba(0, 0, 0, 0.34);
+  --line: rgba(0, 0, 0, 0.14);
+  --accent: #48a77e;
+  --link: #2ea3f2;
+  --secondary: #47a67e;
 
   --font-display: 'Fraunces Variable', 'Georgia', serif;
   --font-body: 'Archivo Variable', 'Helvetica Neue', sans-serif;
@@ -26,7 +26,7 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html.lenis,
@@ -60,7 +60,7 @@ a {
 
 ::selection {
   background: var(--accent);
-  color: var(--ink);
+  color: var(--marble);
 }
 
 :focus-visible {
@@ -74,7 +74,7 @@ a {
   top: 0;
   z-index: 200;
   background: var(--accent);
-  color: var(--ink);
+  color: var(--marble);
   padding: 0.75rem 1.25rem;
   font-weight: 600;
 }
@@ -135,7 +135,7 @@ section {
   padding: 1rem 2.1rem;
   border: 1px solid var(--accent);
   border-radius: 99px;
-  color: var(--accent-bright);
+  color: var(--marble);
   font-family: var(--font-body);
   font-size: 0.82rem;
   font-weight: 600;
@@ -159,7 +159,7 @@ section {
 
 .btn:hover,
 .btn:focus-visible {
-  color: var(--ink);
+  color: var(--marble);
 }
 
 .btn:hover::before,
@@ -203,12 +203,12 @@ section {
 .media-mask img {
   scale: 1.14;
   transition: scale 1.3s var(--ease-out), filter 1.3s var(--ease-out);
-  filter: saturate(0.82) contrast(1.05);
+  filter: saturate(1);
 }
 
 .media-mask:hover img {
   scale: 1;
-  filter: saturate(1) contrast(1);
+  filter: saturate(1.08) contrast(1.02);
 }
 
 @media (prefers-reduced-motion: reduce) {
