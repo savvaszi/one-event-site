@@ -1,4 +1,4 @@
----
+﻿---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { destinations } from '../../data/site.js';
 
@@ -14,14 +14,14 @@ const prev = destinations[(index - 1 + destinations.length) % destinations.lengt
 const next = destinations[(index + 1) % destinations.length];
 ---
 
-<BaseLayout title={`${dest.name} | One Event Destinations`} description={`${dest.name} — ${dest.tagline} Destination management by One Event Greece & Cyprus.`}>
+<BaseLayout title={`${dest.name} | One Event Destinations`} description={`${dest.name} â€” ${dest.tagline} Destination management by One Event Greece & Cyprus.`}>
   <section class="d-hero">
     <div class="d-hero-media" data-parallax="16">
-      <img src={dest.image} alt={`${dest.name} — One Event destination`} fetchpriority="high" />
+      <img src={dest.image} alt={`${dest.name} â€” One Event destination`} fetchpriority="high" />
     </div>
     <div class="d-hero-scrim"></div>
     <div class="wrap d-hero-content">
-      <a class="back-link" href="/destinations/" data-reveal>← All destinations</a>
+      <a class="back-link" href="/destinations/" data-reveal>â† All destinations</a>
       <h1 class="display-xl d-title">{dest.name}</h1>
       <p class="d-tagline" data-split>{dest.tagline}</p>
     </div>
@@ -44,13 +44,13 @@ const next = destinations[(index + 1) % destinations.length];
   <section class="d-cta">
     <div class="wrap d-cta-inner">
       <h2 class="display-md" data-split>Host your event in {dest.name}</h2>
-      <a class="btn" href="/get-in-touch/" data-magnetic data-reveal>Get in touch <span class="arrow">→</span></a>
+      <a class="btn" href="/get-in-touch/" data-magnetic data-reveal>Get in touch <span class="arrow">â†’</span></a>
     </div>
   </section>
 
   <nav class="d-nav" aria-label="More destinations">
-    <a href={`/destinations/${prev.slug}/`} class="d-nav-link">← {prev.name}</a>
-    <a href={`/destinations/${next.slug}/`} class="d-nav-link">{next.name} →</a>
+    <a href={`/destinations/${prev.slug}/`} class="d-nav-link">â† {prev.name}</a>
+    <a href={`/destinations/${next.slug}/`} class="d-nav-link">{next.name} â†’</a>
   </nav>
 
   <style>
@@ -77,7 +77,7 @@ const next = destinations[(index + 1) % destinations.length];
       position: absolute;
       inset: 0;
       z-index: -1;
-      background: linear-gradient(180deg, rgba(10,14,18,.5), rgba(10,14,18,.2) 40%, rgba(10,14,18,.94));
+      background: linear-gradient(180deg, rgba(14,16,19,.5), rgba(14,16,19,.2) 40%, rgba(14,16,19,.94));
     }
 
     .d-hero-content {
@@ -95,7 +95,7 @@ const next = destinations[(index + 1) % destinations.length];
     }
 
     .back-link:hover {
-      color: var(--gold-bright);
+      color: var(--accent-bright);
     }
 
     .d-title {
@@ -107,7 +107,7 @@ const next = destinations[(index + 1) % destinations.length];
       font-family: var(--font-display);
       font-style: italic;
       font-size: clamp(1.2rem, 2.4vw, 1.7rem);
-      color: var(--gold-bright);
+      color: var(--accent-bright);
       margin-top: 1rem;
     }
 
@@ -130,7 +130,7 @@ const next = destinations[(index + 1) % destinations.length];
     }
 
     .hl-card:hover {
-      border-color: var(--gold);
+      border-color: var(--accent);
       transform: translateY(-6px);
       background: var(--sea);
     }
@@ -147,7 +147,7 @@ const next = destinations[(index + 1) % destinations.length];
 
     .d-cta {
       background:
-        radial-gradient(60% 90% at 50% 100%, rgba(200,162,75,.14), transparent 70%),
+        radial-gradient(60% 90% at 50% 100%, rgba(253,154,107,.14), transparent 70%),
         var(--sea);
       border-block: 1px solid var(--line);
       padding-block: clamp(4rem, 9vw, 7rem);
@@ -184,7 +184,7 @@ const next = destinations[(index + 1) % destinations.length];
     }
 
     .d-nav-link:hover {
-      color: var(--gold-bright);
+      color: var(--accent-bright);
     }
   </style>
 </BaseLayout>

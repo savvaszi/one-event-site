@@ -1,16 +1,16 @@
----
+﻿---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { contacts, offices } from '../data/site.js';
 
 const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.jpg';
 ---
 
-<BaseLayout title="Get in Touch | One Event" description="Contact One Event Greece & Cyprus — Athens and Nicosia offices.">
+<BaseLayout title="Get in Touch | One Event" description="Contact One Event Greece & Cyprus â€” Athens and Nicosia offices.">
   <section class="c-hero">
     <div class="wrap c-grid">
       <div>
         <p class="eyebrow">Greece &amp; Cyprus Hub</p>
-        <h1 class="display-lg" data-split>Let’s talk about<br />your <em>next event</em></h1>
+        <h1 class="display-lg" data-split>Letâ€™s talk about<br />your <em>next event</em></h1>
 
         {contacts.map((person) => (
           <article class="contact-card" data-reveal>
@@ -24,7 +24,7 @@ const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.
         ))}
       </div>
       <figure class="media-mask c-photo" data-reveal>
-        <img src={heroImage} alt="One Event — get in touch" loading="lazy" />
+        <img src={heroImage} alt="One Event â€” get in touch" loading="lazy" />
       </figure>
     </div>
   </section>
@@ -44,14 +44,14 @@ const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.
     .c-hero {
       padding-block: clamp(10rem, 22vh, 14rem) clamp(3.5rem, 8vw, 6rem);
       background:
-        radial-gradient(55% 70% at 90% 5%, rgba(200,162,75,.12), transparent 65%),
+        radial-gradient(55% 70% at 90% 5%, rgba(253,154,107,.12), transparent 65%),
         var(--sea);
       border-bottom: 1px solid var(--line);
     }
 
     .c-hero em {
       font-style: italic;
-      color: var(--gold-bright);
+      color: var(--accent-bright);
     }
 
     .c-grid {
@@ -72,7 +72,7 @@ const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.
     }
 
     .role {
-      color: var(--gold-bright);
+      color: var(--accent-bright);
       font-size: 0.74rem;
       letter-spacing: 0.24em;
       text-transform: uppercase;
@@ -89,7 +89,7 @@ const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.
     }
 
     .contact-line:hover {
-      color: var(--gold-bright);
+      color: var(--accent-bright);
       transform: translateX(6px);
     }
 
@@ -127,7 +127,7 @@ const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.
     }
 
     .office-card:hover {
-      border-color: var(--gold);
+      border-color: var(--accent);
       transform: translateY(-5px);
     }
 

@@ -1,14 +1,14 @@
-:root {
-  --ink: #0a0e12;
-  --sea: #0e1620;
-  --sea-2: #131e2a;
-  --marble: #f2eee7;
-  --marble-dim: rgba(242, 238, 231, 0.62);
-  --marble-faint: rgba(242, 238, 231, 0.34);
-  --line: rgba(242, 238, 231, 0.14);
-  --gold: #c8a24b;
-  --gold-bright: #e3c476;
-  --sage: #5c6b5e;
+﻿:root {
+  --ink: #0e1013;
+  --sea: #161a20;
+  --sea-2: #20252c;
+  --marble: #f4f5f6;
+  --marble-dim: rgba(244, 245, 246, 0.62);
+  --marble-faint: rgba(244, 245, 246, 0.34);
+  --line: rgba(244, 245, 246, 0.14);
+  --accent: #7ebec5;
+  --accent-bright: #a6dbe1;
+  --accent-dim: #56707a;
 
   --font-display: 'Fraunces Variable', 'Georgia', serif;
   --font-body: 'Archivo Variable', 'Helvetica Neue', sans-serif;
@@ -59,12 +59,12 @@ a {
 }
 
 ::selection {
-  background: var(--gold);
+  background: var(--accent);
   color: var(--ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--accent);
   outline-offset: 4px;
 }
 
@@ -73,7 +73,7 @@ a {
   left: -100vw;
   top: 0;
   z-index: 200;
-  background: var(--gold);
+  background: var(--accent);
   color: var(--ink);
   padding: 0.75rem 1.25rem;
   font-weight: 600;
@@ -114,7 +114,7 @@ h3 {
   font-weight: 600;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--accent);
   margin-bottom: clamp(1rem, 2vw, 1.75rem);
 }
 
@@ -133,9 +133,9 @@ section {
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 2.1rem;
-  border: 1px solid var(--gold);
+  border: 1px solid var(--accent);
   border-radius: 99px;
-  color: var(--gold-bright);
+  color: var(--accent-bright);
   font-family: var(--font-body);
   font-size: 0.82rem;
   font-weight: 600;
@@ -151,7 +151,7 @@ section {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--gold);
+  background: var(--accent);
   transform: translateY(101%);
   transition: transform 0.55s var(--ease-out);
   border-radius: inherit;

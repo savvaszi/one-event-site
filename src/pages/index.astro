@@ -1,4 +1,4 @@
----
+﻿---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { destinations, manifesto, references } from '../data/site.js';
 
@@ -12,7 +12,7 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
       <div class="hero-scrim"></div>
     </div>
     <div class="hero-content wrap">
-      <p class="eyebrow hero-eyebrow">Destination Management · Greece &amp; Cyprus</p>
+      <p class="eyebrow hero-eyebrow">Destination Management Â· Greece &amp; Cyprus</p>
       <h1 class="display-xl hero-title" data-hero-line>We create moments<br />that <em>inspire</em></h1>
       <a class="hero-scroll" href="#manifesto" aria-label="Scroll down">Scroll<span class="hero-scroll-bar"></span></a>
     </div>
@@ -41,10 +41,10 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
         </p>
         <p data-reveal>
           A profound insight into the local and international corporate event business led us to
-          build an efficient and flexible set-up that meets every expectation — a very personal
+          build an efficient and flexible set-up that meets every expectation â€” a very personal
           approach, flexible business models and long-term partnerships with our key customers.
         </p>
-        <a href="/the-agency/" class="btn" data-magnetic data-reveal>Read more about us <span class="arrow">→</span></a>
+        <a href="/the-agency/" class="btn" data-magnetic data-reveal>Read more about us <span class="arrow">â†’</span></a>
       </div>
     </div>
   </section>
@@ -52,8 +52,8 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
   <section class="numbers" aria-label="One Event in numbers">
     <div class="wrap numbers-grid">
       <div class="number-card" data-reveal>
-        <span class="number-value infinity">∞</span>
-        <span class="number-label">Accumulated years of experience — unlimited ideas for your event</span>
+        <span class="number-value infinity">âˆž</span>
+        <span class="number-label">Accumulated years of experience â€” unlimited ideas for your event</span>
       </div>
       <div class="number-card" data-reveal>
         <span class="number-value"><span data-count="120">0</span>+</span>
@@ -75,10 +75,10 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
       <div class="hscroll-track" data-hscroll-track>
         {destinations.map((d) => (
           <a class="dest-card media-mask" href={`/destinations/${d.slug}/`} data-magnetic>
-            <img src={d.image} alt={`${d.name} — One Event destination`} loading="lazy" />
+            <img src={d.image} alt={`${d.name} â€” One Event destination`} loading="lazy" />
             <span class="dest-name">{d.name}</span>
             <span class="dest-tag">{d.tagline}</span>
-            <span class="dest-cta">Explore →</span>
+            <span class="dest-cta">Explore â†’</span>
           </a>
         ))}
       </div>
@@ -88,17 +88,17 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
   <section class="refs" aria-label="Selected references">
     <div class="wrap refs-head">
       <p class="eyebrow">Selected cases</p>
-      <h2 class="display-md" data-split>Trusted by the world’s finest brands</h2>
+      <h2 class="display-md" data-split>Trusted by the worldâ€™s finest brands</h2>
     </div>
     <div class="marquee" aria-hidden="true">
       <div class="marquee-track">
         {[...references.slice(0, 12), ...references.slice(0, 12)].map((r) => (
-          <span class="marquee-item">{r.title}<i>·</i></span>
+          <span class="marquee-item">{r.title}<i>Â·</i></span>
         ))}
       </div>
     </div>
     <div class="wrap refs-cta" data-reveal>
-      <a class="btn" href="/references/" data-magnetic>All references <span class="arrow">→</span></a>
+      <a class="btn" href="/references/" data-magnetic>All references <span class="arrow">â†’</span></a>
     </div>
   </section>
 
@@ -131,7 +131,7 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
     .hero-scrim {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(10,14,18,.55) 0%, rgba(10,14,18,.15) 45%, rgba(10,14,18,.92) 100%);
+      background: linear-gradient(180deg, rgba(14,16,19,.55) 0%, rgba(14,16,19,.15) 45%, rgba(14,16,19,.92) 100%);
     }
 
     .hero-content {
@@ -142,7 +142,7 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
 
     .hero-title em {
       font-style: italic;
-      color: var(--gold-bright);
+      color: var(--accent-bright);
     }
 
     .hero-scroll {
@@ -168,7 +168,7 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
       content: '';
       position: absolute;
       inset: 0;
-      background: var(--gold);
+      background: var(--accent);
       animation: sweep 2.4s var(--ease-out) infinite;
     }
 
@@ -246,14 +246,14 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
       display: grid;
       gap: 0.8rem;
       padding-top: 1.5rem;
-      border-top: 1px solid var(--gold);
+      border-top: 1px solid var(--accent);
     }
 
     .number-value {
       font-family: var(--font-display);
       font-size: clamp(3.4rem, 7vw, 6rem);
       line-height: 1;
-      color: var(--gold-bright);
+      color: var(--accent-bright);
     }
 
     .number-label {
@@ -314,7 +314,7 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
       position: absolute;
       inset: 0;
       z-index: -1;
-      background: linear-gradient(180deg, transparent 40%, rgba(10,14,18,.88));
+      background: linear-gradient(180deg, transparent 40%, rgba(14,16,19,.88));
     }
 
     .dest-name {
@@ -332,7 +332,7 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
       font-size: 0.72rem;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--gold-bright);
+      color: var(--accent-bright);
       opacity: 0;
       transform: translateY(8px);
       transition: opacity .45s var(--ease-out), transform .45s var(--ease-out);
@@ -379,7 +379,7 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
     }
 
     .marquee-item i {
-      color: var(--gold);
+      color: var(--accent);
       font-style: normal;
       padding-left: 2.8rem;
     }
