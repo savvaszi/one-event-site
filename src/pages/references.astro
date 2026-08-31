@@ -1,11 +1,11 @@
-﻿---
+---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { references, gallery } from '../data/site.js';
 
 const featured = references.slice(0, 8);
 ---
 
-<BaseLayout title="References | One Event" description="Highlighted cases by One Event Greece & Cyprus â€” conferences, incentives and gala events for the world's finest brands.">
+<BaseLayout title="References | One Event" description="Highlighted cases by One Event Greece & Cyprus — conferences, incentives and gala events for the world's finest brands.">
   <section class="page-hero">
     <div class="wrap">
       <p class="eyebrow">References</p>
@@ -19,7 +19,7 @@ const featured = references.slice(0, 8);
         <a class="case-row" href={r.video} target="_blank" rel="noopener" data-reveal>
           <span class="case-title">{r.title}</span>
           <span class="case-meta">{r.meta}</span>
-          <span class="case-play" aria-hidden="true">â–¶ Watch</span>
+          <span class="case-play" aria-hidden="true">▶ Watch</span>
         </a>
       ))}
     </div>
@@ -47,7 +47,7 @@ const featured = references.slice(0, 8);
     <div class="marquee" aria-hidden="true">
       <div class="marquee-track">
         {[...references.slice(8), ...references.slice(8)].map((r) => (
-          <span class="marquee-item">{r.title}<i>Â·</i></span>
+          <span class="marquee-item">{r.title}<i>·</i></span>
         ))}
       </div>
     </div>

@@ -1,16 +1,16 @@
-﻿---
+---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { contacts, offices } from '../data/site.js';
 
 const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.jpg';
 ---
 
-<BaseLayout title="Get in Touch | One Event" description="Contact One Event Greece & Cyprus â€” Athens and Nicosia offices.">
+<BaseLayout title="Get in Touch | One Event" description="Contact One Event Greece & Cyprus — Athens and Nicosia offices.">
   <section class="c-hero">
     <div class="wrap c-grid">
       <div>
         <p class="eyebrow">Greece &amp; Cyprus Hub</p>
-        <h1 class="display-lg" data-split>Letâ€™s talk about<br />your <em>next event</em></h1>
+        <h1 class="display-lg" data-split>Let’s talk about<br />your <em>next event</em></h1>
 
         {contacts.map((person) => (
           <article class="contact-card" data-reveal>
@@ -24,7 +24,7 @@ const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.
         ))}
       </div>
       <figure class="media-mask c-photo" data-reveal>
-        <img src={heroImage} alt="One Event â€” get in touch" loading="lazy" />
+        <img src={heroImage} alt="One Event — get in touch" loading="lazy" />
       </figure>
     </div>
   </section>

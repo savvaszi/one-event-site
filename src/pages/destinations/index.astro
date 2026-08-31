@@ -1,17 +1,17 @@
-﻿---
+---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { destinations } from '../../data/site.js';
 
 const globalNetwork = 'https://one-event.net/';
 ---
 
-<BaseLayout title="Our Destinations | One Event" description="Explore our destinations in Greece and Cyprus â€” Athens, Crete, Cyprus, Mykonos, Peloponnese and Santorini.">
+<BaseLayout title="Our Destinations | One Event" description="Explore our destinations in Greece and Cyprus — Athens, Crete, Cyprus, Mykonos, Peloponnese and Santorini.">
   <section class="page-hero">
     <div class="wrap">
       <p class="eyebrow">Our destinations</p>
       <h1 class="display-lg" data-split>Anywhere. Anytime.<br />Plus the entire <em>world</em></h1>
       <p class="page-lede" data-reveal>
-        We provide our services anywhere and at anytime â€” starting from our home destinations in
+        We provide our services anywhere and at anytime — starting from our home destinations in
         Greece &amp; Cyprus.
       </p>
     </div>
@@ -21,7 +21,7 @@ const globalNetwork = 'https://one-event.net/';
     <div class="wrap dest-grid">
       {destinations.map((d) => (
         <a class="dest-card media-mask" href={`/destinations/${d.slug}/`} data-reveal>
-          <img src={d.image} alt={`${d.name} â€” One Event destination`} loading="lazy" />
+          <img src={d.image} alt={`${d.name} — One Event destination`} loading="lazy" />
           <div class="dest-meta">
             <h2 class="dest-name">{d.name}</h2>
             <p class="dest-tag">{d.tagline}</p>
@@ -34,9 +34,9 @@ const globalNetwork = 'https://one-event.net/';
   <section class="network">
     <div class="wrap network-inner">
       <h2 class="display-md" data-split>Beyond home shores</h2>
-      <p data-reveal>Through One Eventâ€™s global network we deliver the same standard worldwide.</p>
+      <p data-reveal>Through One Event’s global network we deliver the same standard worldwide.</p>
       <a class="btn" href={globalNetwork} target="_blank" rel="noopener" data-magnetic data-reveal>
-        Explore our global network <span class="arrow">â†’</span>
+        Explore our global network <span class="arrow">→</span>
       </a>
     </div>
   </section>
