@@ -41,9 +41,11 @@ const year = new Date().getFullYear();
     </div>
   </div>
 
-  <div class="footer-base wrap">
-    <p>© {year} One Event Greece &amp; Cyprus — All rights reserved</p>
-    <a href="/privacy-policy/">Privacy Policy</a>
+  <div class="footer-base-band">
+    <div class="footer-base wrap">
+      <p>© {year} One Event Greece &amp; Cyprus — All rights reserved</p>
+      <a href="/privacy-policy/">Privacy Policy</a>
+    </div>
   </div>
 </footer>
 
@@ -136,13 +138,17 @@ const year = new Date().getFullYear();
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: space-between;
-    border-top: 1px solid var(--line);
     padding-block: 1.75rem;
     font-size: 0.78rem;
-    color: var(--marble-faint);
+    color: #000;
+  }
+
+  .footer-base-band {
+    background: #48a77e;
   }
 
   .footer-base a {
+    color: #000;
     text-decoration: underline;
     text-underline-offset: 4px;
   }
