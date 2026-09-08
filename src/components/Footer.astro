@@ -49,7 +49,16 @@ const year = new Date().getFullYear();
 
 <style>
   .site-footer {
-    background: var(--accent);
+    /* Dark closing band: scope the palette tokens locally so every
+       text/border rule in the footer resolves light-on-dark. */
+    --marble: #f4f6f5;
+    --marble-dim: rgba(244, 246, 245, 0.68);
+    --marble-faint: rgba(244, 246, 245, 0.55);
+    --line: rgba(244, 246, 245, 0.14);
+    --accent: #5cc296;
+    background:
+      radial-gradient(70% 120% at 50% 0%, rgba(72, 167, 126, 0.14), transparent 55%),
+      #2b2d34;
     border-top: 1px solid var(--line);
     padding-top: clamp(4rem, 9vw, 8rem);
   }
