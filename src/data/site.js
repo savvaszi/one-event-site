@@ -5,6 +5,7 @@ export const nav = [
   { label: 'The Agency', href: '/the-agency/' },
   { label: 'Destinations', href: '/destinations/' },
   { label: 'References', href: '/references/' },
+  { label: 'Projects', href: '/projects/' },
   { label: 'Get in touch', href: '/get-in-touch/' },
 ];
 
@@ -117,7 +118,7 @@ export const team = [
 const yt = (id) => `https://www.youtube.com/watch?v=${id}`;
 
 export const references = [
-  { title: 'ISST Schema Conference Thessaloniki', meta: 'Thessaloniki, Greece · 2026', video: yt('dyRbEd9IuBw') },
+  { title: 'ISST Schema Conference Thessaloniki', meta: 'Thessaloniki, Greece · 2026', video: yt('dyRbEd9IuBw'), project: 'isst-conference' },
   { title: 'Corfu by One Event', meta: 'Corfu, Greece · 2025', video: yt('bu-QQIMjU4Q') },
   { title: 'Customised Awards out of Dionysus Marbles', meta: 'Athens, Greece · 2025', video: yt('QBk5doCJvB0') },
   { title: 'Costa Navarino Event', meta: 'Peloponnese, Greece · 2025 · 100 guests', video: yt('D94KntYywCQ') },
@@ -132,7 +133,7 @@ export const references = [
   { title: 'European Brokers Meeting', meta: 'Limassol, Cyprus · 2024 · 850 guests', video: yt('K3rE-RNf5lg') },
   { title: 'PwC Football Tournament', meta: 'Cyprus · 2024 · 600 guests', video: yt('1vVf4M4YrR8') },
   { title: 'Lawyer Company Meeting & Leisure', meta: 'Elounda, Crete · 180 guests', video: yt('LvU_njT-ae8') },
-  { title: 'DIOR Staff Meeting & Leisure', meta: 'Cyprus · 2024 · 450 guests', video: yt('1w9qPn6tciQ') },
+  { title: 'DIOR Staff Meeting & Leisure', meta: 'Cyprus · 2024 · 450 guests', video: yt('1w9qPn6tciQ'), project: 'dior-cyprus' },
   { title: 'InMode Summit', meta: 'Cyprus · 2023 · 450 guests', video: yt('YQfgwNiGMn0') },
   { title: 'Beach Olympics', meta: 'Greece · 2023', video: yt('_FAc9HodLtU') },
   { title: 'Traditional Village Theme Night', meta: 'Cyprus · 2023 · Oil & Gas · 150 guests', video: yt('86mCUzibBLo') },

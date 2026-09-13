@@ -2,7 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { references, gallery } from '../data/site.js';
 
-const featured = references.slice(0, 8);
+// Project-linked cases first, then the rest, capped at eight rows.
+const featured = [
+  ...references.filter((r) => r.project),
+  ...references.filter((r) => !r.project),
+].slice(0, 8);
 ---
 
 <BaseLayout title="References | One Event" description="Highlighted cases by One Event Greece & Cyprus — conferences, incentives and gala events for the world's finest brands.">
@@ -16,11 +20,18 @@ const featured = references.slice(0, 8);
   <section class="cases" aria-label="Highlighted cases">
     <div class="wrap case-list">
       {featured.map((r) => (
-        <a class="case-row" href={r.video} target="_blank" rel="noopener" data-reveal>
-          <span class="case-title">{r.title}</span>
+        <div class="case-row" data-reveal>
+          {r.project ? (
+            <a class="case-title" href={`/projects/${r.project}/`}>{r.title}</a>
+          ) : (
+            <span class="case-title">{r.title}</span>
+          )}
           <span class="case-meta">{r.meta}</span>
-          <span class="case-play" aria-hidden="true">▶ Watch</span>
-        </a>
+          {r.video && (
+            <a class="case-play" href={r.video} target="_blank" rel="noopener" aria-label={`Watch the film: ${r.title}`}>▶ Watch</a>
+          )}
+          {r.project && <a class="case-project" href={`/projects/${r.project}/`}>Photos →</a>}
+        </div>
       ))}
     </div>
   </section>
@@ -73,7 +84,7 @@ const featured = references.slice(0, 8);
 
     .case-row {
       display: grid;
-      grid-template-columns: 1fr auto auto;
+      grid-template-columns: 1fr auto auto auto;
       align-items: baseline;
       gap: clamp(1rem, 3vw, 2.5rem);
       padding-block: clamp(1.1rem, 2.4vw, 1.6rem);
@@ -120,6 +131,19 @@ const featured = references.slice(0, 8);
     .case-row:hover .case-play {
       opacity: 1;
       transform: none;
+    }
+
+    .case-project {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--link);
+      white-space: nowrap;
+      transition: color .35s var(--ease-out);
+    }
+
+    .case-project:hover {
+      color: var(--accent);
     }
 
     .moments {
