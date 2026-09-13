@@ -128,10 +128,10 @@ export const references = [
   { title: 'Traditional Theme Night', meta: 'Athens, Greece · 2025 · 400 guests', video: yt('0DXGBNhwpaY') },
   { title: 'Gala Dinner Zappeio', meta: 'Athens, Greece · 2025 · 400 guests', video: yt('sjmcW-WO9aA') },
   { title: 'Ancient Olympic Games', meta: 'Athens, Greece · 2025 · 400 guests', video: yt('iwznBXI1N7Q') },
-  { title: 'TE Connectivity Highlights', meta: 'Athens, Greece · 2025 · 400 guests', video: yt('1_BHAS8sO_I') },
+  { title: 'TE Connectivity Highlights', meta: 'Athens, Greece · 2025 · 400 guests', video: yt('1_BHAS8sO_I'), project: 'te-connectivity' },
   { title: 'Lefkara Village Experience', meta: 'Lefkara, Cyprus · 2025 · 200 guests', video: yt('A6tn9yOd3A0') },
   { title: 'European Brokers Meeting', meta: 'Limassol, Cyprus · 2024 · 850 guests', video: yt('K3rE-RNf5lg') },
-  { title: 'PwC Football Tournament', meta: 'Cyprus · 2024 · 600 guests', video: yt('1vVf4M4YrR8') },
+  { title: 'PwC Football Tournament', meta: 'Cyprus · 2024 · 600 guests', video: yt('1vVf4M4YrR8'), project: 'pwc-football' },
   { title: 'Lawyer Company Meeting & Leisure', meta: 'Elounda, Crete · 180 guests', video: yt('LvU_njT-ae8') },
   { title: 'DIOR Staff Meeting & Leisure', meta: 'Cyprus · 2024 · 450 guests', video: yt('1w9qPn6tciQ'), project: 'dior-cyprus' },
   { title: 'InMode Summit', meta: 'Cyprus · 2023 · 450 guests', video: yt('YQfgwNiGMn0') },
@@ -140,7 +140,7 @@ export const references = [
   { title: 'Oil & Gas Summit STEM', meta: 'Cyprus · 2023 · 200 guests', video: yt('8PODsxlNB4Y') },
   { title: 'Viatris Conference', meta: 'Limassol, Cyprus · 2023 · 160 guests', video: yt('i6UWYWL48Ss') },
   { title: 'Merck Meeting & Leisure', meta: 'Cyprus · 2023 · 180 guests', video: yt('HLb40ad1XXo') },
-  { title: 'Optibus Global Week', meta: 'Athens, Greece · 2022 · 450 guests', video: yt('mJBC29VSA24') },
+  { title: 'Optibus Global Week', meta: 'Athens, Greece · 2022 · 450 guests', video: yt('mJBC29VSA24'), project: 'optibus' },
   { title: 'APGAR Team Building & Incentive', meta: 'Paphos, Cyprus · 2022 · 170 guests', video: yt('G5I5_LJgj3c') },
 ];
 
