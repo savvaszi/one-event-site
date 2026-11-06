@@ -5,32 +5,32 @@ const { locale }: { locale: Locale } = Astro.props;
 const copy = {
   en: {
     preferences: 'Cookie preferences', title: 'Cookies',
-    intro: 'We use cookies to give you the most relevant experience by remembering your preferences and repeat visits.',
-    privacy: 'Do not sell my personal information', settings: 'Settings', reject: 'Reject all', accept: 'Accept',
+    intro: 'We use essential cookies to run this site. With your permission, Google Analytics measures visits and how people use the site.',
+    privacy: 'Privacy policy', settings: 'Settings', reject: 'Reject all', accept: 'Accept',
     back: 'Back', save: 'Save preferences',
     necessary: ['Necessary', 'Essential for core functionality and security. Always enabled.'],
     functional: ['Functional', 'Enhanced features such as social media sharing.'],
-    performance: ['Performance & Analytics', 'Helps us understand how visitors use the site.'],
+    performance: ['Performance & Analytics', 'Allows Google Analytics to measure visits and website use.'],
     advertisement: ['Advertisement', 'Used to deliver relevant ads and campaigns.'],
   },
   el: {
     preferences: 'Προτιμήσεις cookies', title: 'Cookies',
-    intro: 'Χρησιμοποιούμε cookies για να θυμόμαστε τις προτιμήσεις σας και να βελτιώνουμε την εμπειρία σας σε επόμενες επισκέψεις.',
-    privacy: 'Μην πουλάτε τα προσωπικά μου στοιχεία', settings: 'Ρυθμίσεις', reject: 'Απόρριψη όλων', accept: 'Αποδοχή',
+    intro: 'Χρησιμοποιούμε απαραίτητα cookies για τη λειτουργία του ιστοτόπου. Με τη συγκατάθεσή σας, το Google Analytics μετρά τις επισκέψεις και τη χρήση του ιστοτόπου.',
+    privacy: 'Πολιτική απορρήτου', settings: 'Ρυθμίσεις', reject: 'Απόρριψη όλων', accept: 'Αποδοχή',
     back: 'Πίσω', save: 'Αποθήκευση προτιμήσεων',
     necessary: ['Απαραίτητα', 'Απαραίτητα για τη λειτουργία και την ασφάλεια του ιστοτόπου. Είναι πάντα ενεργά.'],
     functional: ['Λειτουργικά', 'Επιτρέπουν πρόσθετες λειτουργίες, όπως η κοινοποίηση στα κοινωνικά δίκτυα.'],
-    performance: ['Απόδοση και ανάλυση', 'Μας βοηθούν να κατανοούμε πώς οι επισκέπτες χρησιμοποιούν τον ιστότοπο.'],
+    performance: ['Απόδοση και ανάλυση', 'Επιτρέπει στο Google Analytics να μετρά τις επισκέψεις και τη χρήση του ιστοτόπου.'],
     advertisement: ['Διαφήμιση', 'Χρησιμοποιούνται για την προβολή σχετικών διαφημίσεων και καμπανιών.'],
   },
   es: {
     preferences: 'Preferencias de cookies', title: 'Cookies',
-    intro: 'Usamos cookies para recordar tus preferencias y mejorar tu experiencia en futuras visitas.',
-    privacy: 'No vender mi información personal', settings: 'Configuración', reject: 'Rechazar todas', accept: 'Aceptar',
+    intro: 'Usamos cookies esenciales para el funcionamiento del sitio. Con tu permiso, Google Analytics mide las visitas y el uso del sitio.',
+    privacy: 'Política de privacidad', settings: 'Configuración', reject: 'Rechazar todas', accept: 'Aceptar',
     back: 'Volver', save: 'Guardar preferencias',
     necessary: ['Necesarias', 'Esenciales para el funcionamiento y la seguridad del sitio. Siempre activas.'],
     functional: ['Funcionales', 'Habilitan funciones adicionales, como compartir contenido en redes sociales.'],
-    performance: ['Rendimiento y analítica', 'Nos ayudan a entender cómo los visitantes utilizan el sitio.'],
+    performance: ['Rendimiento y analítica', 'Permite a Google Analytics medir las visitas y el uso del sitio.'],
     advertisement: ['Publicidad', 'Se utilizan para mostrar anuncios y campañas relevantes.'],
   },
 }[locale];
@@ -85,16 +85,24 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
 </div>
 
 <script>
+  import { setGoogleAnalyticsConsent } from '../data/googleAnalytics';
+
+  const ANALYTICS_NOTICE_VERSION = 1;
   const KEY = 'oe-cookie-consent';
   const root = document.getElementById('cookie-consent');
+  let unpersistedChoice: Record<string, unknown> | undefined;
 
   const store = (): Record<string, unknown> => {
+    if (unpersistedChoice) return unpersistedChoice;
     try {
-      return JSON.parse(localStorage.getItem(KEY) || '{}');
+      return JSON.parse(localStorage.getItem(KEY) || '{}') ?? {};
     } catch {
       return {};
     }
   };
+
+  const hasAnalyticsConsent = (saved: Record<string, unknown>) =>
+    saved.performance === true && saved.analyticsNotice === ANALYTICS_NOTICE_VERSION;
 
   const views = root!.querySelectorAll<HTMLElement>('.cc-view');
   const setState = (state: 'banner' | 'settings') => {
@@ -110,7 +118,14 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
     setTimeout(() => (root!.hidden = true), 500);
   };
   const persist = (choices: Record<string, boolean>) => {
-    localStorage.setItem(KEY, JSON.stringify({ ...choices, ts: new Date().toISOString() }));
+    const saved = { ...choices, analyticsNotice: ANALYTICS_NOTICE_VERSION, ts: new Date().toISOString() };
+    try {
+      localStorage.setItem(KEY, JSON.stringify(saved));
+      unpersistedChoice = undefined;
+    } catch {
+      unpersistedChoice = saved;
+    }
+    setGoogleAnalyticsConsent(choices.performance === true);
     hide();
   };
 
@@ -139,16 +154,25 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
   document.addEventListener('click', (e) => {
     if ((e.target as HTMLElement).closest('[data-open-cookies]')) {
       const saved = store();
-      Object.entries(saved).forEach(([k, v]) => {
-        const box = root!.querySelector<HTMLInputElement>(`input[data-cat="${k}"]`);
-        if (box && !box.disabled) box.checked = Boolean(v);
+      root!.querySelectorAll<HTMLInputElement>('input[data-cat]:enabled').forEach((box) => {
+        const category = box.dataset.cat!;
+        box.checked = category === 'performance' ? hasAnalyticsConsent(saved) : saved[category] === true;
       });
       setState('settings');
       show();
     }
   });
 
-  if (!store().ts) show();
+  window.addEventListener('storage', (event) => {
+    if (event.key === KEY || event.key === null) {
+      unpersistedChoice = undefined;
+      setGoogleAnalyticsConsent(hasAnalyticsConsent(store()));
+    }
+  });
+
+  const saved = store();
+  setGoogleAnalyticsConsent(hasAnalyticsConsent(saved));
+  if (!saved.ts || (saved.performance === true && !hasAnalyticsConsent(saved))) show();
 </script>
 
 <style>
