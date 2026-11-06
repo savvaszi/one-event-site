@@ -8,6 +8,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 LOCALES = {"el": "Greek", "es": "Spanish"}
+TITLE_SUFFIX = " | One Event"
 BLOCKS = set("""
     address article aside blockquote button caption dd details dialog div dl dt
     fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 header label legend
@@ -244,13 +245,19 @@ def main():
 
     changes = collect_changes(args.before, args.after)
     translations = {}
-    originals = [entry[1] for entry in changes.entries if should_translate(entry)]
+    originals = []
+    suffixes = []
+    for field, source in changes.entries:
+        if should_translate((field, source)):
+            suffix = TITLE_SUFFIX if field == "Page title" and source.endswith(TITLE_SUFFIX) else ""
+            originals.append(source.removesuffix(suffix))
+            suffixes.append(suffix)
     if originals:
         from translation_engine import translate
-        translations = {
-            locale: translate(originals, locale, args.model_cache)
-            for locale in LOCALES
-        }
+
+        for locale in LOCALES:
+            drafts = translate(originals, locale, args.model_cache)
+            translations[locale] = [draft + suffix for draft, suffix in zip(drafts, suffixes)]
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(render_report(changes, translations), encoding="utf-8")
