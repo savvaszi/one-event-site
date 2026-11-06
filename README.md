@@ -42,3 +42,27 @@ Auto-deploy triggers on push to `main`. Verify at https://one.savvaszinonos.work
 - Images are hotlinked from the original WordPress site (`one-event.gr/wp-content/...`)
 - Content data lives in `src/data/site.js`
 - `prefers-reduced-motion` disables all GSAP/Lenis/marquee motion
+
+## Translation drafts for content changes
+
+English is the source language at `/`. Greek and Spanish use `/el/` and
+`/es/`. Open a pull request for new or changed English content before
+publishing. GitHub Actions compares the two site builds and adds a
+**Translation drafts** check. Download its review document from the check's
+summary for the affected page URLs, English text, Greek and Spanish drafts,
+and any missing language pages. The check reads the generated HTML. Text
+created only in browser scripts needs a separate review.
+
+Review names, figures, links and wording, then add the approved copy to the
+matching language files in the same pull request. Most pages use
+`src/data/localized*.js` and `src/pages/[locale]/[...path].astro`. Blog posts
+keep their language versions in `src/data/blog-*.ts`. For a new page, add
+both localized routes and update the public sitemap when publishing.
+Direct pushes to `main` skip the pull request check.
+
+The workflow uses the [Argos model packages](https://github.com/argosopentech/argospm-index)
+for English to Greek and Spanish. Both models run on the GitHub runner and
+need no translation service credentials. The Greek package derives from
+[Jörg Tiedemann and Santhosh Thottingal's OPUS-MT model](https://aclanthology.org/2020.eamt-1.61/)
+under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The Spanish
+package is distributed under [Argos's MIT/CC0 terms](https://github.com/argosopentech/argos-translate/issues/533).
