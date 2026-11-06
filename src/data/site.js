@@ -144,7 +144,7 @@ export const destinations = [
   {
     slug: 'thessaloniki',
     name: 'Thessaloniki',
-    tagline: 'A northern Greek conference city with a waterfront built for exploring.',
+    tagline: 'Explore venues and group experiences with our team in Thessaloniki.',
     image: '/img/projects/isst-conference/img-0292.webp',
     imageAlt: 'The ISST Conference in Thessaloniki',
     project: 'isst-conference',
