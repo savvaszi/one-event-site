@@ -1,0 +1,312 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const venues = [
+  {
+    name: 'Megaron Athens International Conference Centre',
+    location: 'Athens',
+    capacity: '1,960 seats in the Christos Lambrakis Hall. Up to 6,000 delegates across the centre, depending on configuration.',
+    source: 'https://www.megaron.gr/en/international-conference-centre/',
+  },
+  {
+    name: 'InterContinental Athenaeum Athens',
+    location: 'Athens',
+    capacity: 'The Athenaeum Ballroom seats up to 1,500 theatre-style or 637 in cabaret layout.',
+    source: 'https://www.thisisathens.org/acvb/meeting-planner/hotels/athenaeum-intercontinental',
+  },
+  {
+    name: 'Grand Hyatt Athens',
+    location: 'Athens',
+    capacity: 'Caryatids Ballroom seats up to 1,000 theatre-style or 600 for a banquet.',
+    source: 'https://assets.hyatt.com/content/dam/hyatt/hyattdam/documents/2025/04/04/1055/Grand-Hyatt-Athens-Capacity-Charts-English.pdf',
+    sourceFormat: 'PDF',
+  },
+  {
+    name: 'House of Events, Costa Navarino',
+    location: 'Peloponnese',
+    capacity: 'Up to 1,700 participants theatre-style at the Navarino Dunes conference centre.',
+    source: 'https://www.costanavarino.com/conferences-meetings/',
+  },
+  {
+    name: 'Mikis Theodorakis Convention Centre, Creta Maris',
+    location: 'Crete',
+    capacity: 'Up to 5,000 delegates for the convention centre as a whole. Confirm the capacity of the specific room and layout.',
+    source: 'https://www.cretamaris.gr/about-us/about-creta-maris',
+  },
+  {
+    name: 'Sheraton Rhodes Resort',
+    location: 'Rhodes',
+    capacity: 'Imperial Ballroom A+B holds up to 650 theatre-style, 450 for a banquet or 900 for a reception.',
+    source: 'https://www.marriott.com/en-us/hotels/rhosi-sheraton-rhodes-resort/events/',
+  },
+];
+
+const faqs = [
+  {
+    question: 'What works well for an incentive trip in Greece?',
+    answer: 'For a short trip, pick one base and build around a shared experience: an evening overlooking the Acropolis, a sailing day in the Cyclades, or a meal among the olive groves in the Peloponnese. A longer programme gives you room for a city and an island without spending too much of the trip in transit.',
+  },
+  {
+    question: 'When should we hold a corporate event in Greece?',
+    answer: 'April to June and September to October are good starting points for outdoor programmes. July and August are busy, particularly on the islands, so allow more lead time for rooms and transport. Athens is a practical option for indoor events in winter. Check island flights, ferries and venue openings for your dates.',
+  },
+  {
+    question: 'How do we choose between Athens and an island?',
+    answer: 'Start with Athens if your programme needs a large plenary, several breakout rooms or simple arrivals from multiple countries. Choose an island if the main purpose is an incentive or retreat. Crete and Rhodes can also work for larger groups that want a resort with meeting facilities.',
+  },
+  {
+    question: 'Can Mykonos or Santorini work for a large group?',
+    answer: 'For a private dinner or an incentive built around one venue, 50–150 guests is a useful starting range. For 200 or more, check room blocks, coach access and where everyone can meet or dine together. Crete, Rhodes, Athens and the Peloponnese offer more options when keeping the whole group in one place is essential.',
+  },
+  {
+    question: 'How should we plan airport and ferry transfers?',
+    answer: 'Book group vehicles ahead, especially in summer. Share the arrival manifest and luggage requirements so transfers can be scheduled around each flight or sailing. For a programme split between Athens and an island, leave a buffer for delays and keep a backup plan for weather-dependent activities.',
+  },
+  {
+    question: 'Which Athens venues can seat more than 1,000 people?',
+    answer: 'Megaron lists 1,960 fixed seats in its Christos Lambrakis Hall. The Athenaeum Ballroom at InterContinental can seat up to 1,500 theatre-style. A stage, production desks and accessibility requirements can change the usable capacity.',
+  },
+  {
+    question: 'What does a destination management company handle locally?',
+    answer: 'A DMC can shortlist venues, coordinate site visits and suppliers, plan transport and activities, and manage delivery on site. The local team also checks practical details such as vehicle access, setup time and wet-weather alternatives before you commit to the programme.',
+  },
+  {
+    question: 'Can our company book directly with One Event?',
+    answer: 'Yes. Send your dates or date range, headcount, event goals and any requirements for accommodation, plenary space or activities. If you already have a budget range, include it so the first shortlist reflects what you can spend.',
+  },
+];
+---
+
+<BaseLayout
+  title="Greece Event Planning Guide | Venues, Islands & FAQs | One Event"
+  description="Compare Athens and the Greek islands for a corporate event. See published venue capacities, seasonal planning advice and answers to common questions."
+>
+  <section class="guide-hero" aria-labelledby="guide-title">
+    <div class="wrap">
+      <a class="text-link" href="/destinations/">← All destinations</a>
+      <p class="eyebrow">Greece planning guide</p>
+      <h1 class="display-lg" id="guide-title">Planning a corporate event in Greece</h1>
+      <p class="guide-lede">Start with what the group needs to do together. Compare Athens, the islands and resort options, then match your headcount and room layout to a venue.</p>
+      <nav class="guide-links" aria-label="In this guide">
+        <a href="#athens-or-islands">Athens or the islands</a>
+        <a href="#venues">Venue capacities</a>
+        <a href="#faq">FAQs</a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="guide-section" id="athens-or-islands" aria-labelledby="choice-title">
+    <div class="wrap">
+      <h2 class="display-md" id="choice-title">Athens or the islands?</h2>
+      <div class="guide-options">
+        <article>
+          <h3>Athens for a meeting-led programme</h3>
+          <p>Start in Athens for a congress, product launch or group arriving from several countries. You can put a plenary and breakouts under one roof, then host a separate dinner in the city or on the Athens Riviera.</p>
+          <a class="text-link" href="/destinations/athens/">Explore Athens →</a>
+        </article>
+        <article>
+          <h3>The islands for an incentive or retreat</h3>
+          <p>Choose Mykonos for time on the water, Santorini for a dinner above the caldera or Corfu for a smaller retreat. For a larger group that also needs meeting space, look at resort options in Crete or Rhodes.</p>
+          <ul class="destination-links">
+            <li><a href="/destinations/mykonos/">Mykonos</a></li>
+            <li><a href="/destinations/santorini/">Santorini</a></li>
+            <li><a href="/destinations/corfu/">Corfu</a></li>
+            <li><a href="/destinations/crete/">Crete</a></li>
+            <li><a href="/destinations/rhodes/">Rhodes</a></li>
+          </ul>
+        </article>
+        <article>
+          <h3>When the programme has two parts</h3>
+          <p>Hold the working sessions in Athens, then move to one island for the incentive. Set aside time for the transfer. If a second flight or ferry would take too much time, consider a Peloponnese resort with meeting space and activities from one base.</p>
+          <a class="text-link" href="/destinations/peloponnese/">Explore the Peloponnese →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="guide-section venue-section" id="venues" aria-labelledby="venue-title">
+    <div class="wrap">
+      <h2 class="display-md" id="venue-title">Compare venue capacities</h2>
+      <p class="section-lede">A theatre layout, a seated dinner and a standing reception use space differently. Use these published figures to shortlist venues, then confirm the usable capacity for your stage, room layout and dates.</p>
+      <table aria-labelledby="venue-title">
+        <thead>
+          <tr>
+            <th scope="col">Venue and location</th>
+            <th scope="col">Published capacity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {venues.map((venue) => (
+            <tr>
+              <th scope="row">
+                <a href={venue.source}>{venue.name}{venue.sourceFormat && ` (${venue.sourceFormat})`}</a>
+                <span>{venue.location}</span>
+              </th>
+              <td>{venue.capacity}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="guide-section" id="faq" aria-labelledby="faq-title">
+    <div class="wrap">
+      <h2 class="display-md" id="faq-title">Greece event planning FAQs</h2>
+      <div class="faq-list">
+        {faqs.map(({ question, answer }) => (
+          <details>
+            <summary>{question}</summary>
+            <p>{answer}</p>
+          </details>
+        ))}
+      </div>
+      <p class="source-note">For more destination examples, see the <a href="https://one-event.net/our-destinations/greece/">ONE Event network’s Greece page</a>.</p>
+    </div>
+  </section>
+
+  <section class="guide-section guide-cta" aria-labelledby="proposal-title">
+    <div class="wrap">
+      <h2 class="display-md" id="proposal-title">Get a shortlist for your group</h2>
+      <p>Share your dates, group size and the format you have in mind. We’ll help you narrow down the options.</p>
+      <a class="btn" href="/get-in-touch/#brief">Request a proposal <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <style>
+    .guide-hero {
+      padding-block: clamp(9rem, 18vw, 13rem) clamp(3rem, 7vw, 6rem);
+      background: radial-gradient(60% 100% at 10% 0%, var(--sea-2), transparent), var(--sea);
+    }
+
+    .guide-hero .eyebrow {
+      margin-block: 1.75rem 0.6rem;
+      color: #25604a;
+    }
+
+    .guide-hero h1 {
+      max-width: 17ch;
+    }
+
+    .guide-lede,
+    .section-lede,
+    .guide-cta p {
+      max-width: 65ch;
+      margin-top: 1rem;
+      color: var(--marble-dim);
+    }
+
+    .guide-links,
+    .destination-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 1.25rem;
+      margin-top: 1.25rem;
+      list-style: none;
+    }
+
+    .guide-links a,
+    .destination-links a,
+    .text-link,
+    table a,
+    .source-note a {
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+
+    .guide-section {
+      padding-block: clamp(3rem, 7vw, 6rem);
+      scroll-margin-top: 5rem;
+    }
+
+    .guide-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+      gap: 1rem;
+      margin-top: 1.75rem;
+    }
+
+    .guide-options article {
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      padding: clamp(1.2rem, 2.5vw, 2rem);
+    }
+
+    .guide-options h3 {
+      font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+    }
+
+    .guide-options p {
+      margin-block: 0.8rem;
+      color: var(--marble-dim);
+    }
+
+    .venue-section,
+    .guide-cta {
+      border-block: 1px solid var(--line);
+      background: var(--sea);
+    }
+
+    table {
+      width: 100%;
+      max-width: 64rem;
+      margin-top: 1.75rem;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    th,
+    td {
+      padding: 0.9rem clamp(0.6rem, 2vw, 1.25rem);
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+
+    thead th:first-child {
+      width: 42%;
+    }
+
+    thead {
+      background: var(--sea-2);
+    }
+
+    tbody th span {
+      display: block;
+      color: var(--marble-dim);
+      font-size: 0.9rem;
+      font-weight: 400;
+    }
+
+    .faq-list {
+      max-width: 52rem;
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--line);
+    }
+
+    details {
+      border-bottom: 1px solid var(--line);
+    }
+
+    summary {
+      padding: 1rem 0;
+      cursor: pointer;
+      font-weight: 650;
+    }
+
+    details p {
+      padding-bottom: 1rem;
+      color: var(--marble-dim);
+    }
+
+    .source-note {
+      margin-top: 1.5rem;
+      color: var(--marble-dim);
+    }
+
+    .guide-cta .btn {
+      margin-top: 1.5rem;
+    }
+  </style>
+</BaseLayout>
