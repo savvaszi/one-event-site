@@ -242,16 +242,23 @@ import { nav } from '../data/site.js';
     else header.removeAttribute('data-scrolled');
   }, { passive: true });
 
+  const closeMenu = () => {
+    document.documentElement.classList.remove('menu-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  };
+
   toggle.addEventListener('click', () => {
     const open = document.documentElement.classList.toggle('menu-open');
     toggle.setAttribute('aria-expanded', String(open));
     menu.hidden = false;
   });
 
-  menu.querySelectorAll('a').forEach((a) =>
-    a.addEventListener('click', () => {
-      document.documentElement.classList.remove('menu-open');
-      toggle.setAttribute('aria-expanded', 'false');
-    }),
-  );
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && document.documentElement.classList.contains('menu-open')) {
+      closeMenu();
+      toggle.focus();
+    }
+  });
+
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
 </script>

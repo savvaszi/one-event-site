@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { contacts, offices } from '../data/site.js';
 
-const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.jpg';
+const heroImage = '/img/get-in-touch.jpg';
 ---
 
 <BaseLayout title="Get in Touch | One Event" description="Contact One Event Greece & Cyprus — Athens and Nicosia offices.">
@@ -26,6 +26,38 @@ const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.
       <figure class="media-mask c-photo" data-reveal>
         <img src={heroImage} alt="One Event — get in touch" loading="lazy" />
       </figure>
+    </div>
+  </section>
+
+  <section class="brief" id="brief" aria-labelledby="brief-title">
+    <div class="wrap brief-grid">
+      <div class="brief-intro">
+        <p class="eyebrow">Your event brief</p>
+        <h2 class="display-md" id="brief-title" data-split>Tell us what you’re planning</h2>
+        <p>Share the essentials and prepare a structured email to our team. You can review everything before sending.</p>
+        <p class="brief-note">Nothing is stored or sent by this page. The button opens your email app; you can also email us directly above.</p>
+      </div>
+      <form class="brief-form" id="brief-form">
+        <div class="field-row">
+          <label>Name<input type="text" name="name" autocomplete="name" required /></label>
+          <label>Work email<input type="email" name="email" autocomplete="email" required /></label>
+        </div>
+        <div class="field-row">
+          <label>Preferred dates<input type="text" name="dates" placeholder="e.g. 12–15 May 2027" /></label>
+          <label>Destination
+            <select name="destination">
+              <option value="Not decided">Not decided</option>
+              <option>Athens</option><option>Crete</option><option>Cyprus</option>
+              <option>Mykonos</option><option>Peloponnese</option><option>Santorini</option>
+              <option>Another destination in Greece</option>
+            </select>
+          </label>
+        </div>
+        <label>Estimated guests<input type="number" name="guests" min="1" inputmode="numeric" placeholder="e.g. 120" /></label>
+        <label>What would you like to create?<textarea name="details" rows="5" required placeholder="Event type, goals, venues or experiences you have in mind"></textarea></label>
+        <button class="btn" type="submit">Prepare email <span class="arrow" aria-hidden="true">→</span></button>
+        <p class="form-status" id="brief-status" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </section>
 
@@ -109,6 +141,86 @@ const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.
       object-fit: cover;
     }
 
+    .brief {
+      scroll-margin-top: 5rem;
+      padding-block: clamp(4rem, 9vw, 7rem);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brief-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+      gap: clamp(2.5rem, 7vw, 7rem);
+      align-items: start;
+    }
+
+    .brief-intro > p:not(.eyebrow) {
+      max-width: 46ch;
+      margin-top: 1.5rem;
+      color: var(--marble-dim);
+    }
+
+    .brief-intro .brief-note {
+      font-size: .86rem;
+    }
+
+    .brief-form {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .brief-form label {
+      display: grid;
+      gap: .5rem;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .brief-form input,
+    .brief-form select,
+    .brief-form textarea {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--sea);
+      color: var(--marble);
+      font: 1rem/1.5 var(--font-body);
+      letter-spacing: normal;
+      text-transform: none;
+      padding: .8rem 1rem;
+    }
+
+    .brief-form textarea {
+      resize: vertical;
+    }
+
+    .brief-form input:focus,
+    .brief-form select:focus,
+    .brief-form textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .brief-form .btn {
+      width: fit-content;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .form-status {
+      min-height: 1.65rem;
+      color: var(--link);
+      font-size: .9rem;
+    }
+
     .offices {
       padding-block: clamp(4rem, 9vw, 7rem);
     }
@@ -139,5 +251,39 @@ const heroImage = 'https://one-event.gr/wp-content/uploads/2022/04/Get-in-Touch.
     .office-card p {
       color: var(--marble-dim);
     }
+
+    @media (max-width: 800px) {
+      .brief-grid,
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
+
+  <script>
+    const form = document.querySelector<HTMLFormElement>('#brief-form')!;
+    const status = document.querySelector<HTMLElement>('#brief-status')!;
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const data = new FormData(form);
+      const value = (name: string) => String(data.get(name) || 'Not provided');
+      const subject = `Proposal request — ${value('destination')} — ${value('name')}`;
+      const body = [
+        `Name: ${value('name')}`,
+        `Reply email: ${value('email')}`,
+        `Preferred dates: ${value('dates')}`,
+        `Destination: ${value('destination')}`,
+        `Estimated guests: ${value('guests')}`,
+        '',
+        'Event brief:',
+        value('details'),
+      ].join('\n');
+
+      status.textContent = 'Your email app should open now with the brief ready to review and send.';
+      window.location.href = `mailto:aonoufriou@one-event.net?cc=donoufriou@one-event.net&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+  </script>
 </BaseLayout>

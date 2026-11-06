@@ -14,7 +14,10 @@ const prev = destinations[(index - 1 + destinations.length) % destinations.lengt
 const next = destinations[(index + 1) % destinations.length];
 ---
 
-<BaseLayout title={`${dest.name} | One Event Destinations`} description={`${dest.name} — ${dest.tagline} Destination management by One Event Greece & Cyprus.`}>
+<BaseLayout
+  title={`${dest.name} Corporate Events & Destination Management | One Event`}
+  description={`Plan a corporate event, conference or incentive in ${dest.name} with One Event’s local destination management team.`}
+>
   <section class="d-hero">
     <div class="d-hero-media" data-parallax="16">
       <img src={dest.image} alt={`${dest.name} — One Event destination`} fetchpriority="high" />
@@ -24,6 +27,10 @@ const next = destinations[(index + 1) % destinations.length];
       <a class="back-link" href="/destinations/" data-reveal>← All destinations</a>
       <h1 class="display-xl d-title">{dest.name}</h1>
       <p class="d-tagline" data-split>{dest.tagline}</p>
+      <div class="d-hero-actions">
+        <a class="btn" href="/get-in-touch/#brief" data-magnetic>Request a proposal <span class="arrow">→</span></a>
+        <a class="d-work-link" href="/references/">View our work <span aria-hidden="true">→</span></a>
+      </div>
     </div>
   </section>
 
@@ -55,7 +62,7 @@ const next = destinations[(index + 1) % destinations.length];
 
   <style>
     .d-hero {
-      min-height: 92svh;
+      min-height: 82svh;
       display: grid;
       align-items: end;
       overflow: clip;
@@ -81,7 +88,7 @@ const next = destinations[(index + 1) % destinations.length];
     }
 
     .d-hero-content {
-      padding-bottom: clamp(3rem, 8vh, 6rem);
+      padding-block: 7rem clamp(2.5rem, 5vh, 4rem);
     }
 
     .back-link {
@@ -99,6 +106,7 @@ const next = destinations[(index + 1) % destinations.length];
     }
 
     .d-title {
+      font-size: clamp(2rem, 10vw, 8.5rem);
       text-transform: uppercase;
       letter-spacing: 0.02em;
     }
@@ -109,6 +117,30 @@ const next = destinations[(index + 1) % destinations.length];
       font-size: clamp(1.2rem, 2.4vw, 1.7rem);
       color: var(--link);
       margin-top: 1rem;
+    }
+
+    .d-hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem 1.75rem;
+      margin-top: 1.75rem;
+    }
+
+    .d-work-link {
+      padding-block: 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--marble);
+      text-decoration: underline;
+      text-underline-offset: 0.45rem;
+      transition: color .25s var(--ease-out);
+    }
+
+    .d-work-link:hover {
+      color: var(--link);
     }
 
     .highlights {

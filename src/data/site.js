@@ -22,7 +22,7 @@ export const destinations = [
     slug: 'athens',
     name: 'Athens',
     tagline: 'Home of Parthenon, pinnacle of perfection.',
-    image: `${WP}/2024/08/Athens20Main20for20Website_resized.jpg`,
+    image: '/img/destinations/athens.jpg',
     highlights: [
       ['All time classic', 'home of Parthenon, pinnacle of perfection'],
       ['Vibrant', 'the city that never sleeps'],
@@ -35,7 +35,7 @@ export const destinations = [
     slug: 'crete',
     name: 'Crete',
     tagline: 'Where hospitality is a way of life.',
-    image: `${WP}/2022/04/Crete.jpg`,
+    image: '/img/destinations/crete.jpg',
     highlights: [
       ['Hospitable', 'before visitors all doors and hearts are open'],
       ['Unreal', 'natural wonders spread along your way'],
@@ -48,7 +48,7 @@ export const destinations = [
     slug: 'cyprus',
     name: 'Cyprus',
     tagline: 'A crossroad of civilizations, bathed in light.',
-    image: `${WP}/2022/04/cyprus.jpg`,
+    image: '/img/destinations/cyprus.jpg',
     highlights: [
       ['Historic', 'a crossroad of civilizations'],
       ['Delicious', 'home of the famous halloumi cheese'],
@@ -61,7 +61,7 @@ export const destinations = [
     slug: 'mykonos',
     name: 'Mykonos',
     tagline: 'The luminous playground of the Aegean.',
-    image: `${WP}/2022/04/mykonos.jpg`,
+    image: '/img/destinations/mykonos.jpg',
     highlights: [
       ['Breathtaking', 'stunning panoramic views'],
       ['Picturesque', 'iconic Cycladic alleys to get lost into'],
@@ -74,7 +74,7 @@ export const destinations = [
     slug: 'peloponnese',
     name: 'Peloponnese',
     tagline: 'A place of unexplored beauty and hidden treasures.',
-    image: `${WP}/2022/04/peloponesse.jpg`,
+    image: '/img/destinations/peloponnese.jpg',
     highlights: [
       ['Mythical', 'a place of unexplored beauty and hidden treasures'],
       ['Gastronomic', 'home of the world famous Kalamata olives'],
@@ -87,7 +87,7 @@ export const destinations = [
     slug: 'santorini',
     name: 'Santorini',
     tagline: 'The Caldera — nature’s own amphitheater.',
-    image: `${WP}/2022/04/santorini.jpg`,
+    image: '/img/destinations/santorini.jpg',
     highlights: [
       ['Natural wonder', 'magnificent Caldera views and picturesque whitewashed houses'],
       ['Exquisite', 'unique venues with breath-taking views'],
@@ -102,14 +102,14 @@ export const team = [
   {
     name: 'Alexis Onoufriou',
     role: 'Managing Partner & CEO',
-    image: `${WP}/2022/04/Alexis.jpg`,
+    image: '/img/team/alexis.jpg',
     bio: `Alexis is a Chartered Accountant who has diversified his field of expertise by following his passion in the Corporate Tourism Industry. For over 10 years, he was leading the execution of Corporate Events, as a Managing Partner of Liberty International Tourism Group for Greece & Cyprus. His accounting and numeric literacy combined with his long experience in the Event and Destination Management fields give Alexis a great advantage in providing tailored solutions to any need and within any budget.`,
     quote: `“He always has that special ‘out of the box’ plan for any company, those ideas that make his events extra-ordinary and life memorable.”`,
   },
   {
     name: 'Demetra Onoufriou',
     role: 'Managing Partner, Sales & Marketing',
-    image: `${WP}/2022/05/Demetra-O.jpg`,
+    image: '/img/team/demetra.jpg',
     bio: `Demetra is a Marketer who has been heading the Marketing Department of AstroBank in Cyprus, former Piraeus Bank, the leading bank in Greece. She has a track record of producing, presenting and managing innovative ideas and business solutions, with great expertise in event management. Demetra’s successful 20+ year career in Banking came to a close when she decided to join forces with her brother and take Destination & Event Management to a different level.`,
     quote: `“Identifying niches and creating opportunities for any corporate need.”`,
   },

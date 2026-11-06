@@ -13,11 +13,11 @@ interface Props {
 
 const {
   title,
-  description = 'One Event Greece & Cyprus — Destination Management Services. We create moments that inspire.',
+  description = 'Plan corporate events, conferences and incentives across Greece and Cyprus with One Event’s local destination management team.',
 } = Astro.props;
 
 const ogImage =
-  'https://one-event.gr/wp-content/uploads/2022/04/santorini.jpg';
+  'https://one.savvaszinonos.work/img/destinations/santorini.jpg';
 
 const htmlClass =
   typeof window === 'undefined' ? 'no-js' : '';
@@ -79,13 +79,13 @@ const htmlClass =
         }
 
         document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
-          const withBreaks = el.innerHTML.replace(/<br\s*\/?>/gi, '\u0001');
+          const withBreaks = el.innerHTML.replace(/<br\b[^>]*>/gi, ' \u0001 ');
           const text = withBreaks.replace(/<[^>]+>/g, '');
           const parts = text.split(/\s+/).filter(Boolean);
           el.innerHTML = parts
             .map((w) => {
-              const brk = w.includes('\u0001');
-              return `${brk ? '<br>' : ''}<span class="w"><span>${w.replaceAll('\u0001', '')}</span></span>`;
+              if (w === '\u0001') return '<br>';
+              return `<span class="w"><span>${w}</span></span>`;
             })
             .join(' ');
           gsap.from(el.querySelectorAll('.w > span'), {

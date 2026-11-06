@@ -5,7 +5,10 @@ import { destinations, manifesto, references } from '../data/site.js';
 const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
 ---
 
-<BaseLayout title="One Event | Greece & Cyprus">
+<BaseLayout
+  title="Corporate Events & Destination Management in Greece & Cyprus | One Event"
+  description="Plan corporate events, conferences and incentives across Greece and Cyprus with One Event’s local destination management team."
+>
   <section class="hero" aria-label="Intro">
     <div class="hero-media">
       <img src={heroImage} alt="Santorini caldera at dusk" fetchpriority="high" />
@@ -14,6 +17,11 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
     <div class="hero-content wrap">
       <p class="eyebrow hero-eyebrow">Destination Management · Greece &amp; Cyprus</p>
       <h1 class="display-xl hero-title" data-hero-line>We create moments<br />that <em>inspire</em></h1>
+      <p class="hero-summary">Corporate events, conferences and incentive experiences, planned and delivered locally across Greece and Cyprus.</p>
+      <div class="hero-actions">
+        <a class="btn" href="/get-in-touch/#brief" data-magnetic>Request a proposal <span class="arrow">→</span></a>
+        <a class="hero-work-link" href="/references/">View our work <span aria-hidden="true">→</span></a>
+      </div>
       <a class="hero-scroll" href="#manifesto" aria-label="Scroll down">Scroll<span class="hero-scroll-bar"></span></a>
     </div>
   </section>
@@ -56,11 +64,11 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
         <span class="number-label">Accumulated years of experience — unlimited ideas for your event</span>
       </div>
       <div class="number-card" data-reveal>
-        <span class="number-value"><span data-count="120">0</span>+</span>
+        <span class="number-value"><span data-count="120">120</span>+</span>
         <span class="number-label">Successfully organized events across Greece &amp; Cyprus</span>
       </div>
       <div class="number-card" data-reveal>
-        <span class="number-value"><span data-count="850">0</span></span>
+        <span class="number-value"><span data-count="850">850</span></span>
         <span class="number-label">Guests at our largest single production</span>
       </div>
     </div>
@@ -137,7 +145,7 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
     .hero-content {
       position: relative;
       z-index: 1;
-      padding-bottom: clamp(3rem, 8vh, 6rem);
+      padding-block: 7rem clamp(2rem, 5vh, 4rem);
     }
 
     .hero-title em {
@@ -145,8 +153,39 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
       color: var(--link);
     }
 
+    .hero-summary {
+      max-width: 54ch;
+      margin-top: 1.25rem;
+      color: var(--marble-dim);
+      font-size: clamp(1rem, 1.4vw, 1.2rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem 1.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .hero-work-link {
+      padding-block: 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--marble);
+      text-decoration: underline;
+      text-underline-offset: 0.45rem;
+      transition: color .25s var(--ease-out);
+    }
+
+    .hero-work-link:hover {
+      color: var(--link);
+    }
+
     .hero-scroll {
-      margin-top: clamp(2rem, 5vh, 4rem);
+      margin-top: 1.5rem;
       display: inline-flex;
       align-items: center;
       gap: 0.9rem;
