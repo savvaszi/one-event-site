@@ -31,7 +31,7 @@ const year = new Date().getFullYear();
   <div class="wrap footer-cta">
     <p class="eyebrow" data-reveal>{copy.next}</p>
     <a class="cta-link display-lg" href={localizePath('/get-in-touch/', locale)} data-magnetic>
-      {copy.create}
+      <span class="cta-label">{copy.create}</span>
       <span class="cta-arrow" aria-hidden="true">→</span>
     </a>
   </div>
@@ -95,6 +95,7 @@ const year = new Date().getFullYear();
 
   .cta-link {
     display: inline-flex;
+    max-width: 100%;
     align-items: center;
     gap: clamp(1rem, 3vw, 2.5rem);
     color: var(--marble);
@@ -105,7 +106,13 @@ const year = new Date().getFullYear();
     color: var(--link);
   }
 
+  .cta-label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
   .cta-arrow {
+    flex: none;
     font-family: var(--font-body);
     font-size: 0.55em;
     transition: transform 0.5s var(--ease-out);
