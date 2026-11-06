@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ReferenceTicker from '../components/ReferenceTicker.astro';
 import { references, gallery } from '../data/site.js';
 
 // Project-linked cases first, then the rest, capped at eight rows.
@@ -7,6 +8,7 @@ const featured = [
   ...references.filter((r) => r.project),
   ...references.filter((r) => !r.project),
 ].slice(0, 8);
+const otherReferences = references.filter((reference) => !featured.includes(reference));
 ---
 
 <BaseLayout title="References | One Event" description="Highlighted cases by One Event Greece & Cyprus — conferences, incentives and gala events for the world's finest brands.">
@@ -55,13 +57,7 @@ const featured = [
       <h2 class="display-md" data-split>24 productions and counting</h2>
       <p data-reveal>Conferences, incentives, gala dinners and team experiences across Greece &amp; Cyprus.</p>
     </div>
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        {[...references.slice(8), ...references.slice(8)].map((r) => (
-          <span class="marquee-item">{r.title}<i>·</i></span>
-        ))}
-      </div>
-    </div>
+    <ReferenceTicker entries={otherReferences} />
   </section>
 
   <style>
@@ -186,40 +182,6 @@ const featured = [
       max-width: 48ch;
     }
 
-    .marquee {
-      overflow: hidden;
-      border-top: 1px solid var(--line);
-      padding-block: 1.4rem;
-    }
-
-    .marquee-track {
-      display: inline-flex;
-      white-space: nowrap;
-      animation: marquee 46s linear infinite;
-      will-change: transform;
-    }
-
-    .marquee:hover .marquee-track {
-      animation-play-state: paused;
-    }
-
-    .marquee-item {
-      font-family: var(--font-display);
-      font-size: clamp(1.3rem, 2.4vw, 2rem);
-      color: var(--marble-faint);
-      padding-inline: 1.3rem;
-    }
-
-    .marquee-item i {
-      color: var(--accent);
-      font-style: normal;
-      padding-left: 2.6rem;
-    }
-
-    @keyframes marquee {
-      to { transform: translateX(-50%); }
-    }
-
     @media (max-width: 720px) {
       .case-row {
         grid-template-columns: 1fr;
@@ -231,9 +193,4 @@ const featured = [
     }
   </style>
 
-  <style is:global>
-    html.reduced-motion .marquee-track {
-      animation: none;
-    }
-  </style>
 </BaseLayout>

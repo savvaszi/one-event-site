@@ -1,8 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ReferenceTicker from '../components/ReferenceTicker.astro';
+import { projects } from '../data/projects.js';
 import { destinations, manifesto, offices, references } from '../data/site.js';
 
 const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
+const otherReferences = references.slice(0, 12).filter((reference) => !reference.project);
 const homeUrl = new URL('/', Astro.site).href;
 const organizationId = `${homeUrl}#organization`;
 const officeEntities = offices.map((office) => {
@@ -138,18 +141,26 @@ const businessSchema = {
     </div>
   </section>
 
-  <section class="refs" aria-label="Selected references">
-    <div class="wrap refs-head">
+  <section class="refs" aria-labelledby="client-heading">
+    <div class="wrap refs-inner">
       <p class="eyebrow">Selected cases</p>
-      <h2 class="display-md" data-split>Trusted by the world’s finest brands</h2>
-    </div>
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        {[...references.slice(0, 12), ...references.slice(0, 12)].map((r) => (
-          <span class="marquee-item">{r.title}<i>·</i></span>
+      <h2 class="display-md" id="client-heading">Clients and case studies</h2>
+      <ul class="client-grid" role="list">
+        {projects.map((project) => (
+          <li>
+            <a class="client-card" href={`/projects/${project.slug}/`}>
+              <img src={project.cover} alt="" loading="lazy" decoding="async" />
+              <div class="client-info">
+                <h3>{project.client}</h3>
+                <p>{project.location}</p>
+                <span class="client-cta">View case study <span aria-hidden="true">→</span></span>
+              </div>
+            </a>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
+    <ReferenceTicker entries={otherReferences} />
     <div class="wrap refs-cta" data-reveal>
       <a class="btn" href="/references/" data-magnetic>All references <span class="arrow">→</span></a>
     </div>
@@ -467,47 +478,53 @@ const businessSchema = {
       border-top: 1px solid var(--line);
     }
 
-    .refs-head {
+    .refs-inner {
       margin-bottom: clamp(2.5rem, 5vw, 4rem);
     }
 
-    .marquee {
+    .client-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(1rem, 2vw, 1.75rem);
+      margin-top: 1.75rem;
+      list-style: none;
+    }
+
+    .client-card {
+      display: block;
+      height: 100%;
       overflow: hidden;
-      border-block: 1px solid var(--line);
-      padding-block: 1.4rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--ink);
     }
 
-    .marquee-track {
-      display: inline-flex;
-      white-space: nowrap;
-      animation: marquee 42s linear infinite;
-      will-change: transform;
+    .client-card img {
+      width: 100%;
+      aspect-ratio: 2 / 1;
+      object-fit: cover;
+      object-position: 50% 30%;
     }
 
-    .marquee:hover .marquee-track {
-      animation-play-state: paused;
+    .client-info {
+      padding: clamp(1rem, 2vw, 1.5rem);
     }
 
-    .marquee-item {
-      font-family: var(--font-display);
-      font-size: clamp(1.4rem, 2.6vw, 2.2rem);
-      color: var(--marble-faint);
-      padding-inline: 1.4rem;
-      transition: color .4s var(--ease-out);
+    .client-info h3 {
+      font-size: clamp(1.45rem, 2.5vw, 2rem);
     }
 
-    .marquee-item i {
-      color: var(--accent);
-      font-style: normal;
-      padding-left: 2.8rem;
+    .client-info p {
+      margin-top: 0.35rem;
+      color: var(--marble-dim);
     }
 
-    .marquee-item:hover {
-      color: var(--marble);
-    }
-
-    @keyframes marquee {
-      to { transform: translateX(-50%); }
+    .client-cta {
+      display: inline-block;
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
     }
 
     .refs-cta {
@@ -517,6 +534,9 @@ const businessSchema = {
     }
 
     @media (max-width: 900px) {
+      .client-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
       .intro-grid {
         grid-template-columns: 1fr;
       }
@@ -549,11 +569,11 @@ const businessSchema = {
         flex-basis: auto;
       }
     }
-  </style>
 
-  <style is:global>
-    html.reduced-motion .marquee-track {
-      animation: none;
+    @media (max-width: 560px) {
+      .client-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </BaseLayout>
