@@ -1,0 +1,200 @@
+---
+import { destinationCopy } from '../data/localizedDestinations.js';
+
+const { guide, locale, common } = Astro.props;
+const destinationName = (slug: keyof typeof destinationCopy) => destinationCopy[slug][locale].name;
+---
+
+<section class="guide-hero">
+  <div class="wrap">
+    <a class="text-link" href={`/${locale}/destinations/`}>← {common.allDestinations}</a>
+    <p class="eyebrow">{guide.eyebrow}</p>
+    <h1 class="display-lg">{guide.title}</h1>
+    <p>{guide.intro}</p>
+    <nav aria-label={guide.nav}>
+      <a href="#athens-or-islands">{guide.choicesTitle}</a>
+      <a href="#venues">{guide.venuesTitle}</a>
+      <a href="#faq">{guide.faqTitle}</a>
+    </nav>
+  </div>
+</section>
+
+<section class="guide-section" id="athens-or-islands" aria-labelledby="choice-title">
+  <div class="wrap">
+    <h2 class="display-md" id="choice-title">{guide.choicesTitle}</h2>
+    <div class="choice-grid">
+      {guide.choices.map(([title, body, slugs]) => (
+        <article>
+          <h3>{title}</h3>
+          <p>{body}</p>
+          <ul>
+            {slugs.map((slug: keyof typeof destinationCopy) => (
+              <li><a href={`/${locale}/destinations/${slug}/`}>{destinationName(slug)}</a></li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="guide-section venues" id="venues" aria-labelledby="venue-title">
+  <div class="wrap">
+    <h2 class="display-md" id="venue-title">{guide.venuesTitle}</h2>
+    <p>{guide.venuesIntro}</p>
+    <table aria-labelledby="venue-title">
+      <thead>
+        <tr>
+          <th scope="col">{guide.venueColumn}</th>
+          <th scope="col">{guide.capacityColumn}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {guide.venues.map((venue) => (
+          <tr>
+            <th scope="row">
+              <a href={venue.source}>{venue.name}{venue.format && ` (${venue.format})`}</a>
+              <span>{destinationName(venue.location)}</span>
+            </th>
+            <td>{venue.capacity}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="guide-section" id="faq" aria-labelledby="faq-title">
+  <div class="wrap">
+    <h2 class="display-md" id="faq-title">{guide.faqTitle}</h2>
+    <div class="faq-list">
+      {guide.faqs.map(([question, answer]) => (
+        <details>
+          <summary>{question}</summary>
+          <p>{answer}</p>
+        </details>
+      ))}
+    </div>
+    <p>{guide.sourceIntro} <a href="https://one-event.net/our-destinations/greece/">{guide.sourceLabel}</a>.</p>
+  </div>
+</section>
+
+<section class="guide-section venues" aria-labelledby="proposal-title">
+  <div class="wrap">
+    <h2 class="display-md" id="proposal-title">{guide.ctaTitle}</h2>
+    <p>{guide.ctaBody}</p>
+    <a class="btn" href={`/${locale}/get-in-touch/#brief`}>{common.proposal} <span class="arrow" aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<style>
+  .guide-hero {
+    padding-block: clamp(9rem, 18vw, 13rem) clamp(3rem, 7vw, 6rem);
+    background: radial-gradient(60% 100% at 10% 0%, var(--sea-2), transparent), var(--sea);
+  }
+
+  .guide-hero .eyebrow {
+    display: block;
+    margin-block: 1.75rem .6rem;
+  }
+
+  .guide-section {
+    padding-block: clamp(3rem, 7vw, 6rem);
+    scroll-margin-top: 5.5rem;
+  }
+
+  .venues {
+    background: var(--sea);
+  }
+
+  h1 {
+    max-width: 20ch;
+  }
+
+  p {
+    max-width: 68ch;
+    margin-top: 1rem;
+    color: var(--marble-dim);
+  }
+
+  a:not(.btn) {
+    text-decoration: underline;
+    text-underline-offset: .2em;
+  }
+
+  nav, ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem 1.1rem;
+    margin-top: 1rem;
+    list-style: none;
+  }
+
+  .choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  article {
+    padding: clamp(1.15rem, 3vw, 1.8rem);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+
+  h3 {
+    font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+  }
+
+  table {
+    width: 100%;
+    max-width: 960px;
+    margin-top: 1.5rem;
+    border-collapse: collapse;
+    text-align: start;
+    overflow-wrap: anywhere;
+  }
+
+  th, td {
+    padding: .9rem clamp(.5rem, 2vw, 1.25rem);
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+    text-align: start;
+  }
+
+  tbody th {
+    width: 38%;
+  }
+
+  th span {
+    display: block;
+    margin-top: .35rem;
+    font-size: .9rem;
+    font-weight: normal;
+    color: var(--marble-dim);
+  }
+
+  .faq-list {
+    max-width: 70ch;
+    margin-top: 1.5rem;
+  }
+
+  details {
+    padding: 1rem 0;
+    border-block-end: 1px solid var(--line);
+  }
+
+  details:first-child {
+    border-block-start: 1px solid var(--line);
+  }
+
+  summary {
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn {
+    margin-top: 1.4rem;
+  }
+</style>

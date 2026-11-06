@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ReferenceTicker from '../components/ReferenceTicker.astro';
+import Testimonials from '../components/Testimonials.astro';
 import { projects } from '../data/projects.js';
-import { destinations, manifesto, offices, references } from '../data/site.js';
+import { destinations, eventFigures, manifesto, offices, references } from '../data/site.js';
 
 const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
 const otherReferences = references.slice(0, 12).filter((reference) => !reference.project);
@@ -111,11 +112,11 @@ const businessSchema = {
         <span class="number-label">Accumulated years of experience — unlimited ideas for your event</span>
       </div>
       <div class="number-card" data-reveal>
-        <span class="number-value"><span data-count="120">120</span>+</span>
+        <span class="number-value"><span data-count={eventFigures.total}>{eventFigures.total}</span>+</span>
         <span class="number-label">Successfully organized events across Greece &amp; Cyprus</span>
       </div>
       <div class="number-card" data-reveal>
-        <span class="number-value"><span data-count="850">850</span></span>
+        <span class="number-value"><span data-count={eventFigures.largest}>{eventFigures.largest.toLocaleString('en-US')}</span></span>
         <span class="number-label">Guests at our largest single production</span>
       </div>
     </div>
@@ -131,7 +132,7 @@ const businessSchema = {
       <div class="hscroll-track" data-hscroll-track>
         {destinations.map((d) => (
           <a class="dest-card media-mask" href={`/destinations/${d.slug}/`} data-magnetic>
-            <img src={d.image} alt={`${d.name} — One Event destination`} loading="lazy" />
+            <img src={d.image} alt={d.imageAlt ?? `${d.name} — One Event destination`} loading="lazy" />
             <span class="dest-name">{d.name}</span>
             <span class="dest-tag">{d.tagline}</span>
             <span class="dest-cta">Explore →</span>
@@ -165,6 +166,8 @@ const businessSchema = {
       <a class="btn" href="/references/" data-magnetic>All references <span class="arrow">→</span></a>
     </div>
   </section>
+
+  <Testimonials />
 
   <style>
     .hero {

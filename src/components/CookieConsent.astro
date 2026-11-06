@@ -1,66 +1,75 @@
 ---
-const categories = [
-  {
-    key: 'necessary',
-    label: 'Necessary',
-    desc: 'Essential for core functionality and security. Always enabled.',
-    locked: true,
+import { localizePath, type Locale } from '../data/i18n';
+
+const { locale }: { locale: Locale } = Astro.props;
+const copy = {
+  en: {
+    preferences: 'Cookie preferences', title: 'Cookies',
+    intro: 'We use cookies to give you the most relevant experience by remembering your preferences and repeat visits.',
+    privacy: 'Do not sell my personal information', settings: 'Settings', reject: 'Reject all', accept: 'Accept',
+    back: 'Back', save: 'Save preferences',
+    necessary: ['Necessary', 'Essential for core functionality and security. Always enabled.'],
+    functional: ['Functional', 'Enhanced features such as social media sharing.'],
+    performance: ['Performance & Analytics', 'Helps us understand how visitors use the site.'],
+    advertisement: ['Advertisement', 'Used to deliver relevant ads and campaigns.'],
   },
-  {
-    key: 'functional',
-    label: 'Functional',
-    desc: 'Enhanced features such as social media sharing.',
-    locked: false,
+  el: {
+    preferences: 'Προτιμήσεις cookies', title: 'Cookies',
+    intro: 'Χρησιμοποιούμε cookies για να θυμόμαστε τις προτιμήσεις σας και να βελτιώνουμε την εμπειρία σας σε επόμενες επισκέψεις.',
+    privacy: 'Μην πουλάτε τα προσωπικά μου στοιχεία', settings: 'Ρυθμίσεις', reject: 'Απόρριψη όλων', accept: 'Αποδοχή',
+    back: 'Πίσω', save: 'Αποθήκευση προτιμήσεων',
+    necessary: ['Απαραίτητα', 'Απαραίτητα για τη λειτουργία και την ασφάλεια του ιστοτόπου. Είναι πάντα ενεργά.'],
+    functional: ['Λειτουργικά', 'Επιτρέπουν πρόσθετες λειτουργίες, όπως η κοινοποίηση στα κοινωνικά δίκτυα.'],
+    performance: ['Απόδοση και ανάλυση', 'Μας βοηθούν να κατανοούμε πώς οι επισκέπτες χρησιμοποιούν τον ιστότοπο.'],
+    advertisement: ['Διαφήμιση', 'Χρησιμοποιούνται για την προβολή σχετικών διαφημίσεων και καμπανιών.'],
   },
-  {
-    key: 'performance',
-    label: 'Performance & Analytics',
-    desc: 'Helps us understand how visitors use the site.',
-    locked: false,
+  es: {
+    preferences: 'Preferencias de cookies', title: 'Cookies',
+    intro: 'Usamos cookies para recordar tus preferencias y mejorar tu experiencia en futuras visitas.',
+    privacy: 'No vender mi información personal', settings: 'Configuración', reject: 'Rechazar todas', accept: 'Aceptar',
+    back: 'Volver', save: 'Guardar preferencias',
+    necessary: ['Necesarias', 'Esenciales para el funcionamiento y la seguridad del sitio. Siempre activas.'],
+    functional: ['Funcionales', 'Habilitan funciones adicionales, como compartir contenido en redes sociales.'],
+    performance: ['Rendimiento y analítica', 'Nos ayudan a entender cómo los visitantes utilizan el sitio.'],
+    advertisement: ['Publicidad', 'Se utilizan para mostrar anuncios y campañas relevantes.'],
   },
-  {
-    key: 'advertisement',
-    label: 'Advertisement',
-    desc: 'Used to deliver relevant ads and campaigns.',
-    locked: false,
-  },
-];
+}[locale];
+const categories = ['necessary', 'functional', 'performance', 'advertisement'] as const;
 ---
 
 <div class="cc-root" id="cookie-consent" data-open="false" hidden>
-  <aside class="cc-card" role="dialog" aria-modal="false" aria-label="Cookie preferences" aria-describedby="cc-text">
+  <aside class="cc-card" data-lenis-prevent role="dialog" aria-modal="false" aria-label={copy.preferences} aria-describedby="cc-text">
     <header class="cc-head">
-      <p class="cc-title">Cookies</p>
+      <p class="cc-title">{copy.title}</p>
       <span class="cc-dot" aria-hidden="true"></span>
     </header>
 
     <div class="cc-view" data-view="banner">
       <p id="cc-text" class="cc-text">
-        We use cookies to give you the most relevant experience by remembering your preferences
-        and repeat visits.
+        {copy.intro}
       </p>
-      <a class="cc-link" href="/privacy-policy/">Do not sell my personal information</a>
+      <a class="cc-link" href={localizePath('/privacy-policy/', locale)}>{copy.privacy}</a>
       <div class="cc-actions">
-        <button class="cc-btn ghost" type="button" data-cc="settings">Settings</button>
-        <button class="cc-btn ghost" type="button" data-cc="reject">Reject all</button>
-        <button class="cc-btn solid" type="button" data-cc="accept">Accept</button>
+        <button class="cc-btn ghost" type="button" data-cc="settings">{copy.settings}</button>
+        <button class="cc-btn ghost" type="button" data-cc="reject">{copy.reject}</button>
+        <button class="cc-btn solid" type="button" data-cc="accept">{copy.accept}</button>
       </div>
     </div>
 
     <div class="cc-view" data-view="settings" hidden>
       <ul class="cc-cats">
-        {categories.map((c) => (
+        {categories.map((category) => (
           <li>
             <label class="cc-cat">
               <span class="cc-copy">
-                <strong>{c.label}</strong>
-                <small>{c.desc}</small>
+                <strong>{copy[category][0]}</strong>
+                <small>{copy[category][1]}</small>
               </span>
               <input
                 type="checkbox"
-                data-cat={c.key}
-                checked={c.locked ? true : undefined}
-                disabled={c.locked ? true : undefined}
+                data-cat={category}
+                checked={category === 'necessary'}
+                disabled={category === 'necessary'}
               />
               <span class="cc-switch" aria-hidden="true"><i></i></span>
             </label>
@@ -68,8 +77,8 @@ const categories = [
         ))}
       </ul>
       <div class="cc-actions">
-        <button class="cc-btn ghost" type="button" data-cc="back">Back</button>
-        <button class="cc-btn solid" type="button" data-cc="save">Save preferences</button>
+        <button class="cc-btn ghost" type="button" data-cc="back">{copy.back}</button>
+        <button class="cc-btn solid" type="button" data-cc="save">{copy.save}</button>
       </div>
     </div>
   </aside>
@@ -152,6 +161,8 @@ const categories = [
   .cc-card {
     position: relative;
     width: min(384px, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2.5rem);
+    overflow-y: auto;
     background: rgba(255, 255, 255, 0.96);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);

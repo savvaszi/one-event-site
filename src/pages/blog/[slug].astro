@@ -1,0 +1,12 @@
+---
+import BlogArticle from '../../components/BlogArticle.astro';
+import { blogPosts } from '../../data/blog';
+
+export function getStaticPaths() {
+  return blogPosts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+---
+
+<BlogArticle locale="en" post={post} />

@@ -1,0 +1,15 @@
+---
+import BlogIndex from '../../../components/BlogIndex.astro';
+import { languages } from '../../../data/i18n';
+
+export function getStaticPaths() {
+  return languages.filter(({ code }) => code !== 'en').map(({ code }) => ({
+    params: { locale: code },
+    props: { locale: code },
+  }));
+}
+
+const { locale } = Astro.props;
+---
+
+<BlogIndex locale={locale} />

@@ -1,11 +1,15 @@
 export const WP = 'https://one-event.gr/wp-content/uploads';
 
+export const companyVatNumber = 'CY10423210U';
+export const eventFigures = { total: 120, largest: 1500 };
+
 export const nav = [
   { label: 'Home', href: '/' },
   { label: 'The Agency', href: '/the-agency/' },
   { label: 'Destinations', href: '/destinations/' },
   { label: 'References', href: '/references/' },
   { label: 'Projects', href: '/projects/' },
+  { label: 'Blog', href: '/blog/' },
   { label: 'Get in touch', href: '/get-in-touch/' },
 ];
 
@@ -137,6 +141,20 @@ export const destinations = [
       ['Authentic', 'a nice blend of local traditions, culture and recipes'],
     ],
   },
+  {
+    slug: 'thessaloniki',
+    name: 'Thessaloniki',
+    tagline: 'A northern Greek conference city with a waterfront built for exploring.',
+    image: '/img/projects/isst-conference/img-0292.webp',
+    imageAlt: 'The ISST Conference in Thessaloniki',
+    project: 'isst-conference',
+    highlights: [
+      ['Conferences and exhibitions', 'Plan plenaries, breakouts and exhibitions around venues such as the Ioannis Vellidis Congress Centre.'],
+      ['Time by the water', 'Take a group along the waterfront past the White Tower, then build in time for a shared dinner.'],
+      ['Historic neighbourhoods', 'Use a guided walk through Ano Poli to explore the city’s older streets and Byzantine heritage.'],
+      ['A programme with local character', 'Pair meeting days with neighbourhood food stops, local produce and an evening built around northern Greek cooking.'],
+    ],
+  },
 ];
 
 export const team = [
@@ -169,7 +187,7 @@ export const references = [
   { title: 'Traditional Theme Night', meta: 'Athens, Greece · 2025 · 400 guests', video: yt('0DXGBNhwpaY') },
   { title: 'Gala Dinner Zappeio', meta: 'Athens, Greece · 2025 · 400 guests', video: yt('sjmcW-WO9aA') },
   { title: 'Ancient Olympic Games', meta: 'Athens, Greece · 2025 · 400 guests', video: yt('iwznBXI1N7Q') },
-  { title: 'TE Connectivity Highlights', meta: 'Athens, Greece · 2025 · 400 guests', video: yt('1_BHAS8sO_I'), project: 'te-connectivity' },
+  { title: 'TE Connectivity Highlights', meta: 'Athens, Greece · 2025 · 450 guests', video: yt('1_BHAS8sO_I'), project: 'te-connectivity' },
   { title: 'Lefkara Village Experience', meta: 'Lefkara, Cyprus · 2025 · 200 guests', video: yt('A6tn9yOd3A0') },
   { title: 'European Brokers Meeting', meta: 'Limassol, Cyprus · 2024 · 850 guests', video: yt('K3rE-RNf5lg') },
   { title: 'PwC Football Tournament', meta: 'Cyprus · 2024 · 600 guests', video: yt('1vVf4M4YrR8'), project: 'pwc-football' },

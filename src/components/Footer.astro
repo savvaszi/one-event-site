@@ -1,15 +1,37 @@
 ---
-import { offices } from '../data/site.js';
-import { nav } from '../data/site.js';
+import { companyVatNumber, nav, offices } from '../data/site.js';
+import { localizePath, navLabel, type Locale } from '../data/i18n';
+
+const { locale }: { locale: Locale } = Astro.props;
+const copy = {
+  en: {
+    next: 'Your next event starts here', create: 'Let’s create', network: 'Part of ONE Event, the global DMC network',
+    nav: 'Footer', sitemap: 'Sitemap', legal: 'Legislation', registration: 'Registration No.', vat: 'VAT No.',
+    follow: 'Follow us', cookies: 'Cookie settings', rights: 'All rights reserved', privacy: 'Privacy Policy',
+    GR: 'Greece', CY: 'Cyprus',
+  },
+  el: {
+    next: 'Η επόμενη εκδήλωσή σας ξεκινά εδώ', create: 'Ας δημιουργήσουμε μαζί', network: 'Μέλος του διεθνούς δικτύου DMC της ONE Event',
+    nav: 'Υποσέλιδο', sitemap: 'Χάρτης ιστοτόπου', legal: 'Νομικά στοιχεία', registration: 'Αρ. εγγραφής', vat: 'Αρ. ΦΠΑ',
+    follow: 'Ακολουθήστε μας', cookies: 'Ρυθμίσεις cookies', rights: 'Με επιφύλαξη παντός δικαιώματος', privacy: 'Πολιτική απορρήτου',
+    GR: 'Ελλάδα', CY: 'Κύπρος',
+  },
+  es: {
+    next: 'Tu próximo evento empieza aquí', create: 'Hagámoslo realidad', network: 'Parte de ONE Event, la red global de DMC',
+    nav: 'Pie de página', sitemap: 'Mapa del sitio', legal: 'Datos legales', registration: 'N.º de registro', vat: 'N.º de IVA',
+    follow: 'Síguenos', cookies: 'Configuración de cookies', rights: 'Todos los derechos reservados', privacy: 'Política de privacidad',
+    GR: 'Grecia', CY: 'Chipre',
+  },
+}[locale];
 
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
   <div class="wrap footer-cta">
-    <p class="eyebrow" data-reveal>Your next event starts here</p>
-    <a class="cta-link display-lg" href="/get-in-touch/" data-magnetic>
-      Let’s create
+    <p class="eyebrow" data-reveal>{copy.next}</p>
+    <a class="cta-link display-lg" href={localizePath('/get-in-touch/', locale)} data-magnetic>
+      {copy.create}
       <span class="cta-arrow" aria-hidden="true">→</span>
     </a>
   </div>
@@ -19,33 +41,33 @@ const year = new Date().getFullYear();
       <h2 class="foot-title">One Event</h2>
       <p class="foot-line">One Event Greece &amp; Cyprus</p>
       {offices.map((o) => (
-        <p class="foot-line"><strong>{o.country}:</strong> {o.address}</p>
+        <p class="foot-line"><strong>{copy[o.countryCode as "GR" | "CY"]}:</strong> {o.address}</p>
       ))}
-      <a class="foot-link" href="https://one-event.net/our-destinations/greece/">Part of ONE Event, the global DMC network</a>
+      <a class="foot-link" href="https://one-event.net/our-destinations/greece/">{copy.network}</a>
     </div>
-    <nav aria-label="Footer">
-      <h2 class="foot-title">Sitemap</h2>
+    <nav aria-label={copy.nav}>
+      <h2 class="foot-title">{copy.sitemap}</h2>
       {nav.map((item) => (
-        <a class="foot-link" href={item.href}>{item.label}</a>
+        <a class="foot-link" href={localizePath(item.href, locale)}>{navLabel(item, locale)}</a>
       ))}
     </nav>
     <div>
-      <h2 class="foot-title">Legislation</h2>
+      <h2 class="foot-title">{copy.legal}</h2>
       <p class="foot-line">Customice DMC Travel Ltd</p>
-      <p class="foot-line">Registration No.: HE423210</p>
-      <p class="foot-line">VAT No.: 10423210U</p>
+      <p class="foot-line">{copy.registration}: HE423210</p>
+      <p class="foot-line">{copy.vat}: {companyVatNumber}</p>
     </div>
     <div>
-      <h2 class="foot-title">Follow us</h2>
+      <h2 class="foot-title">{copy.follow}</h2>
       <a class="foot-link" href="https://www.linkedin.com/company/one-event" rel="noopener" target="_blank">LinkedIn ↗</a>
-      <button class="foot-link cc-open" type="button" data-open-cookies>Cookie settings</button>
+      <button class="foot-link cc-open" type="button" data-open-cookies>{copy.cookies}</button>
     </div>
   </div>
 
   <div class="footer-base-band">
     <div class="footer-base wrap">
-      <p>© {year} One Event Greece &amp; Cyprus — All rights reserved</p>
-      <a href="/privacy-policy/">Privacy Policy</a>
+      <p>© {year} One Event Greece &amp; Cyprus — {copy.rights}</p>
+      <a href={localizePath('/privacy-policy/', locale)}>{copy.privacy}</a>
     </div>
   </div>
 </footer>

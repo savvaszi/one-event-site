@@ -1,36 +1,50 @@
 ---
 import { nav } from '../data/site.js';
+import { englishPath, headerCopy, languages, localizePath, navLabel, type Locale } from '../data/i18n';
+
+const { locale }: { locale: Locale } = Astro.props;
+const copy = headerCopy[locale];
+const route = englishPath(Astro.url.pathname);
 ---
 
 <header class="site-header" data-header>
   <div class="header-inner">
-<a class="brand" href="/" aria-label="One Event — Home">
+    <a class="brand" href={localizePath('/', locale)} aria-label={`One Event — ${copy.home}`}>
       <img src="/One_event_logo_black.png" alt="One Event" class="brand-logo" />
     </a>
-    <nav class="desktop-nav" aria-label="Primary">
+    <nav class="desktop-nav" aria-label={copy.primary}>
       {nav.map((item) => (
         <a
-          href={item.href}
+          href={localizePath(item.href, locale)}
           class="nav-link"
           data-magnetic
-          aria-current={Astro.url.pathname === item.href ? 'page' : undefined}
+          aria-current={route === item.href ? 'page' : undefined}
         >
-          {item.label}
+          {navLabel(item, locale)}
         </a>
       ))}
     </nav>
-    <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu">
-      <span class="menu-label">Menu</span>
-      <span class="menu-icon" aria-hidden="true"><i></i><i></i></span>
-    </button>
+    <div class="header-controls">
+      <nav class="language-switch" aria-label={copy.language}>
+        {languages.map(({ code, name }) => (
+          <a href={localizePath(route, code)} lang={code} hreflang={code} aria-label={name} aria-current={locale === code ? 'page' : undefined}>
+            {code.toUpperCase()}
+          </a>
+        ))}
+      </nav>
+      <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu">
+        <span class="menu-label">{copy.menu}</span>
+        <span class="menu-icon" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
   </div>
 
-  <div class="mobile-menu" id="mobile-menu" hidden>
-    <nav aria-label="Mobile">
+  <div class="mobile-menu" id="mobile-menu" data-lenis-prevent hidden>
+    <nav aria-label={copy.mobile}>
       {nav.map((item, i) => (
-        <a href={item.href} class="mobile-link">
+        <a href={localizePath(item.href, locale)} class="mobile-link">
           <span class="mobile-index">0{i + 1}</span>
-          {item.label}
+          {navLabel(item, locale)}
         </a>
       ))}
     </nav>
@@ -74,7 +88,36 @@ import { nav } from '../data/site.js';
 
   .desktop-nav {
     display: flex;
-    gap: clamp(1.25rem, 2.5vw, 2.5rem);
+    gap: clamp(0.8rem, 1.5vw, 2rem);
+  }
+
+  .header-controls, .language-switch {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-controls {
+    gap: clamp(0.45rem, 2vw, 1.25rem);
+  }
+
+  .language-switch {
+    gap: 0.15rem;
+  }
+
+  .language-switch a {
+    display: grid;
+    place-items: center;
+    min-width: 28px;
+    min-height: 32px;
+    font-size: 0.75rem;
+    color: var(--marble-dim);
+  }
+
+  .language-switch a:hover,
+  .language-switch a[aria-current='page'] {
+    color: var(--marble);
+    text-decoration: underline;
+    text-underline-offset: 0.28em;
   }
 
   .nav-link {
@@ -155,13 +198,14 @@ import { nav } from '../data/site.js';
     background: var(--sea);
     display: none;
     flex-direction: column;
-    justify-content: center;
-    padding-inline: var(--gutter);
+    justify-content: safe center;
+    overflow-y: auto;
+    padding: 5.5rem var(--gutter) 1.5rem;
   }
 
   .mobile-link {
     font-family: var(--font-display);
-    font-size: clamp(2.2rem, 9vw, 4rem);
+    font-size: clamp(1.65rem, 7vw, 3.5rem);
     line-height: 1.25;
     display: flex;
     align-items: baseline;
@@ -178,16 +222,14 @@ import { nav } from '../data/site.js';
   }
 
   .mobile-foot {
-    position: absolute;
-    bottom: 2rem;
-    left: var(--gutter);
+    margin-top: 1.5rem;
     font-size: 0.72rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--marble-faint);
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1120px) {
     .desktop-nav {
       display: none;
     }

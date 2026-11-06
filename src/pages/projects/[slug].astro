@@ -1,12 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { projects } from '../../data/projects.js';
+import { destinations } from '../../data/site.js';
 
 export function getStaticPaths() {
   return projects.map((p) => ({ params: { slug: p.slug }, props: { p } }));
 }
 
 const { p } = Astro.props;
+const destination = destinations.find((item) => item.project === p.slug);
 const metaLine = [p.location, p.dates, p.guests].filter(Boolean).join(' · ');
 ---
 
@@ -59,6 +61,7 @@ const metaLine = [p.location, p.dates, p.guests].filter(Boolean).join(' · ');
   <section class="proj-nav">
     <div class="wrap proj-nav-inner">
       <a href="/projects/">← All projects</a>
+      {destination && <a href={`/destinations/${destination.slug}/`}>Explore {destination.name} →</a>}
       <a href="/references/">References</a>
     </div>
   </section>
@@ -218,7 +221,9 @@ const metaLine = [p.location, p.dates, p.guests].filter(Boolean).join(' · ');
 
     .proj-nav-inner {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
+      gap: 0.6rem 1.5rem;
       padding-block: 1.6rem;
       font-size: 0.78rem;
       letter-spacing: 0.16em;

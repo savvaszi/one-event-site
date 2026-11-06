@@ -1,0 +1,133 @@
+---
+import type { Locale } from '../data/i18n';
+
+const { locale = 'en' }: { locale?: Locale } = Astro.props;
+
+const testimonials = [
+  {
+    name: 'Mario Biemans',
+    context: {
+      en: 'Founder, The Broker Site · European Broker Meeting in Cyprus',
+      el: 'Ιδρυτής, The Broker Site · European Broker Meeting στην Κύπρο',
+      es: 'Fundador de The Broker Site · European Broker Meeting en Chipre',
+    },
+    quote: {
+      en: 'I would do it again and again in Cyprus with Demetra Onoufriou and ONE Event.',
+      el: 'Θα το ξανάκανα πολλές φορές στην Κύπρο με τη Δήμητρα Ονουφρίου και την ONE Event.',
+      es: 'Lo volvería a hacer una y otra vez en Chipre con Demetra Onoufriou y ONE Event.',
+    },
+    source: 'https://www.linkedin.com/posts/demetra-onoufriou-879bb3139_oneeventhungary-oneeventgreece-oneeventcyprus-activity-7272176739328376832-OJQk',
+    publication: 'LinkedIn',
+  },
+  {
+    name: 'Marta Rybka',
+    context: {
+      en: 'Participant, Cyprus familiarization trip',
+      el: 'Συμμετέχουσα σε ταξίδι γνωριμίας στην Κύπρο',
+      es: 'Participante en un viaje de familiarización en Chipre',
+    },
+    quote: {
+      en: 'To be a part of this experience was really special.',
+      el: 'Ήταν πραγματικά ξεχωριστό να συμμετέχω σε αυτή την εμπειρία.',
+      es: 'Formar parte de esta experiencia fue realmente especial.',
+    },
+    source: 'https://www.linkedin.com/posts/travel-mind-representation-company_exceeding-expectations-our-unforgettable-activity-7189201562903171073-gasv',
+    publication: 'LinkedIn',
+  },
+  {
+    name: 'Karine Martin Guzman',
+    context: {
+      en: 'Corpo Events · Programme in Athens',
+      el: 'Corpo Events · Πρόγραμμα στην Αθήνα',
+      es: 'Corpo Events · Programa en Atenas',
+    },
+    quote: {
+      en: 'Great support, great team, professional service.',
+      el: 'Εξαιρετική υποστήριξη, εξαιρετική ομάδα, επαγγελματική εξυπηρέτηση.',
+      es: 'Gran apoyo, gran equipo y servicio profesional.',
+    },
+    source: 'https://pub-mediabox-storage.rxweb-prd.com/exhibitor/products/exh-a2407b86-1699-4777-9de1-fae26c307600/product-documents/pro-ade25c2e-b9f6-4bff-82c8-bca323e7151c/924d4731-febe-4a55-ab12-ecf53dd13d6a.pdf#page=16',
+    publication: 'IMEX',
+  },
+];
+const copy = {
+  en: { heading: 'What clients and guests say', source: 'Source', translation: '' },
+  el: { heading: 'Τι λένε οι πελάτες και οι συμμετέχοντες', source: 'Πηγή', translation: 'Μετάφραση από τα αγγλικά' },
+  es: { heading: 'Qué dicen clientes y participantes', source: 'Fuente', translation: 'Traducción del inglés' },
+}[locale];
+---
+
+<section class="testimonials" aria-labelledby="testimonials-heading">
+  <div class="wrap">
+    <h2 class="display-md" id="testimonials-heading">{copy.heading}</h2>
+    <div class="testimonials-grid">
+      {testimonials.map(({ quote, name, context, source, publication }) => (
+        <figure>
+          <blockquote cite={source}>“{quote[locale]}”</blockquote>
+          <figcaption>
+            <strong>{name}</strong>
+            <span>{context[locale]}</span>
+            <a href={source}>{copy.source} · {publication} <span aria-hidden="true">↗</span></a>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+    {copy.translation && <p class="translation-note">{copy.translation}</p>}
+  </div>
+</section>
+
+<style>
+  .testimonials {
+    background: var(--sea);
+    border-top: 1px solid var(--line);
+    padding-block: clamp(3.5rem, 7vw, 7rem);
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: clamp(1rem, 2.5vw, 2rem);
+    margin-top: 2rem;
+  }
+
+  figure {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    justify-content: space-between;
+    margin: 0;
+    padding: clamp(1.25rem, 2.5vw, 2.5rem);
+    background: white;
+    border: 1px solid var(--line);
+  }
+
+  blockquote {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2vw, 2rem);
+    line-height: 1.25;
+  }
+
+  figcaption {
+    display: grid;
+    gap: 0.3rem;
+    color: var(--marble-dim);
+  }
+
+  figcaption strong {
+    color: var(--marble);
+  }
+
+  figcaption a {
+    width: fit-content;
+    font-size: 0.85rem;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .translation-note {
+    margin-top: 1rem;
+    color: var(--marble-dim);
+    font-size: 0.85rem;
+  }
+</style>

@@ -1,0 +1,206 @@
+---
+import { contacts, offices } from '../data/site.js';
+
+const { copy, names, destinations } = Astro.props;
+const [primary, secondary] = contacts;
+const draft = {
+  to: primary.email,
+  cc: secondary.email,
+  subject: copy.subject,
+  missing: copy.missing,
+  success: copy.success,
+  labels: { name: copy.name, email: copy.email, dates: copy.dates, destination: copy.destination, guests: copy.guests, details: copy.brief },
+};
+---
+
+<section class="contact-block">
+  <div class="wrap columns">
+    <div>
+      {contacts.map((person, i) => (
+        <article class="contact">
+          <h2>{names[i]}</h2>
+          <p>{i === 0 ? copy.role : copy.secondRole}</p>
+          <a href={`mailto:${person.email}`}>{person.email}</a>
+          {person.phones.map((phone) => <a href={`tel:${phone.replace(/[^+\d]/g, '')}`}>{phone}</a>)}
+        </article>
+      ))}
+    </div>
+    <img src="/img/get-in-touch.jpg" alt="" loading="lazy" decoding="async" />
+  </div>
+</section>
+
+<section class="contact-block brief" id="brief" aria-labelledby="brief-title">
+  <div class="wrap columns">
+    <div>
+      <p class="eyebrow">{copy.brief}</p>
+      <h2 class="display-md" id="brief-title">{copy.briefTitle}</h2>
+      <p>{copy.briefIntro}</p>
+      <p id="brief-note">{copy.note}</p>
+      <a href={`mailto:${primary.email}`}>{copy.direct}</a>
+    </div>
+    <form data-localized-brief={JSON.stringify(draft)} aria-describedby="brief-note">
+      <fieldset disabled>
+        <div class="field-row">
+          <label>{copy.name}<input type="text" name="name" autocomplete="name" required /></label>
+          <label>{copy.email}<input type="email" name="email" autocomplete="email" required /></label>
+        </div>
+        <div class="field-row">
+          <label>{copy.dates}<input type="text" name="dates" placeholder={copy.datesExample} /></label>
+          <label>{copy.destination}
+            <select name="destination">
+              <option>{copy.undecided}</option>
+              {destinations.map(({ name }) => <option>{name}</option>)}
+              <option>{copy.another}</option>
+            </select>
+          </label>
+        </div>
+        <label>{copy.guests}<input type="number" name="guests" min="1" inputmode="numeric" /></label>
+        <label>{copy.details}<textarea name="details" rows="5" required placeholder={copy.detailsExample}></textarea></label>
+        <button class="btn" type="submit">{copy.prepare} <span class="arrow" aria-hidden="true">→</span></button>
+      </fieldset>
+      <p data-brief-status role="status"></p>
+    </form>
+  </div>
+</section>
+
+<section class="contact-block" aria-labelledby="offices-heading">
+  <div class="wrap">
+    <h2 class="display-md" id="offices-heading">{copy.offices}</h2>
+    <div class="columns offices">
+      {offices.map((office, i) => (
+        <article class="office" id={office.id}>
+          <h3>{copy.officeCountries[i]}</h3>
+          <p>{copy.officeAddresses[i]}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-localized-brief]');
+  const config = form?.dataset.localizedBrief;
+  const fieldset = form?.querySelector('fieldset');
+  const status = form?.querySelector<HTMLElement>('[data-brief-status]');
+
+  if (form && config && fieldset && status) {
+    const { to, cc, subject, missing, success, labels } = JSON.parse(config);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const value = (key: string) => String(data.get(key) ?? '').trim() || missing;
+      const subjectLine = [subject, value('destination'), value('name')].join(' — ');
+      const body = Object.entries(labels).map(([key, label]) => `${label}: ${value(key)}`).join('\r\n');
+      const email = `mailto:${to}?cc=${cc}&subject=${encodeURIComponent(subjectLine)}&body=${encodeURIComponent(body)}`;
+
+      status.textContent = success;
+      window.location.href = email;
+    });
+
+    fieldset.disabled = false;
+  }
+</script>
+
+<style>
+  .contact-block {
+    padding-block: clamp(2.5rem, 7vw, 5rem);
+  }
+
+  .columns,
+  .field-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 4vw, 4rem);
+  }
+
+  .columns img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 14px;
+  }
+
+  .contact {
+    border-block-start: 1px solid var(--line);
+    padding-block: 1rem;
+  }
+
+  .contact a {
+    display: block;
+    width: fit-content;
+  }
+
+  a {
+    text-decoration: underline;
+    text-underline-offset: .2em;
+  }
+
+  p {
+    margin-block: .65rem;
+    color: var(--marble-dim);
+  }
+
+  .brief {
+    scroll-margin-top: 6rem;
+    background: var(--sea);
+  }
+
+  form fieldset {
+    display: grid;
+    min-width: 0;
+    gap: 1.25rem;
+    border: 0;
+  }
+
+  .field-row {
+    gap: 1rem;
+  }
+
+  label {
+    display: grid;
+    gap: .5rem;
+    font-size: .88rem;
+    font-weight: 600;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    min-width: 0;
+    min-height: 3rem;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--marble);
+    background: var(--ink);
+    font: 1rem/1.5 var(--font-body);
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  button {
+    width: fit-content;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .offices {
+    margin-top: 1.5rem;
+  }
+
+  .office {
+    padding: 1.5rem;
+    scroll-margin-top: 6rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+
+  @media (max-width: 760px) {
+    .columns, .field-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

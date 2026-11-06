@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { blogCopy, blogPosts, type BlogPost } from '../data/blog';
+import { localizePath, type Locale } from '../data/i18n';
+
+interface Props {
+  locale: Locale;
+  post: BlogPost;
+}
+
+const { locale, post } = Astro.props;
+const { category, title, summary, introduction, sections } = post.copy[locale];
+const copy = blogCopy[locale];
+const relatedPosts = blogPosts.filter(({ slug }) => slug !== post.slug);
+const articleData = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description: summary,
+  image: new URL(post.image, Astro.site).href,
+  inLanguage: locale,
+  mainEntityOfPage: Astro.url.href,
+  publisher: { '@type': 'Organization', name: 'One Event', url: Astro.site?.href },
+};
+---
+
+<BaseLayout locale={locale} title={`${title} | One Event`} description={summary} structuredData={articleData}>
+  <article aria-labelledby="article-title">
+    <header class="article-header">
+      <div class="wrap header-inner">
+        <a class="back-link" href={localizePath('/blog/', locale)}><span aria-hidden="true">←</span> {copy.back}</a>
+        <p class="eyebrow">{category}</p>
+        <h1 id="article-title" class="display-lg">{title}</h1>
+        <p class="summary">{summary}</p>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <img class="article-image" src={post.image} alt="" width="960" height="600" decoding="async" />
+
+      <div class="article-body">
+        <p class="lede">{introduction}</p>
+        {sections.map(({ heading, paragraphs, links }) => (
+          <section>
+            <h2>{heading}</h2>
+            {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+            <ul>
+              {links.map(({ label, href }) => (
+                <li><a href={href.startsWith('/') ? localizePath(href, locale) : href}>{label}</a></li>
+              ))}
+            </ul>
+          </section>
+        ))}
+
+        <a class="btn" href={localizePath('/get-in-touch/#brief', locale)}>{copy.contact} <span class="arrow" aria-hidden="true">→</span></a>
+
+        <aside class="related" aria-labelledby="related-title">
+          <h2 id="related-title">{copy.related}</h2>
+          <ul>
+            {relatedPosts.map(({ slug, copy }) => (
+              <li><a href={localizePath(`/blog/${slug}/`, locale)}>{copy[locale].title}</a></li>
+            ))}
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-header {
+    padding-block: clamp(8rem, 15vw, 11rem) clamp(4.5rem, 11vw, 9rem);
+    background: radial-gradient(60% 100% at 10% 0%, var(--sea-2), transparent), var(--sea);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .header-inner {
+    max-width: 960px;
+  }
+
+  .back-link,
+  li a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .eyebrow {
+    display: block;
+    margin-block: 1.6rem 0.75rem;
+    color: #25604a;
+  }
+
+  h1 {
+    font-size: clamp(2.3rem, 6vw, 4.75rem);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .summary {
+    max-width: 60ch;
+    margin-top: 1rem;
+    color: var(--marble-dim);
+  }
+
+  .article-image {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    margin: clamp(-5rem, -6vw, -2rem) auto 0;
+    border-radius: 14px;
+  }
+
+  .article-body {
+    max-width: 68ch;
+    margin-inline: auto;
+    padding-block: clamp(2rem, 5vw, 4rem) clamp(3rem, 7vw, 6rem);
+  }
+
+  .lede {
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    line-height: 1.55;
+  }
+
+  .article-body section {
+    margin-top: clamp(1.8rem, 4vw, 3rem);
+  }
+
+  h2 {
+    margin-bottom: 0.75rem;
+    font-size: clamp(1.45rem, 3vw, 2.15rem);
+    line-height: 1.15;
+  }
+
+  section p + p {
+    margin-top: 0.8rem;
+  }
+
+  ul {
+    margin-top: 0.85rem;
+    padding-left: 1.15rem;
+  }
+
+  li + li {
+    margin-top: 0.3rem;
+  }
+
+  li a:hover {
+    color: #25604a;
+  }
+
+  .btn {
+    margin-top: 2rem;
+  }
+
+  .related {
+    margin-top: 2.75rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line);
+  }
+</style>

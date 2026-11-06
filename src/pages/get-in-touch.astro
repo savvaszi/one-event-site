@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { contacts, offices } from '../data/site.js';
+import { contacts, destinations, offices } from '../data/site.js';
 
 const heroImage = '/img/get-in-touch.jpg';
 ---
@@ -47,8 +47,7 @@ const heroImage = '/img/get-in-touch.jpg';
           <label>Destination
             <select name="destination">
               <option value="Not decided">Not decided</option>
-              <option>Athens</option><option>Crete</option><option>Cyprus</option>
-              <option>Mykonos</option><option>Peloponnese</option><option>Santorini</option>
+              {destinations.map((destination) => <option>{destination.name}</option>)}
               <option>Another destination in Greece</option>
             </select>
           </label>

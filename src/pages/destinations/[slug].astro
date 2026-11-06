@@ -30,7 +30,9 @@ const next = destinations[(index + 1) % destinations.length];
       <p class="d-tagline" data-split>{dest.tagline}</p>
       <div class="d-hero-actions">
         <a class="btn" href="/get-in-touch/#brief" data-magnetic>Request a proposal <span class="arrow">→</span></a>
-        <a class="d-work-link" href="/references/">View our work <span aria-hidden="true">→</span></a>
+        <a class="d-work-link" href={dest.project ? `/projects/${dest.project}/` : '/references/'}>
+          {dest.project ? 'View the ISST case study' : 'View our work'} <span aria-hidden="true">→</span>
+        </a>
       </div>
     </div>
   </section>

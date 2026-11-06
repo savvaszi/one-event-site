@@ -1,0 +1,783 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LocalizedContact from '../../components/LocalizedContact.astro';
+import LocalizedGallery from '../../components/LocalizedGallery.astro';
+import LocalizedGuide from '../../components/LocalizedGuide.astro';
+import Testimonials from '../../components/Testimonials.astro';
+import { localizePath } from '../../data/i18n';
+import { companyVatNumber, destinations, eventFigures, team } from '../../data/site.js';
+import { projects } from '../../data/projects.js';
+import { destinationCopy } from '../../data/localizedDestinations.js';
+import { getLocalizedGuide } from '../../data/localizedGuide.js';
+import { pageCopy } from '../../data/localizedPages.js';
+import { getLocalizedWork } from '../../data/localizedWork.js';
+
+export function getStaticPaths() {
+  const pages = [
+    { path: undefined, kind: 'home' },
+    { path: 'the-agency', kind: 'agency' },
+    { path: 'destinations', kind: 'destinations' },
+    { path: 'destinations/greece', kind: 'guide' },
+    { path: 'references', kind: 'references' },
+    { path: 'projects', kind: 'projects' },
+    { path: 'get-in-touch', kind: 'contact' },
+    { path: 'privacy-policy', kind: 'privacy' },
+    ...destinations.map(({ slug }) => ({ path: `destinations/${slug}`, kind: 'destination' })),
+    ...projects.map(({ slug }) => ({ path: `projects/${slug}`, kind: 'project' })),
+  ];
+  return (['el', 'es'] as const).flatMap((locale) => pages.map(({ path, kind }) => ({
+    params: { locale, path },
+    props: { locale, kind },
+  })));
+}
+
+const { locale, kind } = Astro.props;
+const copy = pageCopy[locale];
+const { common, home, agency, privacy, contact } = copy;
+const guide = getLocalizedGuide(locale);
+const { projects: localProjects, references, gallery } = getLocalizedWork(locale);
+const localDestinations = destinations.map((destination) => ({
+  ...destination,
+  ...destinationCopy[destination.slug][locale],
+}));
+const slug = Astro.params.path?.split('/').at(-1);
+const destinationIndex = localDestinations.findIndex((item) => item.slug === slug);
+const destination = localDestinations[destinationIndex];
+const previous = localDestinations.at(destinationIndex - 1);
+const next = localDestinations[(destinationIndex + 1) % localDestinations.length];
+const project = localProjects.find((item) => item.slug === slug);
+const page = kind === 'guide' ? guide : copy[kind];
+const title = kind === 'destination' ? `${destination.name} | ${copy.destinations.title}`
+  : kind === 'project' ? project?.title : page.title;
+const description = kind === 'destination' ? `${destination.tagline} ${common.localTeam}`
+  : kind === 'project' ? project?.summary : page.description;
+const structuredData = kind === 'guide' ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  url: Astro.url.href,
+  inLanguage: locale,
+  mainEntity: guide.faqs.map(([question, answer]) => ({
+    '@type': 'Question',
+    name: question,
+    acceptedAnswer: { '@type': 'Answer', text: answer },
+  })),
+} : undefined;
+const link = (path: string) => localizePath(path, locale);
+const destLink = (slug: string) => link(`/destinations/${slug}/`);
+const caseLink = (slug: string) => link(`/projects/${slug}/`);
+const briefLink = link('/get-in-touch/#brief');
+const awardLinks = [
+  'https://worldmiceawards.com/award/greece-best-mice-organiser/2026',
+  'https://worldmiceawards.com/award/cyprus-best-mice-organiser/2026',
+];
+const eventTotals = ['∞', `${eventFigures.total}+`, new Intl.NumberFormat(locale, { useGrouping: 'always' }).format(eventFigures.largest)];
+const santorini = localDestinations.find((item) => item.slug === 'santorini')!;
+const photoCredits = (kind === 'destination' ? [destination] : localDestinations)
+  .filter((item) => item?.photoCredit);
+const featured = [
+  ...references.filter((item) => item.project),
+  ...references.filter((item) => !item.project),
+].slice(0, 8);
+const moreReferences = references.filter((item) => !featured.includes(item));
+---
+
+<BaseLayout locale={locale} title={`${title} | One Event`} description={description} structuredData={structuredData}>
+  {kind === 'home' && (
+    <>
+      <section class="image-hero home-hero">
+        <img src={santorini.image} alt={home.heroAlt} fetchpriority="high" />
+        <div class="wrap hero-content">
+          <p class="eyebrow hero-eyebrow">{home.eyebrow}</p>
+          <h1 class="display-xl hero-title">{home.heading}</h1>
+          <p class="lede">{home.intro}</p>
+          <div class="awards">
+            <strong>World MICE Awards 2026</strong>
+            <ul>
+              {home.awards.map((label, index) => <li><a href={awardLinks[index]}>{label}</a></li>)}
+            </ul>
+          </div>
+          <div class="actions">
+            <a class="btn" href={briefLink}>{common.proposal} <span class="arrow" aria-hidden="true">→</span></a>
+            <a class="text-link" href={link('/references/')}>{common.seeWork}</a>
+          </div>
+          <a class="text-link hero-scroll" href="#manifesto">{home.scroll} <span aria-hidden="true">↓</span></a>
+        </div>
+      </section>
+      <section class="manifesto" id="manifesto" data-manifesto>
+        <div class="manifesto-sticky">
+          {home.principles.map((principle) => <h2 class="display-lg manifesto-item">{principle}</h2>)}
+        </div>
+      </section>
+      <section class="section-pad">
+        <div class="wrap columns">
+          <img class="intro-image" src={localDestinations[0].image} alt={localDestinations[0].name} loading="lazy" decoding="async" />
+          <div class="prose">
+            <p class="eyebrow">{agency.title}</p>
+            <h2 class="display-md">{home.agencyHeading}</h2>
+            {home.agency.map((paragraph) => <p>{paragraph}</p>)}
+            <a class="btn" href={link('/the-agency/')}>{home.agencyLink} <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+      <section class="section-pad soft" aria-label={home.numberTitle}>
+        <dl class="wrap totals">
+          {home.numberLabels.map((label, index) => (
+            <div>
+              <dt>{label}</dt>
+              <dd>{eventTotals[index]}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    </>
+  )}
+
+  {['agency', 'destinations', 'references', 'projects', 'contact', 'privacy'].includes(kind) && (
+    <section class="plain-hero">
+      <div class="wrap">
+        <p class="eyebrow">{page.eyebrow ?? page.title}</p>
+        <h1 class="display-lg">{page.heading ?? page.title}</h1>
+        {kind === 'destinations' && (
+          <>
+            <p class="lede">{copy.destinations.intro}</p>
+            <a class="text-link guide-link" href={destLink('greece')}>{common.readGuide} <span aria-hidden="true">→</span></a>
+          </>
+        )}
+      </div>
+    </section>
+  )}
+
+  {kind === 'agency' && (
+    <>
+      <section class="section-pad">
+        <div class="wrap columns">
+          <div class="prose">
+            <h2 class="display-md">{agency.storyTitle}</h2>
+            {agency.story.map((paragraph) => <p>{paragraph}</p>)}
+          </div>
+          <div class="cards">
+            {agency.values.map(([heading, paragraph]) => (
+              <article class="info-card">
+                <h3>{heading}</h3>
+                <p>{paragraph}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section class="section-pad soft" aria-labelledby="team-title">
+        <div class="wrap">
+          <h2 class="display-md" id="team-title">{agency.teamTitle}</h2>
+          <div class="team-grid">
+            {agency.team.map((member, i) => (
+              <article class="team-card">
+                <img src={team[i].image} alt={`${agency.portrait} · ${member.name}`} loading="lazy" decoding="async" />
+                <div class="prose">
+                  <h3>{member.name}</h3>
+                  <p class="eyebrow">{member.role}</p>
+                  <p>{member.bio}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  )}
+
+  {(kind === 'home' || kind === 'destinations') && (
+    <section class="section-pad" aria-label={home.destinationTitle}>
+      <div class="wrap">
+        {kind === 'home' && <h2 class="display-md section-title">{home.destinationTitle}</h2>}
+        <div class="card-grid">
+          {localDestinations.map((item) => (
+            <a class="image-card" href={destLink(item.slug)}>
+              <img src={item.image} alt={item.imageAlt ?? ''} loading="lazy" decoding="async" />
+              <div>
+                {kind === 'home' ? <h3>{item.name}</h3> : <h2>{item.name}</h2>}
+                <p>{item.tagline}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+        {kind === 'home' && (
+          <div class="actions">
+            <a class="text-link" href={destLink('greece')}>{common.readGuide}</a>
+            <a class="text-link" href={link('/destinations/#photo-credits')}>{common.photoCredits}</a>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  {kind === 'destination' && (
+    <>
+      <section class="image-hero">
+        <img src={destination.image} alt={destination.imageAlt ?? destination.name} fetchpriority="high" />
+        <div class="wrap hero-content">
+          <a class="text-link back-link" href={link('/destinations/')}>← {common.allDestinations}</a>
+          <h1 class="display-xl">{destination.name}</h1>
+          <p class="lede">{destination.tagline}</p>
+          <div class="actions">
+            <a class="btn" href={briefLink}>{common.proposal} <span class="arrow" aria-hidden="true">→</span></a>
+            <a class="text-link" href={link('/references/')}>{common.seeWork}</a>
+          </div>
+        </div>
+      </section>
+      <section class="section-pad">
+        <div class="wrap">
+          <h2 class="display-md section-title">{common.highlights}</h2>
+          <div class="card-grid">
+            {destination.highlights.map(([heading, paragraph]) => (
+              <article class="info-card"><h3>{heading}</h3><p>{paragraph}</p></article>
+            ))}
+          </div>
+          {destination.project && (
+            <a class="text-link guide-link" href={caseLink(destination.project)}>
+              {common.viewProject} · {localProjects.find(({ slug }) => slug === destination.project)?.title}
+            </a>
+          )}
+        </div>
+      </section>
+      <nav class="section-nav soft" aria-label={common.moreDestinations}>
+        <div class="wrap actions">
+          <a href={destLink(previous.slug)}>← {previous.name}</a>
+          <a href={destLink(next.slug)}>{next.name} →</a>
+        </div>
+      </nav>
+    </>
+  )}
+
+  {(kind === 'destination' || kind === 'destinations') && photoCredits.length > 0 && (
+    <section class="photo-credits wrap" id="photo-credits" aria-labelledby="photo-credits-title">
+      <h2 id="photo-credits-title">{common.photoCredits}</h2>
+      {photoCredits.map(({ photoCredit: credit }) => (
+        <p><a class="text-link" href={credit.source}>{credit.title}</a> · {common.photoBy} {credit.name} · <a class="text-link" href={credit.licenseUrl}>{credit.license}</a>{credit.changes && ` · ${common.resized}`}</p>
+      ))}
+    </section>
+  )}
+
+  {kind === 'destinations' && (
+    <section class="section-pad soft">
+      <div class="wrap prose">
+        <h2 class="display-md">{copy.destinations.networkTitle}</h2>
+        <p>{copy.destinations.networkBody}</p>
+        <a class="btn" href="https://one-event.net/">{copy.destinations.networkLink} <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  )}
+
+  {kind === 'guide' && <LocalizedGuide locale={locale} guide={guide} common={common} />}
+
+  {(kind === 'home' || kind === 'projects') && (
+    <section class:list={['section-pad', { soft: kind === 'home' }]} aria-label={kind === 'home' ? home.clientTitle : copy.projects.title}>
+      <div class="wrap">
+        {kind === 'home' && <h2 class="display-md section-title">{home.clientTitle}</h2>}
+        <div class="card-grid">
+          {localProjects.map((item) => (
+            <a class="work-card" href={caseLink(item.slug)}>
+              <img src={item.cover} alt="" loading="lazy" decoding="async" />
+              <div>
+                {kind === 'home' ? <h3>{item.client}</h3> : <h2>{item.title}</h2>}
+                <p>{[item.location, item.dates].filter(Boolean).join(' · ')}</p>
+                <span class="text-link">{common.viewProject} <span aria-hidden="true">→</span></span>
+              </div>
+            </a>
+          ))}
+        </div>
+        {kind === 'home' && <a class="text-link guide-link" href={link('/references/')}>{common.references} <span aria-hidden="true">→</span></a>}
+      </div>
+    </section>
+  )}
+
+  {kind === 'home' && <Testimonials locale={locale} />}
+
+  {kind === 'project' && project && (
+    <>
+      <section class="image-hero project-hero">
+        <img src={project.cover} alt="" fetchpriority="high" />
+        <div class="wrap hero-content">
+          <p class="eyebrow">{project.client}</p>
+          <h1 class="display-lg">{project.title}</h1>
+          <p class="lede">{[project.location, project.dates, project.guests].filter(Boolean).join(' · ')}</p>
+        </div>
+      </section>
+      <section class="section-pad">
+        <div class="wrap">
+          <dl class="facts">
+            <div><dt>{common.location}</dt><dd>{project.location}</dd></div>
+            <div><dt>{common.dates}</dt><dd>{project.dates}</dd></div>
+            {project.guests && <div><dt>{common.guests}</dt><dd>{project.guests}</dd></div>}
+            {project.photographer && <div><dt>{common.photographer}</dt><dd>{project.photographer}</dd></div>}
+          </dl>
+          <div class="prose">
+            {project.body.map((paragraph) => <p>{paragraph}</p>)}
+            {project.video && <a class="text-link" href={project.video}>{common.video} <span aria-hidden="true">→</span></a>}
+            {project.slug === 'isst-conference' && <a class="text-link" href={destLink('thessaloniki')}>{common.explore} {destinationCopy.thessaloniki[locale].name} <span aria-hidden="true">→</span></a>}
+          </div>
+        </div>
+      </section>
+      <LocalizedGallery project={project} labels={common} />
+      <nav class="section-nav soft" aria-label={common.projects}>
+        <div class="wrap actions">
+          <a href={link('/projects/')}>← {common.allProjects}</a>
+          <a href={link('/references/')}>{common.references}</a>
+        </div>
+      </nav>
+    </>
+  )}
+
+  {kind === 'references' && (
+    <>
+      <section class="section-pad" aria-label={copy.references.title}>
+        <div class="wrap reference-list">
+          {featured.map((item) => (
+            <article class="reference-row">
+              <h2>{item.project ? <a href={caseLink(item.project)}>{item.title}</a> : item.title}</h2>
+              <p>{item.meta}</p>
+              {item.video && <a class="text-link" href={item.video} aria-label={`${common.video} · ${item.title}`}>{common.video}</a>}
+              {item.project && <a class="text-link" href={caseLink(item.project)} aria-label={`${common.photographs} · ${item.title}`}>{common.photographs}</a>}
+            </article>
+          ))}
+        </div>
+      </section>
+      <section class="section-pad soft">
+        <div class="wrap">
+          <h2 class="display-md section-title">{copy.references.galleryTitle}</h2>
+          <div class="card-grid reference-gallery">
+            {gallery.map((item) => <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />)}
+          </div>
+        </div>
+      </section>
+      <section class="section-pad">
+        <div class="wrap">
+          <h2 class="display-md section-title">{copy.references.moreTitle}</h2>
+          <ul class="reference-more">
+            {moreReferences.map((item) => (
+              <li><a class="text-link" href={item.video}>{item.title}</a> <span>{item.meta}</span></li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
+  )}
+
+  {kind === 'contact' && <LocalizedContact copy={contact} names={agency.team.map(({ name }) => name)} destinations={localDestinations} />}
+
+  {kind === 'privacy' && (
+    <article class="section-pad wrap policy prose">
+      {privacy.sections.map(([heading, paragraph]) => (
+        <section><h2>{heading}</h2><p>{paragraph}</p></section>
+      ))}
+      <section>
+        <h2>{privacy.controller}</h2>
+        <p>Customice DMC Travel Ltd · {privacy.registration} HE423210 · {privacy.vat} {companyVatNumber}</p>
+        {contact.officeCountries.map((country, index) => <p>{country} · {contact.officeAddresses[index]}</p>)}
+      </section>
+    </article>
+  )}
+</BaseLayout>
+
+<style>
+  .plain-hero {
+    padding-block: clamp(9rem, 21vh, 14rem) clamp(3rem, 7vw, 6rem);
+    background: radial-gradient(55% 75% at 85% 0%, rgba(72, 167, 126, .12), transparent 65%), var(--sea);
+    border-block-end: 1px solid var(--line);
+  }
+
+  .image-hero {
+    isolation: isolate;
+    display: grid;
+    align-items: end;
+    min-height: 76svh;
+    overflow: clip;
+  }
+
+  .home-hero {
+    min-height: 100svh;
+  }
+
+  .image-hero > img,
+  .image-hero::after {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-hero > img {
+    object-position: 50% 30%;
+  }
+
+  .image-hero::after {
+    content: '';
+    background: linear-gradient(180deg, rgba(255, 255, 255, .5), rgba(255, 255, 255, .16) 28%, rgba(255, 255, 255, .94) 78%, #fff);
+  }
+
+  .hero-content {
+    padding-block: clamp(8rem, 20vh, 12rem) clamp(2.75rem, 7vw, 5rem);
+  }
+
+  .plain-hero h1,
+  .image-hero h1 {
+    max-width: 19ch;
+    overflow-wrap: anywhere;
+  }
+
+  .home-hero h1 {
+    max-width: 15ch;
+  }
+
+  .lede {
+    max-width: 54ch;
+    margin-top: 1.25rem;
+    color: var(--marble-dim);
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+  }
+
+  .awards {
+    width: fit-content;
+    margin-top: 1rem;
+    padding: .65rem .85rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .88);
+  }
+
+  .awards ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .2rem 1rem;
+    list-style: none;
+    font-size: .88rem;
+  }
+
+  .awards a,
+  .text-link {
+    text-decoration: underline;
+    text-underline-offset: .22em;
+  }
+
+  .hero-scroll {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-size: .88rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .8rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .section-pad {
+    padding-block: clamp(3rem, 8vw, 7rem);
+  }
+
+  .soft {
+    background: var(--sea);
+  }
+
+  .manifesto {
+    height: 370vh;
+    background: var(--sea);
+  }
+
+  .manifesto-sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    padding: var(--gutter);
+    text-align: center;
+  }
+
+  .manifesto-item {
+    grid-area: 1 / 1;
+    max-width: 20ch;
+  }
+
+  :global(.no-js) .manifesto,
+  :global(.reduced-motion) .manifesto {
+    height: auto;
+  }
+
+  :global(.no-js) .manifesto-sticky,
+  :global(.reduced-motion) .manifesto-sticky {
+    position: static;
+    height: auto;
+    gap: 2rem;
+    padding-block: 3rem;
+  }
+
+  :global(.no-js) .manifesto-item,
+  :global(.reduced-motion) .manifesto-item {
+    grid-area: auto;
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+
+  .intro-image {
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    object-fit: cover;
+    border-radius: 14px;
+  }
+
+  .prose {
+    max-width: 70ch;
+  }
+
+  .prose p:not(.eyebrow) {
+    margin-top: .9rem;
+    color: var(--marble-dim);
+  }
+
+  .prose .text-link,
+  .prose .btn,
+  .guide-link {
+    display: block;
+    width: fit-content;
+    margin-top: 1.25rem;
+  }
+
+  .prose .btn {
+    display: inline-flex;
+  }
+
+  .totals,
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+
+  .totals > div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    padding: 1rem 0;
+    border-block-start: 1px solid var(--line);
+  }
+
+  .totals dd {
+    font: clamp(2.25rem, 5vw, 4rem)/1.2 var(--font-display);
+  }
+
+  .totals dt,
+  .facts dt {
+    color: var(--marble-dim);
+  }
+
+  .section-title {
+    margin-block-end: 1.5rem;
+  }
+
+  .image-card,
+  .work-card,
+  .info-card {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+
+  .image-card:hover,
+  .work-card:hover {
+    border-color: var(--accent);
+  }
+
+  .image-card img,
+  .work-card img,
+  .reference-gallery img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+
+  .image-card div,
+  .work-card div,
+  .info-card {
+    padding: clamp(1.1rem, 2.5vw, 1.75rem);
+  }
+
+  .image-card h2,
+  .image-card h3,
+  .work-card h2,
+  .work-card h3,
+  .team-card h3,
+  .info-card h3 {
+    font-size: clamp(1.25rem, 2.4vw, 1.85rem);
+  }
+
+  .image-card p,
+  .work-card p,
+  .info-card p {
+    margin-top: .5rem;
+    color: var(--marble-dim);
+  }
+
+  .work-card .text-link {
+    display: inline-block;
+    margin-top: .75rem;
+  }
+
+  .cards,
+  .team-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .team-grid {
+    gap: clamp(2rem, 5vw, 4rem);
+    margin-top: 2rem;
+  }
+
+  .team-card {
+    display: grid;
+    grid-template-columns: minmax(0, 270px) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+
+  .team-card img,
+  .reference-gallery img {
+    border-radius: 12px;
+  }
+
+  .team-card .eyebrow {
+    margin-block: .6rem 0;
+    letter-spacing: .12em;
+  }
+
+  .photo-credits {
+    padding-block: 1.25rem 2rem;
+    scroll-margin-top: 5.5rem;
+  }
+
+  .photo-credits h2 {
+    font-size: 1.1rem;
+  }
+
+  .photo-credits p {
+    margin-top: .5rem;
+    font-size: .9rem;
+    color: var(--marble-dim);
+  }
+
+  .section-nav {
+    padding-block: 1.2rem;
+  }
+
+  .section-nav .actions {
+    justify-content: space-between;
+    margin: 0;
+  }
+
+  .section-nav a {
+    text-decoration: underline;
+    text-underline-offset: .25em;
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 3rem;
+    margin-bottom: 1.8rem;
+    padding-block: 1rem;
+    border-block: 1px solid var(--line);
+  }
+
+  .facts dt {
+    font-size: .85rem;
+  }
+
+  .facts dd {
+    margin-top: .25rem;
+    font: 1.2rem var(--font-display);
+  }
+
+  .reference-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .5rem 1rem;
+    padding-block: 1.1rem;
+    border-block-end: 1px solid var(--line);
+  }
+
+  .reference-row:first-child {
+    border-block-start: 1px solid var(--line);
+  }
+
+  .reference-row h2 {
+    flex: 1 1 240px;
+    font-size: clamp(1.2rem, 2.3vw, 1.75rem);
+  }
+
+  .reference-row p,
+  .reference-more span {
+    color: var(--marble-dim);
+  }
+
+  .reference-more {
+    padding-inline-start: 1rem;
+  }
+
+  .reference-more li + li {
+    margin-top: .65rem;
+  }
+
+  .policy {
+    display: grid;
+    gap: 1.6rem;
+  }
+
+  .policy h2 {
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+  }
+
+  @media (max-width: 900px) {
+    .manifesto {
+      height: auto;
+    }
+
+    .manifesto-sticky {
+      position: static;
+      height: auto;
+      gap: 2rem;
+      padding-block: 3rem;
+    }
+
+    .manifesto-item {
+      grid-area: auto;
+      font-size: clamp(1.5rem, 4vw, 2.3rem);
+    }
+  }
+
+  @media (max-width: 680px) {
+    .columns,
+    .team-card {
+      grid-template-columns: 1fr;
+    }
+
+    .team-card img {
+      max-width: 240px;
+    }
+  }
+</style>

@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { blogCopy, blogPosts } from '../data/blog';
+import { localizePath, type Locale } from '../data/i18n';
+
+interface Props { locale: Locale }
+
+const { locale } = Astro.props;
+const copy = blogCopy[locale];
+---
+
+<BaseLayout locale={locale} title={`${copy.heading} | ${copy.label} | One Event`} description={copy.introduction}>
+  <header class="blog-header">
+    <div class="wrap">
+      <p class="eyebrow">{copy.label}</p>
+      <h1 class="display-lg">{copy.heading}</h1>
+      <p class="intro">{copy.introduction}</p>
+    </div>
+  </header>
+
+  <ul class="wrap posts">
+    {blogPosts.map(({ slug, image, copy }) => {
+      const { category, title, summary } = copy[locale];
+
+      return (
+        <li>
+          <a class="post-card" href={localizePath(`/blog/${slug}/`, locale)}>
+            <img src={image} alt="" width="960" height="600" decoding="async" />
+            <div class="post-text">
+              <p class="eyebrow">{category}</p>
+              <h2>{title} <span aria-hidden="true">↗</span></h2>
+              <p>{summary}</p>
+            </div>
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</BaseLayout>
+
+<style>
+  .blog-header {
+    padding-block: clamp(9rem, 18vw, 13rem) clamp(3rem, 7vw, 5rem);
+    background: radial-gradient(60% 100% at 10% 0%, var(--sea-2), transparent), var(--sea);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .eyebrow {
+    margin-bottom: 0.75rem;
+    color: #25604a;
+  }
+
+  h1 {
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+
+  .intro {
+    max-width: 60ch;
+    margin-top: 1rem;
+    color: var(--marble-dim);
+  }
+
+  .posts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.25rem, 3vw, 3rem);
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(4rem, 9vw, 7rem);
+    list-style: none;
+  }
+
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    transition: border-color 200ms var(--ease-out);
+  }
+
+  .post-card:is(:hover, :focus-visible) {
+    border-color: #25604a;
+  }
+
+  .post-card:is(:hover, :focus-visible) h2 {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.16em;
+  }
+
+  .post-card img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+
+  .post-text {
+    padding: clamp(1.2rem, 3vw, 2rem);
+  }
+
+  h2 {
+    max-width: 28ch;
+    font-size: clamp(1.55rem, 3vw, 2.55rem);
+    line-height: 1.12;
+  }
+
+  h2 span {
+    color: #25604a;
+  }
+
+  h2 + p {
+    margin-top: 0.65rem;
+    color: var(--marble-dim);
+  }
+
+  @media (max-width: 670px) {
+    .posts { grid-template-columns: 1fr; }
+  }
+</style>

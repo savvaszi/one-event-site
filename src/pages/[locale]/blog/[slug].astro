@@ -1,0 +1,16 @@
+---
+import BlogArticle from '../../../components/BlogArticle.astro';
+import { blogPosts } from '../../../data/blog';
+import { languages } from '../../../data/i18n';
+
+export function getStaticPaths() {
+  return languages.filter(({ code }) => code !== 'en').flatMap(({ code }) => blogPosts.map((post) => ({
+    params: { locale: code, slug: post.slug },
+    props: { locale: code, post },
+  })));
+}
+
+const { locale, post } = Astro.props;
+---
+
+<BlogArticle locale={locale} post={post} />
