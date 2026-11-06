@@ -1,5 +1,3 @@
-export const WP = 'https://one-event.gr/wp-content/uploads';
-
 export const companyVatNumber = 'CY10423210U';
 export const eventFigures = { total: 120, largest: 1500 };
 
@@ -204,14 +202,14 @@ export const references = [
 ];
 
 export const gallery = [
-  { src: `${WP}/2022/10/Philopappou-3.jpg`, alt: 'Event at Philopappou Hill, Athens' },
-  { src: `${WP}/2022/10/Bounty.jpg`, alt: 'Bounty themed event' },
-  { src: `${WP}/2022/10/Lets-Zorba-3.jpg`, alt: 'Let’s Zorba traditional night' },
-  { src: `${WP}/2022/10/Dionysos-Zonars-1.jpg`, alt: 'Dionysus marbles awards' },
-  { src: `${WP}/2022/10/Sunset-Beach-Dinner-1.jpg`, alt: 'Sunset beach dinner' },
-  { src: `${WP}/2022/10/Salone-1.jpg`, alt: 'Salone gala' },
-  { src: `${WP}/2022/10/Raft-Building-2.jpg`, alt: 'Raft building team activity' },
-  { src: `${WP}/2022/10/Traditional-Village-Fiesta-1.jpg`, alt: 'Traditional village fiesta' },
+  { src: '/img/references/Philopappou-3.jpg', alt: 'Event at Philopappou Hill, Athens' },
+  { src: '/img/references/Bounty.jpg', alt: 'Bounty themed event' },
+  { src: '/img/references/Lets-Zorba-3.jpg', alt: 'Let’s Zorba traditional night' },
+  { src: '/img/references/Dionysos-Zonars-1.jpg', alt: 'Dionysus marbles awards' },
+  { src: '/img/references/Sunset-Beach-Dinner-1.jpg', alt: 'Sunset beach dinner' },
+  { src: '/img/references/Salone-1.jpg', alt: 'Salone gala' },
+  { src: '/img/references/Raft-Building-2.jpg', alt: 'Raft building team activity' },
+  { src: '/img/references/Traditional-Village-Fiesta-1.jpg', alt: 'Traditional village fiesta' },
 ];
 
 export const contacts = [

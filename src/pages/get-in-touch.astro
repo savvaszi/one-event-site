@@ -35,26 +35,28 @@ const heroImage = '/img/get-in-touch.jpg';
         <p class="eyebrow">Your event brief</p>
         <h2 class="display-md" id="brief-title" data-split>Tell us what you’re planning</h2>
         <p>Share the essentials and prepare a structured email to our team. You can review everything before sending.</p>
-        <p class="brief-note">Nothing is stored or sent by this page. The button opens your email app; you can also email us directly above.</p>
+        <p class="brief-note" id="brief-note">Nothing is stored or sent by this page. The button opens your email app; you can also email us directly above.</p>
       </div>
-      <form class="brief-form" id="brief-form">
-        <div class="field-row">
-          <label>Name<input type="text" name="name" autocomplete="name" required /></label>
-          <label>Work email<input type="email" name="email" autocomplete="email" required /></label>
-        </div>
-        <div class="field-row">
-          <label>Preferred dates<input type="text" name="dates" placeholder="e.g. 12–15 May 2027" /></label>
-          <label>Destination
-            <select name="destination">
-              <option value="Not decided">Not decided</option>
-              {destinations.map((destination) => <option>{destination.name}</option>)}
-              <option>Another destination in Greece</option>
-            </select>
-          </label>
-        </div>
-        <label>Estimated guests<input type="number" name="guests" min="1" inputmode="numeric" placeholder="e.g. 120" /></label>
-        <label>What would you like to create?<textarea name="details" rows="5" required placeholder="Event type, goals, venues or experiences you have in mind"></textarea></label>
-        <button class="btn" type="submit">Prepare email <span class="arrow" aria-hidden="true">→</span></button>
+      <form class="brief-form" id="brief-form" aria-describedby="brief-note">
+        <fieldset disabled>
+          <div class="field-row">
+            <label>Name<input type="text" name="name" autocomplete="name" required /></label>
+            <label>Work email<input type="email" name="email" autocomplete="email" required /></label>
+          </div>
+          <div class="field-row">
+            <label>Preferred dates<input type="text" name="dates" placeholder="e.g. 12–15 May 2027" /></label>
+            <label>Destination
+              <select name="destination">
+                <option value="Not decided">Not decided</option>
+                {destinations.map((destination) => <option>{destination.name}</option>)}
+                <option>Another destination in Greece</option>
+              </select>
+            </label>
+          </div>
+          <label>Estimated guests<input type="number" name="guests" min="1" inputmode="numeric" placeholder="e.g. 120" /></label>
+          <label>What would you like to create?<textarea name="details" rows="5" required placeholder="Event type, goals, venues or experiences you have in mind"></textarea></label>
+          <button class="btn" type="submit">Prepare email <span class="arrow" aria-hidden="true">→</span></button>
+        </fieldset>
         <p class="form-status" id="brief-status" role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -163,9 +165,17 @@ const heroImage = '/img/get-in-touch.jpg';
       font-size: .86rem;
     }
 
-    .brief-form {
+    .brief-form,
+    .brief-form fieldset {
       display: grid;
       gap: 1.25rem;
+    }
+
+    .brief-form fieldset {
+      min-width: 0;
+      border: 0;
+      padding: 0;
+      margin: 0;
     }
 
     .field-row {
@@ -263,6 +273,7 @@ const heroImage = '/img/get-in-touch.jpg';
   <script>
     const form = document.querySelector<HTMLFormElement>('#brief-form')!;
     const status = document.querySelector<HTMLElement>('#brief-status')!;
+    const fieldset = form.querySelector('fieldset')!;
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
@@ -285,5 +296,7 @@ const heroImage = '/img/get-in-touch.jpg';
       status.textContent = 'Your email app should open now with the brief ready to review and send.';
       window.location.href = `mailto:aonoufriou@one-event.net?cc=donoufriou@one-event.net&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
+
+    fieldset.disabled = false;
   </script>
 </BaseLayout>
