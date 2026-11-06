@@ -7,7 +7,7 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
 
 <BaseLayout
   title="Corporate Events & Destination Management in Greece & Cyprus | One Event"
-  description="Plan corporate events, conferences and incentives across Greece and Cyprus with One Event’s local destination management team."
+  description="One Event, 2026 Best MICE Organiser in Greece and Cyprus, plans corporate events, conferences and incentive travel across both destinations."
 >
   <section class="hero" aria-label="Intro">
     <div class="hero-media">
@@ -18,6 +18,13 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
       <p class="eyebrow hero-eyebrow">Destination Management · Greece &amp; Cyprus</p>
       <h1 class="display-xl hero-title" data-hero-line>We create moments<br />that <em>inspire</em></h1>
       <p class="hero-summary">Corporate events, conferences and incentive experiences, planned and delivered locally across Greece and Cyprus.</p>
+      <div class="hero-awards">
+        <p>World MICE Awards 2026</p>
+        <ul>
+          <li><a href="https://worldmiceawards.com/award/greece-best-mice-organiser/2026">Greece’s Best MICE Organiser</a></li>
+          <li><a href="https://worldmiceawards.com/award/cyprus-best-mice-organiser/2026">Cyprus’s Best MICE Organiser</a></li>
+        </ul>
+      </div>
       <div class="hero-actions">
         <a class="btn" href="/get-in-touch/#brief" data-magnetic>Request a proposal <span class="arrow">→</span></a>
         <a class="hero-work-link" href="/references/">View our work <span aria-hidden="true">→</span></a>
@@ -78,7 +85,8 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
     <div class="dest-stage">
       <div class="wrap dest-head">
         <p class="eyebrow">Our playground</p>
-        <h2 class="display-lg" data-split>Six destinations.<br />Infinite stories.</h2>
+        <h2 class="display-lg" data-split>Explore Greece<br />and Cyprus.</h2>
+        <a class="destination-photo-credits" href="/destinations/#photo-credits">Destination photo credits</a>
       </div>
       <div class="hscroll-track" data-hscroll-track>
         {destinations.map((d) => (
@@ -193,6 +201,33 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
       letter-spacing: 0.3em;
       text-transform: uppercase;
       color: var(--marble-dim);
+    }
+
+    .hero-awards {
+      width: fit-content;
+      margin-top: 1rem;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--line);
+      border-radius: 0.5rem;
+      background: var(--sea);
+      font-size: 0.85rem;
+    }
+
+    .hero-awards p {
+      font-weight: 700;
+    }
+
+    .hero-awards ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 1rem;
+      list-style: none;
+    }
+
+    .hero-awards a {
+      color: var(--marble);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
     }
 
     .hero-scroll-bar {
@@ -318,6 +353,13 @@ const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
 
     .dest-head {
       margin-bottom: clamp(3rem, 6vw, 5rem);
+    }
+
+    .destination-photo-credits {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-size: 0.8rem;
+      text-decoration: underline;
     }
 
     .hscroll-track {

@@ -1,0 +1,32 @@
+---
+interface Props {
+  credit: {
+    title: string;
+    name: string;
+    source: string;
+    license: string;
+    licenseUrl: string;
+    changes?: string;
+  };
+}
+
+const { credit } = Astro.props;
+---
+
+<p class="photo-credit">
+  <a href={credit.source}>{credit.title}</a> by {credit.name}
+  {' · '}<a href={credit.licenseUrl}>{credit.license}</a>
+  {credit.changes && ` · ${credit.changes}`}
+</p>
+
+<style>
+  .photo-credit {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--marble-dim);
+  }
+
+  a {
+    text-decoration: underline;
+  }
+</style>

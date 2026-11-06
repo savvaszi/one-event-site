@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import DestinationPhotoCredit from '../../components/DestinationPhotoCredit.astro';
 import { destinations } from '../../data/site.js';
 
 export function getStaticPaths() {
@@ -20,7 +21,7 @@ const next = destinations[(index + 1) % destinations.length];
 >
   <section class="d-hero">
     <div class="d-hero-media" data-parallax="16">
-      <img src={dest.image} alt={`${dest.name} — One Event destination`} fetchpriority="high" />
+      <img src={dest.image} alt={dest.imageAlt ?? `${dest.name} — One Event destination`} fetchpriority="high" />
     </div>
     <div class="d-hero-scrim"></div>
     <div class="wrap d-hero-content">
@@ -45,6 +46,11 @@ const next = destinations[(index + 1) % destinations.length];
           </article>
         ))}
       </div>
+      {dest.photoCredit && (
+        <div class="hero-credit">
+          <DestinationPhotoCredit credit={dest.photoCredit} />
+        </div>
+      )}
     </div>
   </section>
 
@@ -175,6 +181,10 @@ const next = destinations[(index + 1) % destinations.length];
     .hl-card p {
       color: var(--marble-dim);
       font-size: 0.95rem;
+    }
+
+    .hero-credit {
+      margin-top: 1rem;
     }
 
     .d-cta {

@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import DestinationPhotoCredit from '../../components/DestinationPhotoCredit.astro';
 import { destinations } from '../../data/site.js';
 
 const globalNetwork = 'https://one-event.net/';
 ---
 
-<BaseLayout title="Our Destinations | One Event" description="Explore our destinations in Greece and Cyprus — Athens, Crete, Cyprus, Mykonos, Peloponnese and Santorini.">
+<BaseLayout title="Our Destinations | One Event" description="Explore destinations for conferences, incentives and corporate events across Greece and Cyprus.">
   <section class="page-hero">
     <div class="wrap">
       <p class="eyebrow">Our destinations</p>
@@ -28,6 +29,10 @@ const globalNetwork = 'https://one-event.net/';
           </div>
         </a>
       ))}
+    </div>
+    <div class="wrap photo-credits" id="photo-credits">
+      <h2>Photo credits</h2>
+      {destinations.map((d) => d.photoCredit && <DestinationPhotoCredit credit={d.photoCredit} />)}
     </div>
   </section>
 
@@ -63,6 +68,15 @@ const globalNetwork = 'https://one-event.net/';
 
     .dest-list {
       padding-block: clamp(4rem, 9vw, 8rem);
+    }
+
+    .photo-credits {
+      margin-top: 2rem;
+      scroll-margin-top: 6rem;
+    }
+
+    .photo-credits h2 {
+      font-size: 1rem;
     }
 
     .dest-grid {
