@@ -212,6 +212,22 @@ export const contacts = [
 ];
 
 export const offices = [
-  { country: 'Greece', address: '20 Dinocharous Street, 11852, Athens' },
-  { country: 'Cyprus', address: '10 Delfon Street, 1101, Nicosia' },
-];
+  {
+    country: 'Greece',
+    countryCode: 'GR',
+    streetAddress: '20 Dinocharous Street',
+    postalCode: '11852',
+    city: 'Athens',
+  },
+  {
+    country: 'Cyprus',
+    countryCode: 'CY',
+    streetAddress: '10 Delfon Street',
+    postalCode: '1101',
+    city: 'Nicosia',
+  },
+].map((office) => ({
+  ...office,
+  id: `office-${office.countryCode.toLowerCase()}`,
+  address: `${office.streetAddress}, ${office.postalCode}, ${office.city}`,
+}));

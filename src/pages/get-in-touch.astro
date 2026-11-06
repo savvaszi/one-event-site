@@ -64,7 +64,7 @@ const heroImage = '/img/get-in-touch.jpg';
   <section class="offices">
     <div class="wrap office-grid">
       {offices.map((o) => (
-        <div class="office-card" data-reveal>
+        <div class="office-card" id={o.id} data-reveal>
           <h3>{o.country}</h3>
           <p>{o.address}</p>
         </div>
@@ -235,6 +235,7 @@ const heroImage = '/img/get-in-touch.jpg';
       border: 1px solid var(--line);
       border-radius: 14px;
       padding: clamp(1.75rem, 4vw, 2.75rem);
+      scroll-margin-top: 6rem;
       transition: border-color .45s var(--ease-out), transform .45s var(--ease-out);
     }
 

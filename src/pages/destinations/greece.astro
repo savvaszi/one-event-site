@@ -75,11 +75,23 @@ const faqs = [
     answer: 'Yes. Send your dates or date range, headcount, event goals and any requirements for accommodation, plenary space or activities. If you already have a budget range, include it so the first shortlist reflects what you can spend.',
   },
 ];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  url: Astro.url.href,
+  mainEntity: faqs.map(({ question, answer }) => ({
+    '@type': 'Question',
+    name: question,
+    acceptedAnswer: { '@type': 'Answer', text: answer },
+  })),
+};
 ---
 
 <BaseLayout
   title="Greece Event Planning Guide | Venues, Islands & FAQs | One Event"
   description="Compare Athens and the Greek islands for a corporate event. See published venue capacities, seasonal planning advice and answers to common questions."
+  structuredData={faqSchema}
 >
   <section class="guide-hero" aria-labelledby="guide-title">
     <div class="wrap">

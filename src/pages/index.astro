@@ -1,13 +1,50 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { destinations, manifesto, references } from '../data/site.js';
+import { destinations, manifesto, offices, references } from '../data/site.js';
 
 const heroImage = destinations.find((d) => d.slug === 'santorini')!.image;
+const homeUrl = new URL('/', Astro.site).href;
+const organizationId = `${homeUrl}#organization`;
+const officeEntities = offices.map((office) => {
+  const officeUrl = new URL(`/get-in-touch/#${office.id}`, Astro.site).href;
+
+  return {
+    '@type': 'TravelAgency',
+    '@id': officeUrl,
+    name: `One Event ${office.city}`,
+    url: officeUrl,
+    parentOrganization: { '@id': organizationId },
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: office.streetAddress,
+      addressLocality: office.city,
+      postalCode: office.postalCode,
+      addressCountry: office.countryCode,
+    },
+  };
+});
+const businessSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': organizationId,
+      name: 'One Event Greece & Cyprus',
+      legalName: 'Customice DMC Travel Ltd',
+      url: homeUrl,
+      description: 'Destination management for corporate events, conferences and incentive travel across Greece and Cyprus.',
+      areaServed: offices.map(({ country }) => ({ '@type': 'Country', name: country })),
+      subOrganization: officeEntities.map((office) => ({ '@id': office['@id'] })),
+    },
+    ...officeEntities,
+  ],
+};
 ---
 
 <BaseLayout
   title="Corporate Events & Destination Management in Greece & Cyprus | One Event"
   description="One Event, 2026 Best MICE Organiser in Greece and Cyprus, plans corporate events, conferences and incentive travel across both destinations."
+  structuredData={businessSchema}
 >
   <section class="hero" aria-label="Intro">
     <div class="hero-media">

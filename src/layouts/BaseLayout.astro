@@ -9,11 +9,13 @@ import CookieConsent from '../components/CookieConsent.astro';
 interface Props {
   title: string;
   description?: string;
+  structuredData?: Record<string, unknown>;
 }
 
 const {
   title,
   description = 'Plan corporate events, conferences and incentives across Greece and Cyprus with One Event’s local destination management team.',
+  structuredData,
 } = Astro.props;
 
 const ogImage =
@@ -40,6 +42,9 @@ const htmlClass =
     <link rel="icon" type="image/png" sizes="16x16" href="/One_event_logo_black.png" />
     <link rel="apple-touch-icon" href="/One_event_logo_black.png" />
     <link rel="preconnect" href="https://one-event.gr" />
+    {structuredData && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
+    )}
     <script is:inline>
       document.documentElement.classList.remove('no-js');
       if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
