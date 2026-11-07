@@ -768,4 +768,14 @@ const moreReferences = references.filter((item) => !featured.includes(item));
       max-width: 240px;
     }
   }
+
+  @media (max-width: 560px) {
+    .home-hero::after {
+      background: var(--phone-hero-scrim);
+    }
+
+    .home-hero .lede {
+      color: var(--marble);
+    }
+  }
 </style>

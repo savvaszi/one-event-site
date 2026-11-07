@@ -18,6 +18,7 @@
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --gutter: clamp(1.25rem, 5vw, 6rem);
+  --phone-hero-scrim: linear-gradient(180deg, rgba(255, 255, 255, .32), rgba(255, 255, 255, .68) 32%, rgba(255, 255, 255, .82) 58%, rgba(255, 255, 255, .94));
 }
 
 *,
