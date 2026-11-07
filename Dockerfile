@@ -12,6 +12,7 @@ COPY package.json ./
 COPY server/ ./server/
 COPY src/data/site.js ./src/data/site.js
 COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/.astro/site-chat.json ./.astro/site-chat.json
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 ENV INQUIRY_ALLOWED_ORIGINS=https://one-event.gr,https://one.savvaszinonos.work
 EXPOSE 80

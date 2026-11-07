@@ -1,7 +1,9 @@
 import { createServer } from 'node:http';
 import { destinations } from '../src/data/site.js';
+import { createSiteChat } from './site-chat.mjs';
 
 const endpoint = '/api/inquiry-assistant';
+const chatEndpoint = '/api/site-chat';
 const destinationIds = destinations.map(({ slug }) => slug);
 const origins = ['https://one-event.gr', 'http://localhost:4321', 'http://127.0.0.1:4321'];
 const maxBodyBytes = 16_384;
@@ -48,11 +50,14 @@ function validText(value, limit) {
   return typeof value === 'string' && value.trim().length > 0 && value.length <= limit;
 }
 
-function parseBrief(result) {
+function parseOutput(result) {
   if (result.status !== 'completed') throw new Error('Incomplete model response');
   const content = result.output.filter(({ type }) => type === 'message').flatMap((item) => item.content);
   if (content.some(({ type }) => type === 'refusal')) throw new Error('Model refusal');
-  const brief = JSON.parse(content.find(({ type }) => type === 'output_text')?.text ?? '');
+  return JSON.parse(content.find(({ type }) => type === 'output_text')?.text ?? '');
+}
+
+function parseBrief(brief) {
   const { dates, destination, guests, details, question } = brief;
   if (
     (dates !== null && !validText(dates, 160)) ||
@@ -69,12 +74,36 @@ export function createInquiryServer({
   apiKey = process.env.OPENAI_API_KEY,
   allowedOrigins = origins,
   fetchImpl = fetch,
+  siteIndex = [],
 } = {}) {
-  let windowStart = 0;
-  let requests = 0;
+  const answerSiteChat = createSiteChat(siteIndex);
+  const rateLimits = {
+    [endpoint]: { start: 0, requests: 0 },
+    [chatEndpoint]: { start: 0, requests: 0 },
+  };
+
+  async function requestModel({ name, instructions, input, schema, maxTokens }) {
+    const response = await fetchImpl('https://api.openai.com/v1/responses', {
+      method: 'POST',
+      headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
+      signal: AbortSignal.timeout(12_000),
+      body: JSON.stringify({
+        model: 'gpt-6-luna',
+        store: false,
+        reasoning: { effort: 'none' },
+        max_output_tokens: maxTokens,
+        instructions,
+        input: JSON.stringify(input),
+        text: { format: { type: 'json_schema', name, strict: true, schema } },
+      }),
+    });
+    if (!response.ok) throw new Error('Responses API request failed');
+    return parseOutput(await response.json());
+  }
 
   return createServer({ requestTimeout: 15_000, headersTimeout: 10_000 }, async (req, res) => {
-    if (req.url !== endpoint) return send(res, 404, { error: 'not_found' });
+    if (req.url !== endpoint && req.url !== chatEndpoint) return send(res, 404, { error: 'not_found' });
+    const isChat = req.url === chatEndpoint;
     if (req.method !== 'POST') {
       res.setHeader('allow', 'POST');
       return send(res, 405, { error: 'method_not_allowed' });
@@ -96,46 +125,43 @@ export function createInquiryServer({
       res.setHeader('connection', 'close');
       return send(res, 413, { error: 'input_too_large' });
     }
-    const { locale, description, answer } = input ?? {};
-    if (!['el', 'en'].includes(locale) || !validText(description, 1600) ||
-      (answer !== undefined && !validText(answer, 600))) {
+    const { locale, description, answer, question, previousQuestion } = input ?? {};
+    const validInput = isChat
+      ? ['el', 'en', 'es'].includes(locale) && validText(question, 600) &&
+        (previousQuestion === undefined || validText(previousQuestion, 600))
+      : ['el', 'en'].includes(locale) && validText(description, 1600) &&
+        (answer === undefined || validText(answer, 600));
+    if (!validInput) {
       return send(res, 400, { error: 'invalid_input' });
     }
-    if (!apiKey) return send(res, 503, { error: 'assistant_unavailable' });
+    if (!apiKey || (isChat && !siteIndex.length)) return send(res, 503, { error: 'assistant_unavailable' });
 
     const now = Date.now();
-    if (now - windowStart >= 60_000) {
-      windowStart = now;
-      requests = 0;
+    const limit = rateLimits[req.url];
+    if (now - limit.start >= 60_000) {
+      limit.start = now;
+      limit.requests = 0;
     }
-    if (requests >= 30) {
-      res.setHeader('retry-after', Math.ceil((60_000 - (now - windowStart)) / 1000));
+    if (limit.requests >= 30) {
+      res.setHeader('retry-after', Math.ceil((60_000 - (now - limit.start)) / 1000));
       return send(res, 429, { error: 'too_many_requests' });
     }
-    requests++;
+    limit.requests++;
 
     try {
-      const response = await fetchImpl('https://api.openai.com/v1/responses', {
-        method: 'POST',
-        headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-        signal: AbortSignal.timeout(12_000),
-        body: JSON.stringify({
-          model: 'gpt-6-luna',
-          store: false,
-          reasoning: { effort: 'none' },
-          max_output_tokens: 1200,
-          instructions,
-          input: JSON.stringify({ locale, description: description.trim(), answer: answer?.trim() }),
-          text: { format: {
-            type: 'json_schema',
-            name: 'event_brief',
-            strict: true,
-            schema: { type: 'object', properties: fields, required: Object.keys(fields), additionalProperties: false },
-          } },
-        }),
+      if (isChat) {
+        return send(res, 200, await answerSiteChat({
+          locale, question: question.trim(), previousQuestion: previousQuestion?.trim(),
+        }, requestModel));
+      }
+      const brief = await requestModel({
+        name: 'event_brief',
+        instructions,
+        input: { locale, description: description.trim(), answer: answer?.trim() },
+        schema: { type: 'object', properties: fields, required: Object.keys(fields), additionalProperties: false },
+        maxTokens: 1200,
       });
-      if (!response.ok) throw new Error('Responses API request failed');
-      return send(res, 200, parseBrief(await response.json()));
+      return send(res, 200, parseBrief(brief));
     } catch {
       return send(res, 502, { error: 'assistant_unavailable' });
     }

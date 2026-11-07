@@ -31,6 +31,8 @@ The service limits requests to 30 model calls per minute per instance. Apply per
 
 ## Deployment (OpenShip)
 
+The English, Greek and Spanish site chat uses the same project secret. Each build indexes the main content of the published pages and stores the index outside the public site. For local testing, run a build before starting the inquiry service to generate that index. Run `node --test scripts/test_site_chat.mjs` to test the chat with mocked model calls.
+
 The `OneEventSite` project serves `one-event.gr` on port 80. Use the repository Dockerfile as the build type and `node server/production.mjs` as the start command if OpenShip asks for one. The Docker build generates its own `dist/`. Push approved changes to `main` and verify the contact pages and assistant endpoint on the live domain.
 
 ## Notes

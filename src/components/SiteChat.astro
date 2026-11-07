@@ -1,0 +1,190 @@
+---
+import { localizePath, type Locale } from '../data/i18n';
+
+const { locale } = Astro.props as { locale: Locale };
+const copy = {
+  en: {
+    open: 'Ask One Event', close: 'Close chat', question: 'Your question', send: 'Ask',
+    intro: 'Ask about destinations, events or our team. Answers quote the One Event website.',
+    privacy: 'OpenAI processes your questions. Please leave out personal details.',
+    example: 'Which destinations do you cover?', working: 'Looking through the site…',
+    missing: 'I couldn’t find an answer on the site.', error: 'Chat is unavailable right now. Please try again.',
+    contact: 'Contact our team', source: 'Source',
+  },
+  el: {
+    open: 'Ρωτήστε τη One Event', close: 'Κλείσιμο συνομιλίας', question: 'Η ερώτησή σας', send: 'Ρωτήστε',
+    intro: 'Ρωτήστε για προορισμούς, εκδηλώσεις ή την ομάδα μας. Οι απαντήσεις προέρχονται από τον ιστότοπο της One Event.',
+    privacy: 'Η OpenAI επεξεργάζεται τις ερωτήσεις σας. Μην συμπεριλαμβάνετε προσωπικά στοιχεία.',
+    example: 'Ποιους προορισμούς καλύπτετε;', working: 'Αναζητώ στον ιστότοπο…',
+    missing: 'Δεν βρήκα απάντηση στον ιστότοπο.', error: 'Η συνομιλία δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκιμάστε ξανά.',
+    contact: 'Επικοινωνήστε με την ομάδα μας', source: 'Πηγή',
+  },
+  es: {
+    open: 'Pregunta a One Event', close: 'Cerrar el chat', question: 'Tu pregunta', send: 'Preguntar',
+    intro: 'Pregunta por destinos, eventos o nuestro equipo. Las respuestas citan el sitio web de One Event.',
+    privacy: 'OpenAI procesa tus preguntas. Evita incluir datos personales.',
+    example: '¿Qué destinos cubrís?', working: 'Buscando en el sitio web…',
+    missing: 'No encontré una respuesta en el sitio web.', error: 'El chat no está disponible en este momento. Inténtalo de nuevo.',
+    contact: 'Contacta con nuestro equipo', source: 'Fuente',
+  },
+}[locale];
+---
+
+<aside class="site-chat" data-site-chat data-locale={locale} data-working={copy.working}
+  data-missing={copy.missing} data-error={copy.error} data-source={copy.source} hidden>
+  <section id="site-chat-panel" class="panel" aria-labelledby="site-chat-title" hidden>
+    <header>
+      <h2 id="site-chat-title">{copy.open}</h2>
+      <button type="button" data-close aria-label={copy.close}>×</button>
+    </header>
+    <p>{copy.intro}</p>
+    <div class="messages" role="log" aria-live="polite" data-messages></div>
+    <p role="status" data-status></p>
+    <form aria-describedby="site-chat-privacy">
+      <label for="site-chat-question">{copy.question}</label>
+      <div class="question-row">
+        <input id="site-chat-question" type="text" name="question" maxlength="600" required placeholder={copy.example} />
+        <button type="submit">{copy.send}</button>
+      </div>
+    </form>
+    <small id="site-chat-privacy">{copy.privacy}</small>
+    <a class="contact" href={localizePath('/get-in-touch/', locale)}>{copy.contact}</a>
+  </section>
+  <button type="button" class="launcher" data-launcher aria-controls="site-chat-panel" aria-expanded="false">{copy.open}</button>
+</aside>
+
+<script>
+  type Passage = { text: string; path: string; title: string };
+  const chat = document.querySelector<HTMLElement>('[data-site-chat]');
+  if (chat) {
+    const launcher = chat.querySelector<HTMLButtonElement>('[data-launcher]')!;
+    const close = chat.querySelector<HTMLButtonElement>('[data-close]')!;
+    const panel = chat.querySelector<HTMLElement>('#site-chat-panel')!;
+    const messages = chat.querySelector<HTMLElement>('[data-messages]')!;
+    const status = chat.querySelector<HTMLElement>('[data-status]')!;
+    const form = chat.querySelector('form')!;
+    const input = form.querySelector('input')!;
+    const submit = form.querySelector('button')!;
+    let previousQuestion: string | undefined;
+
+    function toggle(open: boolean) {
+      panel.hidden = !open;
+      launcher.setAttribute('aria-expanded', String(open));
+      (open ? input : launcher).focus();
+    }
+
+    launcher.addEventListener('click', () => toggle(panel.hidden));
+    close.addEventListener('click', () => toggle(false));
+    chat.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !panel.hidden) toggle(false);
+    });
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const question = input.value.trim();
+      if (!question || submit.disabled) return;
+      submit.disabled = true;
+      input.readOnly = true;
+      status.textContent = chat.dataset.working!;
+
+      try {
+        const response = await fetch('/api/site-chat', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ locale: chat.dataset.locale, question, previousQuestion }),
+          signal: AbortSignal.timeout(15_000),
+        });
+        if (!response.ok) throw new Error('Chat unavailable');
+        const { passages } = await response.json() as { passages: Passage[] };
+        const message = document.createElement('article');
+        const visitor = document.createElement('strong');
+        visitor.textContent = question;
+        message.append(visitor);
+        if (!passages.length) {
+          const fallback = document.createElement('p');
+          fallback.textContent = chat.dataset.missing!;
+          message.append(fallback);
+        }
+        for (const passage of passages) {
+          const quote = document.createElement('blockquote');
+          quote.textContent = passage.text;
+          const link = document.createElement('a');
+          link.href = passage.path;
+          link.textContent = `${chat.dataset.source} · ${passage.title}`;
+          message.append(quote, link);
+        }
+        messages.append(message);
+        if (messages.childElementCount > 12) messages.firstElementChild?.remove();
+        messages.scrollTop = messages.scrollHeight;
+        previousQuestion = passages.length ? question : previousQuestion;
+        input.value = '';
+        status.textContent = '';
+      } catch {
+        status.textContent = chat.dataset.error!;
+      } finally {
+        input.readOnly = false;
+        submit.disabled = false;
+        if (!panel.hidden && document.activeElement === document.body) input.focus();
+      }
+    });
+    chat.hidden = false;
+  }
+</script>
+
+<style>
+  .site-chat {
+    position: fixed;
+    z-index: 140;
+    inset-inline-end: max(1rem, env(safe-area-inset-right));
+    inset-block-end: max(1rem, env(safe-area-inset-bottom));
+    display: grid;
+    justify-items: end;
+    gap: .65rem;
+    color: var(--marble);
+  }
+  [hidden] { display: none !important; }
+  .panel {
+    width: min(25rem, calc(100vw - 2rem));
+    max-height: min(36rem, calc(100dvh - 6rem));
+    overflow: auto;
+    padding: 1rem;
+    background: var(--ink);
+    border: 1px solid var(--field-line);
+    border-radius: 1rem;
+    box-shadow: 0 .5rem 2.5rem #0002;
+  }
+  header, .question-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+  h2 { font-size: 1rem; }
+  p, form, small, .contact { margin-block-start: .65rem; }
+  p, small, .contact, label { font-size: .875rem; }
+  small, .contact, label { display: block; }
+  .question-row { margin-block-start: .25rem; }
+  input {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.75rem;
+    padding: .45rem .6rem;
+    border: 1px solid var(--field-line);
+    border-radius: .5rem;
+    font: inherit;
+    color: var(--marble);
+    background: var(--ink);
+  }
+  button {
+    min-height: 2.75rem;
+    padding: .45rem .85rem;
+    border: 1px solid var(--field-line);
+    border-radius: .5rem;
+    font: inherit;
+    color: var(--marble);
+    background: var(--ink);
+    cursor: pointer;
+  }
+  button:disabled { opacity: .65; cursor: wait; }
+  .launcher { color: var(--ink); background: var(--marble); border-radius: 2rem; }
+  .messages { max-height: min(14rem, 35dvh); overflow: auto; font-size: .9rem; }
+  .messages :global(article) { margin-block-start: .75rem; border-block-start: 1px solid var(--line); padding-block-start: .65rem; }
+  .messages :global(blockquote) { margin: .45rem 0 .2rem; padding-inline-start: .6rem; border-inline-start: 2px solid var(--field-line); }
+  .messages :global(a), .contact { text-decoration: underline; text-underline-offset: .15em; }
+  .messages :global(a) { display: block; font-size: .8rem; margin-block-end: .45rem; }
+  [data-status]:empty { margin: 0; }
+</style>

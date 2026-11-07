@@ -1,8 +1,9 @@
 import { spawn } from 'node:child_process';
 import { createInquiryServer } from './inquiry-assistant.mjs';
+import { loadSiteChat } from './site-chat.mjs';
 
 const allowedOrigins = process.env.INQUIRY_ALLOWED_ORIGINS?.split(',').map((origin) => origin.trim());
-const server = createInquiryServer({ allowedOrigins });
+const server = createInquiryServer({ allowedOrigins, siteIndex: await loadSiteChat() });
 
 server.listen(4322, '127.0.0.1', () => {
   // Give nginx a reduced environment. Only the Node handler uses the API key.
