@@ -1,0 +1,198 @@
+---
+const { locale } = Astro.props as { locale: 'en' | 'el' };
+const copy = {
+  en: {
+    title: 'Help me write my brief',
+    description: 'Describe the event you’re planning',
+    example: 'A corporate dinner in Athens for about 80 guests in May',
+    language: 'Reply language',
+    privacy: 'The assistant sends what you type here to OpenAI to draft the brief. Add your name and work email in the form below.',
+    draft: 'Draft my brief',
+    answer: 'Your answer (optional)',
+    update: 'Update draft',
+    apply: 'Fill in the event brief',
+    working: 'Preparing your brief…',
+    ready: 'Your draft is ready to use.',
+    applied: 'Review the event brief below. Any fields you already filled in were kept.',
+    failed: 'The assistant is unavailable right now. Try again or complete the form below.',
+  },
+  el: {
+    title: 'Βοηθήστε με να περιγράψω την εκδήλωσή μου',
+    description: 'Περιγράψτε την εκδήλωση που σχεδιάζετε',
+    example: 'Εταιρικό δείπνο στην Αθήνα για περίπου 80 άτομα τον Μάιο',
+    language: 'Γλώσσα απάντησης',
+    privacy: 'Ο βοηθός στέλνει στην OpenAI όσα γράφετε εδώ για να ετοιμάσει το προσχέδιο. Συμπληρώστε το όνομα και το επαγγελματικό email σας στην παρακάτω φόρμα.',
+    draft: 'Ετοιμάστε το προσχέδιο',
+    answer: 'Η απάντησή σας (προαιρετικά)',
+    update: 'Ενημερώστε το προσχέδιο',
+    apply: 'Συμπληρώστε τη φόρμα εκδήλωσης',
+    working: 'Ετοιμάζουμε το προσχέδιό σας…',
+    ready: 'Το προσχέδιό σας είναι έτοιμο.',
+    applied: 'Ελέγξτε την παρακάτω φόρμα. Τα πεδία που είχατε ήδη συμπληρώσει διατηρήθηκαν.',
+    failed: 'Ο βοηθός δεν είναι διαθέσιμος αυτή τη στιγμή. Δοκιμάστε ξανά ή συμπληρώστε την παρακάτω φόρμα.',
+  },
+}[locale];
+---
+
+<details class="inquiry-assistant" data-inquiry-assistant hidden>
+  <summary>{copy.title}</summary>
+  <form
+    aria-describedby="inquiry-privacy"
+    data-working={copy.working}
+    data-ready={copy.ready}
+    data-applied={copy.applied}
+    data-failed={copy.failed}
+  >
+    <label>
+      {copy.description}
+      <textarea name="description" rows="3" maxlength="1600" required placeholder={copy.example}></textarea>
+    </label>
+    <label>
+      {copy.language}
+      <select name="locale">
+        <option value="el" lang="el" selected={locale === 'el'}>Ελληνικά</option>
+        <option value="en" lang="en" selected={locale === 'en'}>English</option>
+      </select>
+    </label>
+    <p id="inquiry-privacy">{copy.privacy}</p>
+    <button type="submit" class="btn">{copy.draft}</button>
+    <div data-follow-up hidden>
+      <p id="inquiry-question"></p>
+      <label>
+        {copy.answer}
+        <textarea name="answer" rows="2" maxlength="600" aria-describedby="inquiry-question"></textarea>
+      </label>
+      <button type="submit" class="btn" data-update>{copy.update}</button>
+    </div>
+    <button type="button" class="btn" data-apply hidden>{copy.apply}</button>
+    <p role="status" data-inquiry-status></p>
+  </form>
+</details>
+
+<script>
+  type Brief = {
+    dates: string | null;
+    destination: string | null;
+    guests: number | null;
+    details: string | null;
+    question: string | null;
+  };
+
+  const assistant = document.querySelector<HTMLDetailsElement>('[data-inquiry-assistant]');
+  const briefForm = document.querySelector<HTMLFormElement>('#brief form[data-event-brief]');
+  const form = assistant?.querySelector('form');
+
+  if (assistant && form && briefForm) {
+    const description = form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
+    const locale = form.querySelector<HTMLSelectElement>('[name="locale"]')!;
+    const answer = form.querySelector<HTMLTextAreaElement>('[name="answer"]')!;
+    const followUp = form.querySelector<HTMLElement>('[data-follow-up]')!;
+    const question = form.querySelector<HTMLElement>('#inquiry-question')!;
+    const update = form.querySelector<HTMLButtonElement>('[data-update]')!;
+    const apply = form.querySelector<HTMLButtonElement>('[data-apply]')!;
+    const status = form.querySelector<HTMLElement>('[data-inquiry-status]')!;
+    const buttons = form.querySelectorAll('button');
+    let draft: Brief | null = null;
+    let pending = false;
+
+    const clearDraft = () => {
+      draft = null;
+      followUp.hidden = true;
+      apply.hidden = true;
+      answer.value = '';
+      status.textContent = '';
+    };
+
+    description.addEventListener('input', clearDraft);
+    locale.addEventListener('change', clearDraft);
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (pending || !description.value.trim()) return;
+      const isUpdate = !followUp.hidden && event.submitter === update;
+      const reply = isUpdate ? answer.value.trim() : '';
+      if (isUpdate && !reply) {
+        answer.focus();
+        return;
+      }
+      if (!isUpdate) clearDraft();
+      pending = true;
+      buttons.forEach((button) => { button.disabled = true; });
+      description.readOnly = true;
+      answer.readOnly = true;
+      locale.disabled = true;
+      status.textContent = form.dataset.working!;
+
+      try {
+        const response = await fetch('/api/inquiry-assistant', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ locale: locale.value, description: description.value, answer: reply || undefined }),
+          signal: AbortSignal.timeout(15_000),
+        });
+        if (!response.ok) throw new Error('Assistant unavailable');
+        draft = await response.json() as Brief;
+        question.textContent = draft.question ?? '';
+        question.lang = locale.value;
+        followUp.hidden = !draft.question || (isUpdate && Boolean(draft.details));
+        apply.hidden = !draft.details;
+        status.textContent = draft.details ? form.dataset.ready! : '';
+      } catch {
+        status.textContent = form.dataset.failed!;
+      } finally {
+        pending = false;
+        buttons.forEach((button) => { button.disabled = false; });
+        description.readOnly = false;
+        answer.readOnly = false;
+        locale.disabled = false;
+      }
+    });
+
+    apply.addEventListener('click', () => {
+      if (!draft?.details) return;
+      const fields = { dates: draft.dates, guests: draft.guests, details: draft.details };
+      for (const [name, value] of Object.entries(fields)) {
+        const input = briefForm.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+        if (value !== null && !input.value.trim()) input.value = String(value);
+      }
+      const destination = briefForm.elements.namedItem('destination') as HTMLSelectElement;
+      if (draft.destination && destination.selectedIndex === 0) {
+        const option = Array.from(destination.options).find(({ dataset }) => dataset.destination === draft?.destination);
+        if (option) destination.value = option.value;
+      }
+      status.textContent = form.dataset.applied!;
+      briefForm.querySelector<HTMLInputElement>('[name="name"]')?.focus();
+    });
+
+    assistant.hidden = false;
+  }
+</script>
+
+<style>
+  .inquiry-assistant {
+    margin-block: 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--field-line);
+    border-radius: 8px;
+  }
+
+  summary { cursor: pointer; color: var(--link-text); }
+  form, [data-follow-up]:not([hidden]), label { display: grid; gap: .75rem; }
+  form { margin-block-start: 1rem; }
+  textarea, select {
+    width: 100%;
+    padding: .65rem .75rem;
+    border: 1px solid var(--field-line);
+    border-radius: 8px;
+    color: var(--marble);
+    background: var(--ink);
+    font: inherit;
+  }
+
+  textarea { resize: vertical; }
+  p { font-size: .9rem; }
+  [data-inquiry-status]:empty { margin: 0; }
+  button { justify-self: start; background: transparent; cursor: pointer; }
+  button:disabled { opacity: .65; cursor: wait; }
+  [hidden] { display: none; }
+</style>

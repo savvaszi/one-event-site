@@ -5,6 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
+    "inquiry:serve": "node --env-file-if-exists=.env.local server/index.mjs",
+    "test:inquiry": "node --test scripts/test_inquiry_assistant.mjs",
     "build": "astro build",
     "preview": "astro preview"
   },

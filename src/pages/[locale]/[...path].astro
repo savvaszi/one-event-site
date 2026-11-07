@@ -369,7 +369,7 @@ const moreReferences = references.filter((item) => !featured.includes(item));
     </>
   )}
 
-  {kind === 'contact' && <LocalizedContact copy={contact} names={agency.team.map(({ name }) => name)} destinations={localDestinations} />}
+  {kind === 'contact' && <LocalizedContact copy={contact} names={agency.team.map(({ name }) => name)} destinations={localDestinations} locale={locale} />}
 
   {kind === 'privacy' && (
     <article class="section-pad wrap policy prose">

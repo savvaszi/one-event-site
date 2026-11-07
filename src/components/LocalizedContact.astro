@@ -1,7 +1,8 @@
 ---
 import { contacts, offices } from '../data/site.js';
+import InquiryAssistant from './InquiryAssistant.astro';
 
-const { copy, names, destinations } = Astro.props;
+const { copy, names, destinations, locale } = Astro.props;
 const [primary, secondary] = contacts;
 const draft = {
   to: primary.email,
@@ -37,8 +38,9 @@ const draft = {
       <p>{copy.briefIntro}</p>
       <p id="brief-note">{copy.note}</p>
       <a href={`mailto:${primary.email}`}>{copy.direct}</a>
+      {locale === 'el' && <InquiryAssistant locale="el" />}
     </div>
-    <form data-localized-brief={JSON.stringify(draft)} aria-describedby="brief-note">
+    <form data-event-brief data-localized-brief={JSON.stringify(draft)} aria-describedby="brief-note">
       <fieldset disabled>
         <div class="field-row">
           <label>{copy.name}<input type="text" name="name" autocomplete="name" required /></label>
@@ -49,7 +51,7 @@ const draft = {
           <label>{copy.destination}
             <select name="destination">
               <option>{copy.undecided}</option>
-              {destinations.map(({ name }) => <option>{name}</option>)}
+              {destinations.map(({ name, slug }) => <option data-destination={slug}>{name}</option>)}
               <option>{copy.another}</option>
             </select>
           </label>

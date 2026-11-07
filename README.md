@@ -19,23 +19,19 @@ npm run dev      # http://localhost:4321
 npm run build    # outputs to dist/
 ```
 
-## Deployment (Dokploy)
+### Greek and English inquiry assistant
 
-The Dokploy app (`one-event-site-vamxqi` in project `OneEventSite`, panel: dok.tetrajobs.online)
-uses the **static** build type with publish directory `dist`. It does **not** run npm install/build
-on the server — the built `dist/` folder ships in the repo and is copied into an nginx image.
+The assistant drafts event fields for the existing contact form. The visitor reviews the form and sends the email from their own email app. The Spanish contact page uses the manual form.
 
-**Deploy a change:**
+For local development, use Node.js 22 or later. Configure `OPENAI_API_KEY` in the server environment or the ignored `.env.local` file. Run `npm run inquiry:serve` in one terminal and `npm run dev` in another. Astro proxies the assistant request on port 4321 to the Node service on port 4322. `npm run test:inquiry` uses mocked Responses API calls and needs no key.
 
-```bash
-npm run build
-git add -A && git commit -m "content: ..." && git push origin main
-```
+In production, the Dockerfile builds the static Astro site and starts the Node endpoint alongside nginx. nginx serves the pages and forwards the exact `/api/inquiry-assistant` path to Node on loopback. Set `OPENAI_API_KEY` in OpenShip's project environment. The image allows requests from `https://one-event.gr` and the alternate site hostname. Override `INQUIRY_ALLOWED_ORIGINS` with a comma-separated list when running under another hostname.
 
-Auto-deploy triggers on push to `main`. Verify at https://one.savvaszinonos.work
+The service limits requests to 30 model calls per minute per instance. Apply per-client rate limits at the production proxy. The model receives the assistant text and selected reply language. Name and email fields on the manual form stay outside the model request. Avoid logging request bodies in the proxy or service.
 
-> Do not delete `dist/` from the repo. If `dist/` is missing, deploys fail with
-> `"/dist": not found`.
+## Deployment (OpenShip)
+
+The `OneEventSite` project serves `one-event.gr` on port 80. Use the repository Dockerfile as the build type and `node server/production.mjs` as the start command if OpenShip asks for one. The Docker build generates its own `dist/`. Push approved changes to `main` and verify the contact pages and assistant endpoint on the live domain.
 
 ## Notes
 

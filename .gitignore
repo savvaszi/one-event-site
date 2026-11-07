@@ -1,5 +1,6 @@
 node_modules/
 .astro/
+.env.local
 .DS_Store
 
 __pycache__/

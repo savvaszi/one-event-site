@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import InquiryAssistant from '../components/InquiryAssistant.astro';
 import { contacts, destinations, offices } from '../data/site.js';
 
 const heroImage = '/img/get-in-touch.jpg';
@@ -35,9 +36,10 @@ const heroImage = '/img/get-in-touch.jpg';
         <p class="eyebrow">Your event brief</p>
         <h2 class="display-md" id="brief-title" data-split>Tell us what you’re planning</h2>
         <p>Share the essentials and prepare a structured email to our team. You can review everything before sending.</p>
-        <p class="brief-note" id="brief-note">Nothing is stored or sent by this page. The button opens your email app; you can also email us directly above.</p>
+        <p class="brief-note" id="brief-note">The form opens a draft in your email app for you to send. You can also email us directly above.</p>
+        <InquiryAssistant locale="en" />
       </div>
-      <form class="brief-form" id="brief-form" aria-describedby="brief-note">
+      <form class="brief-form" id="brief-form" data-event-brief aria-describedby="brief-note">
         <fieldset disabled>
           <div class="field-row">
             <label>Name<input type="text" name="name" autocomplete="name" required /></label>
@@ -48,7 +50,7 @@ const heroImage = '/img/get-in-touch.jpg';
             <label>Destination
               <select name="destination">
                 <option value="Not decided">Not decided</option>
-                {destinations.map((destination) => <option>{destination.name}</option>)}
+                {destinations.map(({ name, slug }) => <option data-destination={slug}>{name}</option>)}
                 <option>Another destination in Greece</option>
               </select>
             </label>
