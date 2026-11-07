@@ -12,7 +12,6 @@ const { entries } = Astro.props;
       {entries.map(({ title }) => <li>{title}</li>)}
     </ul>
   </div>
-  <button type="button" class="ticker-toggle" aria-label="Pause reference scrolling" hidden>Pause</button>
 </div>
 
 <script>
@@ -21,7 +20,6 @@ const { entries } = Astro.props;
   for (const ticker of document.querySelectorAll('[data-reference-ticker]')) {
     const viewport = ticker.querySelector<HTMLElement>('.reference-scroll')!;
     const list = viewport.querySelector('ul')!;
-    const button = ticker.querySelector('button')!;
 
     // The second copy fills the seam while the original list scrolls out of view.
     const copy = list.cloneNode(true) as HTMLUListElement;
@@ -32,7 +30,6 @@ const { entries } = Astro.props;
 
     let visible = false;
     let hovered = false;
-    let paused = false;
     let frame = 0;
     let cycleWidth = 0;
     let position = 0;
@@ -49,11 +46,10 @@ const { entries } = Astro.props;
     }
 
     function update() {
-      // Compare with the whole strip so showing the button cannot cause a resize loop.
       cycleWidth = list.offsetWidth;
-      const canScroll = motion.matches && cycleWidth > ticker.clientWidth;
-      copy.hidden = button.hidden = !canScroll;
-      const shouldPlay = canScroll && visible && !hovered && !paused && !viewport.matches(':focus-within');
+      const canScroll = motion.matches && cycleWidth > viewport.clientWidth;
+      copy.hidden = !canScroll;
+      const shouldPlay = canScroll && visible && !hovered && !viewport.matches(':focus-within');
 
       if (shouldPlay && !frame) {
         position = viewport.scrollLeft;
@@ -65,14 +61,6 @@ const { entries } = Astro.props;
       }
     }
 
-    function setPaused(value: boolean) {
-      paused = value;
-      button.textContent = paused ? 'Resume' : 'Pause';
-      button.setAttribute('aria-label', paused ? 'Resume reference scrolling' : 'Pause reference scrolling');
-      update();
-    }
-
-    button.addEventListener('click', () => setPaused(!paused));
     viewport.addEventListener('pointerenter', (event) => {
       if (event.pointerType === 'mouse') {
         hovered = true;
@@ -82,9 +70,6 @@ const { entries } = Astro.props;
     viewport.addEventListener('pointerleave', () => {
       hovered = false;
       update();
-    });
-    viewport.addEventListener('pointerdown', (event) => {
-      if (event.pointerType !== 'mouse' && !button.hidden) setPaused(true);
     });
     viewport.addEventListener('focusin', update);
     viewport.addEventListener('focusout', () => queueMicrotask(update));
@@ -103,20 +88,20 @@ const { entries } = Astro.props;
 
 <style>
   .reference-ticker {
-    display: flex;
     border-block: 1px solid var(--line);
   }
 
   .reference-scroll {
     display: flex;
-    flex: 1;
-    min-width: 0;
     overflow-x: auto;
-    scrollbar-width: thin;
+    scrollbar-width: none;
   }
 
-  .reference-scroll:focus-visible,
-  .ticker-toggle:focus-visible {
+  .reference-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reference-scroll:focus-visible {
     outline-offset: -3px;
   }
 
@@ -141,19 +126,6 @@ const { entries } = Astro.props;
 
   li + li {
     border-inline-start: 1px solid var(--line);
-  }
-
-  .ticker-toggle {
-    flex: none;
-    min-width: 5rem;
-    padding-inline: 0.75rem;
-    border: 0;
-    border-inline-start: 1px solid var(--line);
-    background: transparent;
-    color: var(--marble-dim);
-    font: inherit;
-    font-size: 0.8rem;
-    cursor: pointer;
   }
 
   [hidden] {
