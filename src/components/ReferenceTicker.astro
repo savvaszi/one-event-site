@@ -6,24 +6,123 @@ interface Props {
 const { entries } = Astro.props;
 ---
 
-<div class="reference-ticker" role="region" aria-label="More event references" tabindex="0" data-lenis-prevent-horizontal>
-  <ul role="list">
-    {entries.map(({ title }) => <li>{title}</li>)}
-  </ul>
+<div class="reference-ticker" data-reference-ticker>
+  <div class="reference-scroll" role="region" aria-label="More event references" tabindex="0" data-lenis-prevent-horizontal>
+    <ul role="list">
+      {entries.map(({ title }) => <li>{title}</li>)}
+    </ul>
+  </div>
+  <button type="button" class="ticker-toggle" aria-label="Pause reference scrolling" hidden>Pause</button>
 </div>
+
+<script>
+  const motion = matchMedia('(prefers-reduced-motion: no-preference)');
+
+  for (const ticker of document.querySelectorAll('[data-reference-ticker]')) {
+    const viewport = ticker.querySelector<HTMLElement>('.reference-scroll')!;
+    const list = viewport.querySelector('ul')!;
+    const button = ticker.querySelector('button')!;
+
+    // The second copy fills the seam while the original list scrolls out of view.
+    const copy = list.cloneNode(true) as HTMLUListElement;
+    copy.setAttribute('aria-hidden', 'true');
+    copy.inert = true;
+    copy.hidden = true;
+    viewport.append(copy);
+
+    let visible = false;
+    let hovered = false;
+    let paused = false;
+    let frame = 0;
+    let cycleWidth = 0;
+    let position = 0;
+    let previousTime = 0;
+
+    function advance(now: number) {
+      if (previousTime) {
+        const elapsed = Math.min(now - previousTime, 50);
+        position = (position + elapsed * 0.04) % cycleWidth;
+        viewport.scrollLeft = position;
+      }
+      previousTime = now;
+      frame = requestAnimationFrame(advance);
+    }
+
+    function update() {
+      // Compare with the whole strip so showing the button cannot cause a resize loop.
+      cycleWidth = list.offsetWidth;
+      const canScroll = motion.matches && cycleWidth > ticker.clientWidth;
+      copy.hidden = button.hidden = !canScroll;
+      const shouldPlay = canScroll && visible && !hovered && !paused && !viewport.matches(':focus-within');
+
+      if (shouldPlay && !frame) {
+        position = viewport.scrollLeft;
+        previousTime = 0;
+        frame = requestAnimationFrame(advance);
+      } else if (!shouldPlay && frame) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+    }
+
+    function setPaused(value: boolean) {
+      paused = value;
+      button.textContent = paused ? 'Resume' : 'Pause';
+      button.setAttribute('aria-label', paused ? 'Resume reference scrolling' : 'Pause reference scrolling');
+      update();
+    }
+
+    button.addEventListener('click', () => setPaused(!paused));
+    viewport.addEventListener('pointerenter', (event) => {
+      if (event.pointerType === 'mouse') {
+        hovered = true;
+        update();
+      }
+    });
+    viewport.addEventListener('pointerleave', () => {
+      hovered = false;
+      update();
+    });
+    viewport.addEventListener('pointerdown', (event) => {
+      if (event.pointerType !== 'mouse' && !button.hidden) setPaused(true);
+    });
+    viewport.addEventListener('focusin', update);
+    viewport.addEventListener('focusout', () => queueMicrotask(update));
+    motion.addEventListener('change', update);
+
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      update();
+    }).observe(ticker);
+
+    const resize = new ResizeObserver(update);
+    resize.observe(ticker);
+    resize.observe(list);
+  }
+</script>
 
 <style>
   .reference-ticker {
-    overflow-x: auto;
+    display: flex;
     border-block: 1px solid var(--line);
   }
 
-  .reference-ticker:focus-visible {
+  .reference-scroll {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .reference-scroll:focus-visible,
+  .ticker-toggle:focus-visible {
     outline-offset: -3px;
   }
 
   ul {
     display: flex;
+    flex: none;
     width: max-content;
     padding: 1.4rem var(--gutter);
     list-style: none;
@@ -42,5 +141,22 @@ const { entries } = Astro.props;
 
   li + li {
     border-inline-start: 1px solid var(--line);
+  }
+
+  .ticker-toggle {
+    flex: none;
+    min-width: 5rem;
+    padding-inline: 0.75rem;
+    border: 0;
+    border-inline-start: 1px solid var(--line);
+    background: transparent;
+    color: var(--marble-dim);
+    font: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+
+  [hidden] {
+    display: none;
   }
 </style>
