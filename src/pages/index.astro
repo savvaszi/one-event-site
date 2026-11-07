@@ -129,7 +129,7 @@ const businessSchema = {
         <h2 class="display-lg" data-split>Explore Greece<br />and Cyprus.</h2>
         <a class="destination-photo-credits" href="/destinations/#photo-credits">Destination photo credits</a>
       </div>
-      <div class="hscroll-track" data-hscroll-track>
+      <div class="hscroll-track" data-hscroll-track data-lenis-prevent-horizontal>
         {destinations.map((d) => (
           <a class="dest-card media-mask" href={`/destinations/${d.slug}/`} data-magnetic>
             <img src={d.image} alt={d.imageAlt ?? `${d.name} — One Event destination`} loading="lazy" />
@@ -392,14 +392,16 @@ const businessSchema = {
     }
 
     .dest-stage {
-      position: sticky;
-      top: 0;
-      min-height: 100svh;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      overflow: clip;
       padding-block: clamp(3rem, 6vw, 5rem);
+    }
+
+    .destinations[data-hscroll-active] .dest-stage {
+      position: sticky;
+      top: 0;
+      min-height: 100svh;
     }
 
     .dest-head {
@@ -417,7 +419,12 @@ const businessSchema = {
       display: flex;
       gap: clamp(1.25rem, 2.5vw, 2.5rem);
       padding-inline: var(--gutter);
-      will-change: transform;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .hscroll-track::-webkit-scrollbar {
+      display: none;
     }
 
     .dest-card {
@@ -470,7 +477,8 @@ const businessSchema = {
       transition: opacity .45s var(--ease-out), transform .45s var(--ease-out);
     }
 
-    .dest-card:hover .dest-cta {
+    .dest-card:hover .dest-cta,
+    .dest-card:focus-visible .dest-cta {
       opacity: 1;
       transform: none;
     }
@@ -561,15 +569,13 @@ const businessSchema = {
         grid-area: auto;
       }
       .dest-stage {
-        position: static;
-        min-height: 0;
+        padding-block: 5rem 1.5rem;
       }
-      .hscroll-track {
-        flex-direction: column;
-        padding-inline: var(--gutter);
+      .dest-head {
+        margin-bottom: 1.5rem;
       }
       .dest-card {
-        flex-basis: auto;
+        flex-basis: clamp(185px, min(46vw, 35svh), 280px);
       }
     }
 
