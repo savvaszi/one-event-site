@@ -42,8 +42,8 @@ const route = englishPath(Astro.url.pathname);
   <div class="mobile-menu" id="mobile-menu" data-lenis-prevent hidden>
     <nav aria-label={copy.mobile}>
       {nav.map((item, i) => (
-        <a href={localizePath(item.href, locale)} class="mobile-link">
-          <span class="mobile-index">0{i + 1}</span>
+        <a href={localizePath(item.href, locale)} class="mobile-link" aria-current={route === item.href ? 'page' : undefined}>
+          <span class="mobile-index" aria-hidden="true">0{i + 1}</span>
           {navLabel(item, locale)}
         </a>
       ))}
@@ -57,11 +57,20 @@ const route = englishPath(Astro.url.pathname);
     position: fixed;
     inset: 0 0 auto;
     z-index: 100;
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
     transition: background 0.5s var(--ease-out), backdrop-filter 0.5s var(--ease-out);
   }
 
-  .site-header[data-scrolled] {
+  .site-header[data-scrolled]::before {
     background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--line);
   }
@@ -157,6 +166,7 @@ const route = englishPath(Astro.url.pathname);
 
   .menu-toggle {
     display: none;
+    min-height: 32px;
     background: none;
     border: 0;
     color: var(--marble);

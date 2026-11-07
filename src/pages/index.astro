@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import DestinationPlayground from '../components/DestinationPlayground.astro';
 import ReferenceTicker from '../components/ReferenceTicker.astro';
 import Testimonials from '../components/Testimonials.astro';
 import { projects } from '../data/projects.js';
@@ -122,25 +123,14 @@ const businessSchema = {
     </div>
   </section>
 
-  <section class="destinations" data-hscroll aria-label="Destinations">
-    <div class="dest-stage">
-      <div class="wrap dest-head">
-        <p class="eyebrow">Our playground</p>
-        <h2 class="display-lg" data-split>Explore Greece<br />and Cyprus.</h2>
-        <a class="destination-photo-credits" href="/destinations/#photo-credits">Destination photo credits</a>
-      </div>
-      <div class="hscroll-track" data-hscroll-track data-lenis-prevent-horizontal>
-        {destinations.map((d) => (
-          <a class="dest-card media-mask" href={`/destinations/${d.slug}/`} data-magnetic>
-            <img src={d.image} alt={d.imageAlt ?? `${d.name} — One Event destination`} loading="lazy" />
-            <span class="dest-name">{d.name}</span>
-            <span class="dest-tag">{d.tagline}</span>
-            <span class="dest-cta">Explore →</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
+  <DestinationPlayground
+    {destinations}
+    heading={['Explore Greece', 'and Cyprus.']}
+    eyebrow="Our playground"
+    label="Destinations"
+    photoCredits="Destination photo credits"
+    explore="Explore"
+  />
 
   <section class="refs" aria-labelledby="client-heading">
     <div class="wrap refs-inner">
@@ -240,7 +230,7 @@ const businessSchema = {
     }
 
     .hero-work-link:hover {
-      color: var(--link);
+      color: var(--link-text);
     }
 
     .hero-scroll {
@@ -303,24 +293,39 @@ const businessSchema = {
     }
 
     .manifesto {
-      height: calc(100svh * 4.6);
       background: var(--sea);
       border-block: 1px solid var(--line);
     }
 
+    .manifesto[data-manifesto-active] {
+      height: calc(100svh * 4.6);
+    }
+
     .manifesto-sticky {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.5rem;
+      text-align: center;
+      padding: clamp(4rem, 10vw, 6rem) var(--gutter);
+    }
+
+    .manifesto[data-manifesto-active] .manifesto-sticky {
       position: sticky;
       top: 0;
       height: 100svh;
       display: grid;
       place-items: center;
-      text-align: center;
+      padding-block: 0;
       padding-inline: var(--gutter);
     }
 
     .manifesto-item {
-      grid-area: 1 / 1;
       max-width: 20ch;
+    }
+
+    .manifesto[data-manifesto-active] .manifesto-item {
+      grid-area: 1 / 1;
       will-change: transform, opacity, filter;
     }
 
@@ -385,102 +390,6 @@ const businessSchema = {
       font-size: 0.85rem;
       color: var(--marble-dim);
       max-width: 30ch;
-    }
-
-    .destinations {
-      background: var(--sea);
-    }
-
-    .dest-stage {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-block: clamp(3rem, 6vw, 5rem);
-    }
-
-    .destinations[data-hscroll-active] .dest-stage {
-      position: sticky;
-      top: 0;
-      min-height: 100svh;
-    }
-
-    .dest-head {
-      margin-bottom: clamp(3rem, 6vw, 5rem);
-    }
-
-    .destination-photo-credits {
-      display: inline-block;
-      margin-top: 0.6rem;
-      font-size: 0.8rem;
-      text-decoration: underline;
-    }
-
-    .hscroll-track {
-      display: flex;
-      gap: clamp(1.25rem, 2.5vw, 2.5rem);
-      padding-inline: var(--gutter);
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .hscroll-track::-webkit-scrollbar {
-      display: none;
-    }
-
-    .dest-card {
-      position: relative;
-      flex: 0 0 clamp(280px, 32vw, 460px);
-      aspect-ratio: 3 / 4;
-      display: grid;
-      align-content: end;
-      gap: 0.35rem;
-      padding: 1.75rem;
-      isolation: isolate;
-    }
-
-    .dest-card img {
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: saturate(1);
-    }
-
-    .dest-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      background: linear-gradient(180deg, transparent 40%, rgba(255,255,255,.88));
-    }
-
-    .dest-name {
-      font-family: var(--font-display);
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-    }
-
-    .dest-tag {
-      font-size: 0.82rem;
-      color: var(--marble-dim);
-    }
-
-    .dest-cta {
-      margin-top: 0.9rem;
-      font-size: 0.72rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--link);
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity .45s var(--ease-out), transform .45s var(--ease-out);
-    }
-
-    .dest-card:hover .dest-cta,
-    .dest-card:focus-visible .dest-cta {
-      opacity: 1;
-      transform: none;
     }
 
     .refs {
@@ -553,29 +462,6 @@ const businessSchema = {
       }
       .numbers-grid {
         grid-template-columns: 1fr;
-      }
-      .manifesto {
-        height: auto;
-      }
-      .manifesto-sticky {
-        position: static;
-        height: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 2.5rem;
-        padding-block: clamp(4rem, 10vw, 6rem);
-      }
-      .manifesto-item {
-        grid-area: auto;
-      }
-      .dest-stage {
-        padding-block: 5rem 1.5rem;
-      }
-      .dest-head {
-        margin-bottom: 1.5rem;
-      }
-      .dest-card {
-        flex-basis: clamp(185px, min(46vw, 35svh), 280px);
       }
     }
 

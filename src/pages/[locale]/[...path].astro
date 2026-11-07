@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import DestinationPlayground from '../../components/DestinationPlayground.astro';
 import LocalizedContact from '../../components/LocalizedContact.astro';
-import LocalizedGallery from '../../components/LocalizedGallery.astro';
 import LocalizedGuide from '../../components/LocalizedGuide.astro';
+import ProjectGallery from '../../components/ProjectGallery.astro';
 import Testimonials from '../../components/Testimonials.astro';
 import { localizePath } from '../../data/i18n';
 import { companyVatNumber, destinations, eventFigures, team } from '../../data/site.js';
@@ -185,27 +186,33 @@ const moreReferences = references.filter((item) => !featured.includes(item));
     </>
   )}
 
-  {(kind === 'home' || kind === 'destinations') && (
+  {kind === 'home' && (
+    <DestinationPlayground
+      destinations={localDestinations}
+      heading={home.destinationTitle}
+      eyebrow={common.allDestinations}
+      label={home.destinationTitle}
+      photoCredits={common.photoCredits}
+      explore={common.explore}
+      guide={common.readGuide}
+      {locale}
+    />
+  )}
+
+  {kind === 'destinations' && (
     <section class="section-pad" aria-label={home.destinationTitle}>
       <div class="wrap">
-        {kind === 'home' && <h2 class="display-md section-title">{home.destinationTitle}</h2>}
         <div class="card-grid">
           {localDestinations.map((item) => (
             <a class="image-card" href={destLink(item.slug)}>
               <img src={item.image} alt={item.imageAlt ?? ''} loading="lazy" decoding="async" />
               <div>
-                {kind === 'home' ? <h3>{item.name}</h3> : <h2>{item.name}</h2>}
+                <h2>{item.name}</h2>
                 <p>{item.tagline}</p>
               </div>
             </a>
           ))}
         </div>
-        {kind === 'home' && (
-          <div class="actions">
-            <a class="text-link" href={destLink('greece')}>{common.readGuide}</a>
-            <a class="text-link" href={link('/destinations/#photo-credits')}>{common.photoCredits}</a>
-          </div>
-        )}
       </div>
     </section>
   )}
@@ -317,7 +324,7 @@ const moreReferences = references.filter((item) => !featured.includes(item));
           </div>
         </div>
       </section>
-      <LocalizedGallery project={project} labels={common} />
+      <ProjectGallery project={project} labels={common} />
       <nav class="section-nav soft" aria-label={common.projects}>
         <div class="wrap actions">
           <a href={link('/projects/')}>← {common.allProjects}</a>
@@ -488,42 +495,35 @@ const moreReferences = references.filter((item) => !featured.includes(item));
   }
 
   .manifesto {
-    height: 370vh;
     background: var(--sea);
   }
 
+  .manifesto[data-manifesto-active] {
+    height: 370vh;
+  }
+
   .manifesto-sticky {
-    position: sticky;
-    top: 0;
-    height: 100svh;
     display: grid;
     align-items: center;
     justify-items: center;
-    padding: var(--gutter);
+    gap: 2rem;
+    padding: 3rem var(--gutter);
     text-align: center;
   }
 
   .manifesto-item {
-    grid-area: 1 / 1;
     max-width: 20ch;
   }
 
-  :global(.no-js) .manifesto,
-  :global(.reduced-motion) .manifesto {
-    height: auto;
+  .manifesto[data-manifesto-active] .manifesto-sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    padding: var(--gutter);
   }
 
-  :global(.no-js) .manifesto-sticky,
-  :global(.reduced-motion) .manifesto-sticky {
-    position: static;
-    height: auto;
-    gap: 2rem;
-    padding-block: 3rem;
-  }
-
-  :global(.no-js) .manifesto-item,
-  :global(.reduced-motion) .manifesto-item {
-    grid-area: auto;
+  .manifesto[data-manifesto-active] .manifesto-item {
+    grid-area: 1 / 1;
   }
 
   .columns {
@@ -753,19 +753,7 @@ const moreReferences = references.filter((item) => !featured.includes(item));
   }
 
   @media (max-width: 900px) {
-    .manifesto {
-      height: auto;
-    }
-
-    .manifesto-sticky {
-      position: static;
-      height: auto;
-      gap: 2rem;
-      padding-block: 3rem;
-    }
-
     .manifesto-item {
-      grid-area: auto;
       font-size: clamp(1.5rem, 4vw, 2.3rem);
     }
   }

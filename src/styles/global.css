@@ -6,8 +6,11 @@
   --marble-dim: rgba(0, 0, 0, 0.62);
   --marble-faint: rgba(0, 0, 0, 0.34);
   --line: rgba(0, 0, 0, 0.14);
+  --field-line: #657a70;
   --accent: #48a77e;
+  --accent-text: #216c4d;
   --link: #2ea3f2;
+  --link-text: #09649e;
   --secondary: #47a67e;
 
   --font-display: 'Fraunces Variable', 'Georgia', serif;
@@ -64,7 +67,7 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent-text);
   outline-offset: 4px;
 }
 
@@ -114,7 +117,7 @@ h3 {
   font-weight: 600;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-text);
   margin-bottom: clamp(1rem, 2vw, 1.75rem);
 }
 

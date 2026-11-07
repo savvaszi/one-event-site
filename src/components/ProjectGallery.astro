@@ -1,0 +1,211 @@
+---
+interface Props {
+  project: { title: string; gallery: string[] };
+  labels?: {
+    photographs: string;
+    photo: string;
+    openPhoto: string;
+    close: string;
+    previousPhoto: string;
+    nextPhoto: string;
+  };
+}
+
+const { project, labels } = Astro.props;
+const copy = labels ?? {
+  photographs: 'The gallery',
+  photo: 'photo',
+  openPhoto: 'Open photo',
+  close: 'Close',
+  previousPhoto: 'Previous photo',
+  nextPhoto: 'Next photo',
+};
+const caption = (index: number) => labels
+  ? `${project.title} · ${copy.photo} ${index + 1}/${project.gallery.length}`
+  : `${project.title} — photo ${index + 1} of ${project.gallery.length}`;
+---
+
+<section class="gallery" aria-labelledby="project-gallery-title" data-project-gallery>
+  <div class="wrap">
+    <h2 class="display-md" id="project-gallery-title">{copy.photographs}</h2>
+    <div class="gallery-grid">
+      {project.gallery.map((src, index) => (
+        <a href={src} data-caption={caption(index)} aria-label={`${copy.openPhoto} ${index + 1}`}>
+          <img src={src} alt={labels ? caption(index) : `${project.title} photograph ${index + 1}`} loading="lazy" decoding="async" />
+        </a>
+      ))}
+    </div>
+  </div>
+  <dialog aria-label={copy.photographs} data-gallery-dialog data-lenis-prevent>
+    <div class="gallery-viewer">
+      <div class="gallery-controls">
+        <button type="button" data-previous aria-label={copy.previousPhoto}>‹</button>
+        <button type="button" data-next aria-label={copy.nextPhoto}>›</button>
+        <button class="close" type="button" data-close aria-label={copy.close} autofocus>×</button>
+      </div>
+      <figure>
+        <img alt="" />
+        <figcaption aria-live="polite"></figcaption>
+      </figure>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  const gallery = document.querySelector<HTMLElement>('[data-project-gallery]');
+  const dialog = gallery?.querySelector('dialog');
+  const image = dialog?.querySelector('img');
+  const caption = dialog?.querySelector('figcaption');
+
+  if (gallery && dialog && image && caption && typeof dialog.showModal === 'function') {
+    const links = [...gallery.querySelectorAll<HTMLAnchorElement>('.gallery-grid a')];
+    let index = 0;
+    let opener: HTMLAnchorElement | undefined;
+    let backdropPressed = false;
+
+    const showPhoto = (nextIndex: number) => {
+      index = (nextIndex + links.length) % links.length;
+      const link = links[index];
+      image.src = link.href;
+      image.alt = link.dataset.caption ?? '';
+      caption.textContent = image.alt;
+    };
+
+    links.forEach((link, photoIndex) => {
+      link.addEventListener('click', (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        opener = link;
+        showPhoto(photoIndex);
+        dialog.showModal();
+      });
+    });
+
+    dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+    dialog.querySelector('[data-previous]')?.addEventListener('click', () => showPhoto(index - 1));
+    dialog.querySelector('[data-next]')?.addEventListener('click', () => showPhoto(index + 1));
+    dialog.addEventListener('pointerdown', (event) => {
+      backdropPressed = event.target === dialog;
+    });
+    dialog.addEventListener('click', (event) => {
+      if (backdropPressed && event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        showPhoto(index + (event.key === 'ArrowLeft' ? -1 : 1));
+      }
+    });
+    dialog.addEventListener('close', () => {
+      image.removeAttribute('src');
+      opener?.focus({ preventScroll: true });
+    });
+  }
+</script>
+
+<style>
+  .gallery {
+    padding-block: clamp(3rem, 8vw, 6rem);
+    border-block-start: 1px solid var(--line);
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .gallery-grid a {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+
+  .gallery-grid a:is(:hover, :focus-visible) {
+    border-color: var(--accent-text);
+  }
+
+  .gallery-grid img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: 50% 25%;
+  }
+
+  dialog {
+    position: fixed;
+    inset: 0;
+    min-width: min(280px, calc(100% - 2rem));
+    max-width: min(calc(100% - 2rem), 1200px);
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    color: #fff;
+    background: #161616;
+    border: 0;
+    border-radius: 12px;
+  }
+
+  :global(html:has(dialog[data-gallery-dialog][open])) {
+    overflow: hidden;
+  }
+
+  dialog::backdrop {
+    background: rgba(0, 0, 0, .84);
+  }
+
+  .gallery-viewer {
+    padding: .5rem;
+  }
+
+  .gallery-controls {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: .5rem;
+  }
+
+  dialog img {
+    max-height: 70vh;
+    max-height: min(74dvh, calc(100dvh - 10rem));
+    margin-inline: auto;
+    object-fit: contain;
+  }
+
+  dialog button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+    background: #303030;
+    color: #fff;
+    font: 1.6rem/1 var(--font-body);
+    cursor: pointer;
+  }
+
+  dialog button:hover {
+    background: var(--accent-text);
+  }
+
+  dialog button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .close {
+    margin-inline-start: auto;
+  }
+
+  figcaption {
+    padding: .5rem .75rem .25rem;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 650px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .75rem;
+    }
+  }
+</style>

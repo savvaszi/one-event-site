@@ -88,6 +88,10 @@ const draft = {
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[name="name"], [name="details"]').forEach((field) => {
+        field.value = field.value.trim();
+      });
+      if (!form.reportValidity()) return;
       const data = new FormData(form);
       const value = (key: string) => String(data.get(key) ?? '').trim() || missing;
       const subjectLine = [subject, value('destination'), value('name')].join(' — ');
@@ -130,6 +134,7 @@ const draft = {
   .contact a {
     display: block;
     width: fit-content;
+    overflow-wrap: anywhere;
   }
 
   a {
@@ -170,7 +175,7 @@ const draft = {
     min-width: 0;
     min-height: 3rem;
     padding: .8rem 1rem;
-    border: 1px solid var(--line);
+    border: 1px solid var(--field-line);
     border-radius: 8px;
     color: var(--marble);
     background: var(--ink);
@@ -181,10 +186,20 @@ const draft = {
     resize: vertical;
   }
 
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent-text);
+    outline: 2px solid var(--accent-text);
+    outline-offset: 2px;
+  }
+
   button {
     width: fit-content;
     background: transparent;
     cursor: pointer;
+  }
+
+  [data-brief-status] {
+    color: var(--link-text);
   }
 
   .offices {

@@ -84,7 +84,7 @@ const heroImage = '/img/get-in-touch.jpg';
 
     .c-hero em {
       font-style: italic;
-      color: var(--link);
+      color: var(--link-text);
     }
 
     .c-grid {
@@ -105,7 +105,7 @@ const heroImage = '/img/get-in-touch.jpg';
     }
 
     .role {
-      color: var(--link);
+      color: var(--link-text);
       font-size: 0.74rem;
       letter-spacing: 0.24em;
       text-transform: uppercase;
@@ -115,6 +115,7 @@ const heroImage = '/img/get-in-touch.jpg';
     .contact-line {
       display: block;
       width: fit-content;
+      overflow-wrap: anywhere;
       font-size: 0.95rem;
       color: var(--marble-dim);
       padding-block: 0.25rem;
@@ -122,7 +123,7 @@ const heroImage = '/img/get-in-touch.jpg';
     }
 
     .contact-line:hover {
-      color: var(--link);
+      color: var(--link-text);
       transform: translateX(6px);
     }
 
@@ -180,7 +181,7 @@ const heroImage = '/img/get-in-touch.jpg';
 
     .field-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1.25rem;
     }
 
@@ -197,8 +198,9 @@ const heroImage = '/img/get-in-touch.jpg';
     .brief-form select,
     .brief-form textarea {
       width: 100%;
+      min-width: 0;
       min-height: 48px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--field-line);
       border-radius: 8px;
       background: var(--sea);
       color: var(--marble);
@@ -215,7 +217,9 @@ const heroImage = '/img/get-in-touch.jpg';
     .brief-form input:focus,
     .brief-form select:focus,
     .brief-form textarea:focus {
-      border-color: var(--accent);
+      border-color: var(--accent-text);
+      outline: 2px solid var(--accent-text);
+      outline-offset: 2px;
     }
 
     .brief-form .btn {
@@ -226,7 +230,7 @@ const heroImage = '/img/get-in-touch.jpg';
 
     .form-status {
       min-height: 1.65rem;
-      color: var(--link);
+      color: var(--link-text);
       font-size: .9rem;
     }
 
@@ -263,9 +267,10 @@ const heroImage = '/img/get-in-touch.jpg';
     }
 
     @media (max-width: 800px) {
+      .c-grid,
       .brief-grid,
       .field-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
     }
   </style>
@@ -277,6 +282,9 @@ const heroImage = '/img/get-in-touch.jpg';
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[name="name"], [name="details"]').forEach((field) => {
+        field.value = field.value.trim();
+      });
       if (!form.reportValidity()) return;
 
       const data = new FormData(form);

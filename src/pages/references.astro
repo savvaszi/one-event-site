@@ -92,9 +92,11 @@ const otherReferences = references.filter((reference) => !featured.includes(refe
       border-top: 1px solid var(--line);
     }
 
-    .case-row:hover {
-      padding-left: 14px;
-      border-color: var(--accent);
+    @media (hover: hover) and (pointer: fine) {
+      .case-row:hover {
+        padding-left: 14px;
+        border-color: var(--accent);
+      }
     }
 
     .case-title {
@@ -104,7 +106,7 @@ const otherReferences = references.filter((reference) => !featured.includes(refe
     }
 
     .case-row:hover .case-title {
-      color: var(--link);
+      color: var(--link-text);
     }
 
     .case-meta {
@@ -114,32 +116,25 @@ const otherReferences = references.filter((reference) => !featured.includes(refe
       color: var(--marble-dim);
     }
 
-    .case-play {
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      opacity: 0;
-      transform: translateX(-8px);
-      transition: opacity .4s var(--ease-out), transform .4s var(--ease-out);
-    }
-
-    .case-row:hover .case-play {
-      opacity: 1;
-      transform: none;
-    }
-
+    .case-play,
     .case-project {
+      display: inline-flex;
+      align-items: center;
+      justify-self: start;
+      min-height: 44px;
       font-size: 0.72rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--link);
+      color: var(--link-text);
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
       white-space: nowrap;
       transition: color .35s var(--ease-out);
     }
 
-    .case-project:hover {
-      color: var(--accent);
+    .case-play:is(:hover, :focus-visible),
+    .case-project:is(:hover, :focus-visible) {
+      color: var(--accent-text);
     }
 
     .moments {
@@ -184,11 +179,13 @@ const otherReferences = references.filter((reference) => !featured.includes(refe
 
     @media (max-width: 720px) {
       .case-row {
-        grid-template-columns: 1fr;
-        gap: 0.3rem;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 0.3rem 1.25rem;
       }
-      .case-play {
-        display: none;
+
+      .case-title,
+      .case-meta {
+        grid-column: 1 / -1;
       }
     }
   </style>

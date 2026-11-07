@@ -91,6 +91,8 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
   const KEY = 'oe-cookie-consent';
   const root = document.getElementById('cookie-consent');
   let unpersistedChoice: Record<string, unknown> | undefined;
+  let settingsOpener: HTMLElement | null = null;
+  let hideTimer: number | undefined;
 
   const store = (): Record<string, unknown> => {
     if (unpersistedChoice) return unpersistedChoice;
@@ -108,14 +110,23 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
   const setState = (state: 'banner' | 'settings') => {
     root!.dataset.state = state;
     views.forEach((v) => (v.hidden = v.dataset.view !== state));
+    const focusTarget = state === 'settings' ? 'input[data-cat]:enabled' : '[data-cc="settings"]';
+    root!.querySelector<HTMLElement>(focusTarget)?.focus();
   };
   const show = () => {
+    window.clearTimeout(hideTimer);
     root!.hidden = false;
-    requestAnimationFrame(() => root!.setAttribute('data-open', 'true'));
+    root!.inert = false;
+    requestAnimationFrame(() => {
+      if (!root!.inert) root!.setAttribute('data-open', 'true');
+    });
   };
   const hide = () => {
     root!.setAttribute('data-open', 'false');
-    setTimeout(() => (root!.hidden = true), 500);
+    root!.inert = true;
+    settingsOpener?.focus();
+    settingsOpener = null;
+    hideTimer = window.setTimeout(() => (root!.hidden = true), 500);
   };
   const persist = (choices: Record<string, boolean>) => {
     const saved = { ...choices, analyticsNotice: ANALYTICS_NOTICE_VERSION, ts: new Date().toISOString() };
@@ -152,15 +163,16 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
   });
 
   document.addEventListener('click', (e) => {
-    if ((e.target as HTMLElement).closest('[data-open-cookies]')) {
-      const saved = store();
-      root!.querySelectorAll<HTMLInputElement>('input[data-cat]:enabled').forEach((box) => {
-        const category = box.dataset.cat!;
-        box.checked = category === 'performance' ? hasAnalyticsConsent(saved) : saved[category] === true;
-      });
-      setState('settings');
-      show();
-    }
+    const opener = (e.target as HTMLElement).closest<HTMLElement>('[data-open-cookies]');
+    if (!opener) return;
+    settingsOpener = opener;
+    const saved = store();
+    root!.querySelectorAll<HTMLInputElement>('input[data-cat]:enabled').forEach((box) => {
+      const category = box.dataset.cat!;
+      box.checked = category === 'performance' ? hasAnalyticsConsent(saved) : saved[category] === true;
+    });
+    show();
+    setState('settings');
   });
 
   window.addEventListener('storage', (event) => {
@@ -234,14 +246,14 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
     display: inline-block;
     margin-top: 0.6rem;
     font-size: 0.76rem;
-    color: var(--marble-faint);
+    color: var(--marble-dim);
     text-decoration: underline;
     text-underline-offset: 4px;
     transition: color 0.3s var(--ease-out);
   }
 
   .cc-link:hover {
-    color: var(--link);
+    color: var(--accent-text);
   }
 
   .cc-actions {
@@ -271,7 +283,7 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
 
   .cc-btn.ghost:hover {
     border-color: var(--accent);
-    color: var(--link);
+    color: var(--accent-text);
   }
 
   .cc-btn.solid {
@@ -319,9 +331,9 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
   }
 
   .cc-copy small {
-    font-size: 0.68rem;
+    font-size: 0.75rem;
     line-height: 1.45;
-    color: var(--marble-faint);
+    color: var(--marble-dim);
   }
 
   .cc-cat input {
@@ -333,8 +345,9 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
   .cc-switch {
     width: 34px;
     height: 19px;
+    border: 1px solid var(--marble-dim);
     border-radius: 99px;
-    background: rgba(244, 245, 246, 0.14);
+    background: var(--sea-2);
     position: relative;
     transition: background 0.3s var(--ease-out);
     flex-shrink: 0;
@@ -342,8 +355,8 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
 
   .cc-switch i {
     position: absolute;
-    top: 2.5px;
-    left: 2.5px;
+    top: 1.5px;
+    left: 1.5px;
     width: 14px;
     height: 14px;
     border-radius: 50%;
@@ -352,12 +365,18 @@ const categories = ['necessary', 'functional', 'performance', 'advertisement'] a
   }
 
   input:checked ~ .cc-switch {
-    background: rgba(72, 167, 126, 0.35);
+    background: var(--accent-text);
+    border-color: var(--accent-text);
   }
 
   input:checked ~ .cc-switch i {
     transform: translateX(15px);
-    background: var(--link);
+    background: var(--ink);
+  }
+
+  input:focus-visible ~ .cc-switch {
+    outline: 2px solid var(--accent-text);
+    outline-offset: 3px;
   }
 
   input:disabled ~ .cc-switch {

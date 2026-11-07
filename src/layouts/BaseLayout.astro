@@ -195,22 +195,24 @@ const htmlClass =
 
         const manifestoWrap = document.querySelector<HTMLElement>('[data-manifesto]');
         const items = gsap.utils.toArray<HTMLElement>('.manifesto-item');
-        if (manifestoWrap && items.length > 1 && innerWidth > 900) {
-          gsap.set(items.slice(1), { autoAlpha: 0, scale: 1.06, filter: 'blur(8px)' });
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: manifestoWrap,
-              start: 'top top',
-              end: 'bottom bottom',
-              scrub: 0.6,
-              invalidateOnRefresh: true,
-            },
-          });
-          items.forEach((item, i) => {
-            if (i < items.length - 1) {
+        if (manifestoWrap && items.length > 1) {
+          gsap.matchMedia().add('(min-width: 901px) and (min-height: 600px) and (prefers-reduced-motion: no-preference)', () => {
+            manifestoWrap.dataset.manifestoActive = '';
+            gsap.set(items.slice(1), { autoAlpha: 0, scale: 1.06, filter: 'blur(8px)' });
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: manifestoWrap,
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0.6,
+                invalidateOnRefresh: true,
+              },
+            });
+            items.slice(0, -1).forEach((item, i) => {
               tl.to(item, { autoAlpha: 0, scale: 0.95, filter: 'blur(8px)', ease: 'power2.inOut' })
                 .to(items[i + 1], { autoAlpha: 1, scale: 1, filter: 'blur(0px)', ease: 'power2.inOut' }, '<0.2');
-            }
+            });
+            return () => { delete manifestoWrap.dataset.manifestoActive; };
           });
         }
 

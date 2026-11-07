@@ -1,0 +1,171 @@
+---
+import { localizePath, type Locale } from '../data/i18n';
+
+interface Props {
+  destinations: { slug: string; name: string; tagline: string; image: string; imageAlt?: string }[];
+  heading: string | [string, string];
+  eyebrow: string;
+  label: string;
+  photoCredits: string;
+  explore: string;
+  guide?: string;
+  locale?: Locale;
+}
+
+const { destinations, heading, eyebrow, label, photoCredits, explore, guide, locale = 'en' } = Astro.props;
+---
+
+<section class="destinations" data-hscroll aria-label={label}>
+  <div class="dest-stage">
+    <div class="wrap dest-head">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 class="display-lg" data-split>
+        {typeof heading === 'string' ? heading : <>{heading[0]}<br />{heading[1]}</>}
+      </h2>
+      <div class="dest-links">
+        {guide && <a href={localizePath('/destinations/greece/', locale)}>{guide}</a>}
+        <a href={localizePath('/destinations/#photo-credits', locale)}>{photoCredits}</a>
+      </div>
+    </div>
+    <div class="hscroll-track" data-hscroll-track data-lenis-prevent-horizontal>
+      {destinations.map((destination) => (
+        <a class="dest-card media-mask" href={localizePath(`/destinations/${destination.slug}/`, locale)} data-magnetic>
+          <img src={destination.image} alt={destination.imageAlt ?? destination.name} loading="lazy" />
+          <span class="dest-name">{destination.name}</span>
+          <span class="dest-tag">{destination.tagline}</span>
+          <span class="dest-cta">{explore} <span aria-hidden="true">→</span></span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .destinations {
+    background: var(--sea);
+  }
+
+  .dest-stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+
+  .destinations[data-hscroll-active] .dest-stage {
+    position: sticky;
+    top: 0;
+    min-height: 100svh;
+  }
+
+  .dest-head {
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .dest-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem 1rem;
+    margin-top: 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .dest-links a {
+    text-decoration: underline;
+  }
+
+  .hscroll-track {
+    display: flex;
+    gap: clamp(1.25rem, 2.5vw, 2.5rem);
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .hscroll-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dest-card {
+    position: relative;
+    flex: 0 0 clamp(280px, 32vw, 460px);
+    aspect-ratio: 3 / 4;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: end;
+    gap: 0.35rem;
+    padding: 1.75rem;
+    isolation: isolate;
+  }
+
+  .dest-card img {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .dest-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, transparent 40%, rgba(255,255,255,.88));
+  }
+
+  .dest-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    overflow-wrap: anywhere;
+  }
+
+  .dest-tag {
+    font-size: 0.82rem;
+    color: var(--marble-dim);
+  }
+
+  .dest-cta {
+    margin-top: 0.9rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--link-text);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .45s var(--ease-out), transform .45s var(--ease-out);
+  }
+
+  .dest-card:hover .dest-cta,
+  .dest-card:focus-visible .dest-cta {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (hover: none) {
+    .dest-cta {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .dest-stage {
+      padding-block: 5rem 1.5rem;
+    }
+
+    .dest-head {
+      margin-bottom: 1.5rem;
+    }
+
+    .dest-card {
+      flex-basis: clamp(185px, min(46vw, 35svh), 280px);
+      padding: clamp(1rem, 3.2vw, 1.75rem);
+    }
+
+    .dest-name {
+      font-size: clamp(1.55rem, 4vw, 1.8rem);
+    }
+  }
+</style>
