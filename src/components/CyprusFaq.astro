@@ -1,0 +1,55 @@
+---
+import type { Locale } from '../data/i18n';
+
+const { locale } = Astro.props as { locale: Locale };
+const copy = {
+  en: {
+    heading: 'Cyprus event planning FAQs',
+    faqs: [
+      ['When is a good time for an outdoor event in Cyprus?', 'Spring and autumn are good starting points for outdoor activities and dinners. Check conditions for the specific location and dates, and choose a covered or indoor backup before confirming the programme.'],
+      ['How do I choose a venue for my group size?', 'Share your headcount and room layout. A venue’s capacity can differ for a theatre-style conference, a seated dinner and a standing reception. Allow space for the stage, production and access, and confirm the usable capacity with the venue.'],
+      ['How early should I start planning?', 'Start as soon as you have a date range and estimated headcount. Allow more time if you need a large room block, several venues or fixed dates. Share alternatives early if your schedule is flexible.'],
+      ['What determines the cost of a corporate event in Cyprus?', 'The budget depends on the dates, group size, venue, accommodation, catering, transport and production. Share your priorities and budget range so the team can compare options for your brief.'],
+    ],
+  },
+  el: {
+    heading: 'Συχνές ερωτήσεις για εκδηλώσεις στην Κύπρο',
+    faqs: [
+      ['Πότε είναι κατάλληλη εποχή για υπαίθρια εκδήλωση στην Κύπρο;', 'Η άνοιξη και το φθινόπωρο προσφέρονται για υπαίθριες δραστηριότητες και δείπνα. Ελέγξτε τις συνθήκες για την τοποθεσία και τις ημερομηνίες σας και προβλέψτε στεγασμένη ή εσωτερική εναλλακτική πριν οριστικοποιήσετε το πρόγραμμα.'],
+      ['Πώς επιλέγω χώρο ανάλογα με το μέγεθος της ομάδας;', 'Δώστε τον αριθμό των συμμετεχόντων και τη διάταξη που χρειάζεστε. Η χωρητικότητα διαφέρει ανάμεσα σε συνέδριο με θεατρική διάταξη, καθιστό δείπνο και όρθια δεξίωση. Υπολογίστε χώρο για τη σκηνή, τον εξοπλισμό και την πρόσβαση και επιβεβαιώστε τη διαθέσιμη χωρητικότητα με τον χώρο.'],
+      ['Πόσο νωρίς πρέπει να ξεκινήσω την οργάνωση;', 'Ξεκινήστε μόλις έχετε πιθανές ημερομηνίες και εκτίμηση συμμετοχών. Προβλέψτε περισσότερο χρόνο αν χρειάζεστε πολλά δωμάτια, περισσότερους χώρους ή συγκεκριμένες ημερομηνίες. Αν έχετε ευελιξία, αναφέρετε από την αρχή τις εναλλακτικές σας.'],
+      ['Από τι εξαρτάται το κόστος μιας εταιρικής εκδήλωσης στην Κύπρο;', 'Το κόστος εξαρτάται από τις ημερομηνίες, το μέγεθος της ομάδας, τον χώρο, τη διαμονή, την εστίαση, τις μεταφορές και την παραγωγή. Μοιραστείτε τις προτεραιότητές σας και το εύρος του προϋπολογισμού σας, ώστε η ομάδα να συγκρίνει κατάλληλες επιλογές.'],
+    ],
+  },
+  es: {
+    heading: 'Preguntas frecuentes sobre eventos en Chipre',
+    faqs: [
+      ['¿Cuándo conviene organizar un evento al aire libre en Chipre?', 'La primavera y el otoño son buenas opciones para las actividades y cenas al aire libre. Comprueba las condiciones del lugar y las fechas y prevé una alternativa cubierta o interior antes de confirmar el programa.'],
+      ['¿Cómo elijo un espacio según el tamaño del grupo?', 'Indica el número de asistentes y la distribución que necesitas. El aforo varía entre un congreso en formato teatro, una cena sentada y una recepción de pie. Reserva espacio para el escenario, los equipos técnicos y el acceso, y confirma el aforo con el recinto.'],
+      ['¿Con cuánta antelación debo empezar a planificar?', 'Empieza en cuanto tengas un intervalo de fechas y una estimación del número de asistentes. Prevé más tiempo si necesitas reservar muchas habitaciones, varios espacios o fechas fijas. Si tienes flexibilidad, indica desde el principio qué otras fechas te servirían.'],
+      ['¿De qué depende el coste de un evento corporativo en Chipre?', 'El presupuesto depende de las fechas, el tamaño del grupo, el espacio, el alojamiento, la restauración, el transporte y la producción. Comparte tus prioridades y tu presupuesto aproximado para que el equipo pueda comparar opciones.'],
+    ],
+  },
+}[locale];
+---
+
+<section class="cyprus-faq" id="faq" aria-labelledby="cyprus-faq-title">
+  <div class="wrap">
+    <h2 class="display-md" id="cyprus-faq-title">{copy.heading}</h2>
+    <div class="faq-list">
+      {copy.faqs.map(([question, answer]) => (
+        <article>
+          <h3>{question}</h3>
+          <p>{answer}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cyprus-faq { padding-block: clamp(2.5rem, 6vw, 5rem); }
+  .faq-list { max-width: 52rem; margin-block-start: 1.5rem; }
+  article { padding-block: 1rem; border-block-start: 1px solid var(--line); }
+  h3 { font-size: 1.125rem; margin-block-end: .35rem; }
+</style>

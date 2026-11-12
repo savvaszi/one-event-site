@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DestinationPhotoCredit from '../../components/DestinationPhotoCredit.astro';
+import CyprusFaq from '../../components/CyprusFaq.astro';
 import { destinations } from '../../data/site.js';
 
 export function getStaticPaths() {
@@ -16,7 +17,7 @@ const next = destinations[(index + 1) % destinations.length];
 ---
 
 <BaseLayout
-  title={`${dest.name} Corporate Events & Destination Management | One Event`}
+  title={dest.slug === 'cyprus' ? 'DMC Cyprus | Corporate Events & Incentive Travel | One Event' : `${dest.name} Corporate Events & Destination Management | One Event`}
   description={`Plan a corporate event, conference or incentive in ${dest.name} with One Event’s local destination management team.`}
 >
   <section class="d-hero">
@@ -55,6 +56,8 @@ const next = destinations[(index + 1) % destinations.length];
       )}
     </div>
   </section>
+
+  {dest.slug === 'cyprus' && <CyprusFaq locale="en" />}
 
   <section class="d-cta">
     <div class="wrap d-cta-inner">

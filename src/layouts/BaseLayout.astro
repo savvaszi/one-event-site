@@ -22,9 +22,10 @@ const {
   structuredData,
 } = Astro.props;
 
-const route = englishPath(Astro.url.pathname);
-const ogImage =
-  'https://one.savvaszinonos.work/img/destinations/santorini.jpg';
+const pathname = Astro.url.pathname;
+const route = englishPath(pathname.endsWith('/') ? pathname : `${pathname}/`);
+const canonical = new URL(localizePath(route, locale), Astro.site).href;
+const ogImage = new URL('/img/destinations/santorini.jpg', Astro.site).href;
 
 const htmlClass =
   typeof window === 'undefined' ? 'no-js' : '';
@@ -36,12 +37,13 @@ const htmlClass =
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    <link rel="canonical" href={canonical} />
     <meta name="description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:url" content={canonical} />
     {languages.map(({ code }) => (
       <link rel="alternate" hreflang={code} href={new URL(localizePath(route, code), Astro.site).href} />
     ))}

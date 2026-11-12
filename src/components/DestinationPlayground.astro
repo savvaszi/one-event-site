@@ -9,10 +9,11 @@ interface Props {
   photoCredits: string;
   explore: string;
   guide?: string;
+  cyprusGuide?: string;
   locale?: Locale;
 }
 
-const { destinations, heading, eyebrow, label, photoCredits, explore, guide, locale = 'en' } = Astro.props;
+const { destinations, heading, eyebrow, label, photoCredits, explore, guide, cyprusGuide, locale = 'en' } = Astro.props;
 ---
 
 <section class="destinations" data-hscroll aria-label={label}>
@@ -24,6 +25,7 @@ const { destinations, heading, eyebrow, label, photoCredits, explore, guide, loc
       </h2>
       <div class="dest-links">
         {guide && <a href={localizePath('/destinations/greece/', locale)}>{guide}</a>}
+        {cyprusGuide && <a href={localizePath('/destinations/cyprus/', locale)}>{cyprusGuide}</a>}
         <a href={localizePath('/destinations/#photo-credits', locale)}>{photoCredits}</a>
       </div>
     </div>

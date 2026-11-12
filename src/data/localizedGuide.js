@@ -10,6 +10,7 @@ const venueSources = [
 const copy = {
   el: {
     title: 'Οργάνωση εταιρικής εκδήλωσης στην Ελλάδα',
+    seoTitle: 'DMC Ελλάδα | Οδηγός εταιρικών εκδηλώσεων',
     description: 'Συγκρίνετε την Αθήνα και τα ελληνικά νησιά για την επόμενη εταιρική εκδήλωσή σας. Δείτε δημοσιευμένες χωρητικότητες, εποχικές συμβουλές και συχνές ερωτήσεις.',
     eyebrow: 'Οδηγός εκδηλώσεων στην Ελλάδα',
     intro: 'Ξεκινήστε από το τι χρειάζεται να κάνει η ομάδα μαζί. Συγκρίνετε την Αθήνα, τα νησιά και τα θέρετρα και επιλέξτε χώρο ανάλογα με τον αριθμό των συμμετεχόντων και τη διάταξη της αίθουσας.',
@@ -50,6 +51,7 @@ const copy = {
   },
   es: {
     title: 'Cómo organizar un evento corporativo en Grecia',
+    seoTitle: 'DMC en Grecia | Guía de eventos corporativos',
     description: 'Compare Atenas y las islas griegas para su próximo evento. Consulte aforos publicados, consejos sobre la temporada y respuestas a preguntas frecuentes.',
     eyebrow: 'Guía de eventos en Grecia',
     intro: 'Empiece por definir qué necesita hacer el grupo en conjunto. Compare Atenas, las islas y los complejos hoteleros y elija un espacio según el número de asistentes y la distribución de la sala.',

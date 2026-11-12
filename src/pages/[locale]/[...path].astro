@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CyprusFaq from '../../components/CyprusFaq.astro';
 import DestinationPlayground from '../../components/DestinationPlayground.astro';
 import LocalizedContact from '../../components/LocalizedContact.astro';
 import LocalizedGuide from '../../components/LocalizedGuide.astro';
@@ -48,8 +49,11 @@ const previous = localDestinations.at(destinationIndex - 1);
 const next = localDestinations[(destinationIndex + 1) % localDestinations.length];
 const project = localProjects.find((item) => item.slug === slug);
 const page = kind === 'guide' ? guide : copy[kind];
-const title = kind === 'destination' ? `${destination.name} | ${copy.destinations.title}`
-  : kind === 'project' ? project?.title : page.title;
+const dmcLinks = locale === 'el' ? ['DMC Ελλάδα', 'DMC Κύπρος'] : ['DMC en Grecia', 'DMC en Chipre'];
+const isCyprus = kind === 'destination' && slug === 'cyprus';
+const title = isCyprus ? `${dmcLinks[1]} | ${locale === 'el' ? 'Εταιρικές εκδηλώσεις' : 'Eventos corporativos'}`
+  : kind === 'destination' ? `${destination.name} | ${copy.destinations.title}`
+  : kind === 'project' ? project?.title : kind === 'guide' ? guide.seoTitle : page.title;
 const description = kind === 'destination' ? `${destination.tagline} ${common.localTeam}`
   : kind === 'project' ? project?.summary : page.description;
 const structuredData = kind === 'guide' ? {
@@ -194,7 +198,8 @@ const moreReferences = references.filter((item) => !featured.includes(item));
       label={home.destinationTitle}
       photoCredits={common.photoCredits}
       explore={common.explore}
-      guide={common.readGuide}
+      guide={dmcLinks[0]}
+      cyprusGuide={dmcLinks[1]}
       {locale}
     />
   )}
@@ -246,6 +251,7 @@ const moreReferences = references.filter((item) => !featured.includes(item));
           )}
         </div>
       </section>
+      {isCyprus && <CyprusFaq {locale} />}
       <nav class="section-nav soft" aria-label={common.moreDestinations}>
         <div class="wrap actions">
           <a href={destLink(previous.slug)}>← {previous.name}</a>

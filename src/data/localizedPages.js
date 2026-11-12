@@ -30,12 +30,12 @@ export const pageCopy = {
       close: 'Κλείσιμο',
     },
     home: {
-      title: 'Εταιρικές εκδηλώσεις σε Ελλάδα και Κύπρο',
+      title: 'DMC σε Ελλάδα και Κύπρο | Εταιρικές εκδηλώσεις',
       description: 'Η One Event, βραβευμένη στα World MICE Awards 2026, οργανώνει εταιρικές εκδηλώσεις, συνέδρια και ταξίδια επιβράβευσης σε Ελλάδα και Κύπρο.',
       eyebrow: 'Διαχείριση προορισμού στην Ελλάδα και την Κύπρο',
       heading: 'Δημιουργούμε στιγμές που εμπνέουν',
       scroll: 'Συνεχίστε την περιήγηση',
-      intro: 'Σχεδιάζουμε και υλοποιούμε εταιρικές εκδηλώσεις, συνέδρια και ταξίδια επιβράβευσης με τις τοπικές μας ομάδες στην Ελλάδα και την Κύπρο.',
+      intro: 'Η One Event είναι εταιρεία διαχείρισης προορισμών (DMC) και οργανώνει εταιρικές εκδηλώσεις, συνέδρια και ταξίδια επιβράβευσης στην Ελλάδα και την Κύπρο.',
       heroAlt: 'Η καλντέρα της Σαντορίνης το σούρουπο',
       awards: ['Κορυφαίος διοργανωτής MICE στην Ελλάδα', 'Κορυφαίος διοργανωτής MICE στην Κύπρο'],
       principles: [
@@ -184,12 +184,12 @@ export const pageCopy = {
       close: 'Cerrar',
     },
     home: {
-      title: 'Eventos corporativos en Grecia y Chipre',
+      title: 'DMC en Grecia y Chipre | Eventos corporativos',
       description: 'One Event, galardonada en los World MICE Awards 2026, organiza eventos corporativos, congresos y viajes de incentivo en Grecia y Chipre.',
       eyebrow: 'Agencia receptiva en Grecia y Chipre',
       heading: 'Creamos momentos que inspiran',
       scroll: 'Siga explorando',
-      intro: 'Diseñamos y organizamos eventos corporativos, congresos y viajes de incentivo con nuestros equipos locales en Grecia y Chipre.',
+      intro: 'One Event es una agencia receptiva (DMC) que organiza eventos corporativos, congresos y viajes de incentivo en Grecia y Chipre.',
       heroAlt: 'La caldera de Santorini al atardecer',
       awards: ['Mejor organizador MICE de Grecia', 'Mejor organizador MICE de Chipre'],
       principles: [
